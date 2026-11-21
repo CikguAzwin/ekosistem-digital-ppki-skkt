@@ -693,27 +693,46 @@
         </div>
       </div>
 
-      <!-- PENGURUSAN RELIEF MENGIKUT JADUAL PERSENDIRIAN CIKGU MIMI -->
-      <div id="reliefPanel" class="no-print mx-5 mt-5 p-4 sm:p-5 rounded-2xl border border-amber-200 bg-amber-50/70 space-y-3">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <!-- PENGURUSAN GURU RELIEF BERDASARKAN KETIDAKHADIRAN -->
+      <div id="reliefPanel" class="no-print mx-5 mt-5 p-4 sm:p-5 rounded-2xl border border-amber-200 bg-amber-50/70 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
           <div>
-            <h3 class="font-extrabold text-amber-950 flex items-center gap-2"><span>🔁</span> Pengurusan Relief — Slot Jadual Cikgu Mimi Zanariah</h3>
-            <p class="text-xs text-amber-900/80 mt-1">Cikgu Mimi telah berpindah. Slot mengajar Cikgu Mimi dalam jadual rasmi 2026 ditandakan sebagai relief kerana beliau telah berpindah. Agihan guru relief belum ditetapkan.</p>
+            <h3 class="font-extrabold text-amber-950 flex items-center gap-2"><span>🔁</span> Pengurusan Guru Relief</h3>
+            <p class="text-xs text-amber-900/80 mt-1">Rekod guru yang tidak hadir sehari penuh. Sistem akan menjana slot relief berdasarkan jadual waktu rasmi pada tarikh tersebut.</p>
           </div>
-          <div class="flex flex-wrap gap-2 text-xs font-extrabold">
-            <span id="reliefTotalBadge" class="px-3 py-1.5 rounded-lg bg-white border border-amber-200 text-amber-900">35 waktu relief</span>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-extrabold">
+            <span id="reliefTotalBadge" class="px-3 py-1.5 rounded-lg bg-white border border-amber-200 text-amber-900">0 slot perlu diganti</span>
             <span id="reliefAssignedBadge" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-900">0 diagihkan</span>
           </div>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 p-3 rounded-xl bg-white border border-amber-200">
+          <div class="md:col-span-3">
+            <label for="reliefAbsenceDate" class="block text-xs font-bold text-slate-700 mb-1">Tarikh ketidakhadiran</label>
+            <input id="reliefAbsenceDate" type="date" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm" onchange="renderReliefPanel()" />
+          </div>
+          <div class="md:col-span-6">
+            <label for="reliefAbsentTeachers" class="block text-xs font-bold text-slate-700 mb-1">Guru tidak hadir (boleh pilih lebih daripada seorang)</label>
+            <select id="reliefAbsentTeachers" multiple size="4" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm"></select>
+            <p class="text-[10px] text-slate-500 mt-1">Tekan Command (⌘) sambil klik untuk memilih beberapa nama pada Mac.</p>
+          </div>
+          <div class="md:col-span-3 flex flex-col justify-end gap-2">
+            <button type="button" onclick="generateDailyRelief()" class="w-full px-3.5 py-2.5 rounded-lg bg-indigo-900 hover:bg-indigo-800 text-white text-xs font-bold shadow-sm">Jana Slot Relief</button>
+            <button type="button" onclick="printReliefSlip()" class="w-full px-3.5 py-2.5 rounded-lg border border-indigo-300 bg-indigo-50 hover:bg-indigo-100 text-indigo-950 text-xs font-bold">🖨️ Cetak Slip Relief</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <p id="reliefDateSummary" class="text-xs font-semibold text-amber-950">Pilih tarikh dan guru tidak hadir untuk menjana tugasan relief.</p>
+          <span id="reliefDayLabel" class="text-xs text-slate-600"></span>
+        </div>
         <div class="overflow-x-auto rounded-xl border border-amber-200 bg-white">
-          <table class="w-full min-w-[760px] text-left text-xs">
+          <table class="w-full min-w-[900px] text-left text-xs">
             <thead class="bg-amber-100 text-amber-950"><tr>
-              <th class="px-3 py-2.5">Hari</th><th class="px-3 py-2.5">Masa</th><th class="px-3 py-2.5">Kelas</th><th class="px-3 py-2.5">Subjek</th><th class="px-3 py-2.5">Bil. Waktu</th><th class="px-3 py-2.5">Guru Relief</th><th class="px-3 py-2.5">Status</th>
+              <th class="px-3 py-2.5">Masa</th><th class="px-3 py-2.5">Kelas</th><th class="px-3 py-2.5">Subjek</th><th class="px-3 py-2.5">Guru Tidak Hadir</th><th class="px-3 py-2.5">Guru Relief</th><th class="px-3 py-2.5">Status</th>
             </tr></thead>
-            <tbody id="reliefTableBody" class="divide-y divide-slate-100"></tbody>
+            <tbody id="reliefTableBody" class="divide-y divide-slate-100"><tr><td colspan="6" class="px-3 py-5 text-center text-slate-500">Belum ada slot relief untuk tarikh ini.</td></tr></tbody>
           </table>
         </div>
-        <p class="text-[11px] text-amber-900/80">Nota: Peruntukan asal jadual persendirian Cikgu Mimi ialah 36 waktu termasuk 1 waktu perhimpunan. Jadual di atas memaparkan 35 waktu mata pelajaran untuk agihan relief. Pilih nama guru pada setiap slot; pilihan akan disimpan dan disegerakkan ke Google Sheets apabila sambungan awan tersedia.</p>
+        <p class="text-[11px] text-amber-900/80">PPM tidak disenaraikan sebagai guru relief. Agihan hanya boleh dibuat kepada guru yang tidak mempunyai kelas atau tugasan relief lain pada waktu yang sama.</p>
       </div>
 
       <!-- KAWASAN CETAKAN & GRID JADUAL WAKTU -->
@@ -1630,6 +1649,7 @@ function buildOfficialTimetableSlots() {
       timetableSlots: buildOfficialTimetableSlots(),
       timetable: buildOfficialTimetable(),
       reliefSlots: buildOfficialReliefSlots(),
+      absenceReliefRecords: [],
       timetableTemplateVersion: "",
       teaching: { resources: [], rph: [] },
       updatedAt: new Date().toISOString()
@@ -2000,6 +2020,7 @@ function buildOfficialTimetableSlots() {
             appState.reliefSlots = buildOfficialReliefSlots();
             needCloudPush = true;
           }
+          appState.absenceReliefRecords = Array.isArray(data.absenceReliefRecords) ? data.absenceReliefRecords : [];
           if (data.teaching && typeof data.teaching === "object") appState.teaching = data.teaching;
           appState.timetableTemplateVersion = data.timetableTemplateVersion || "";
           ensureTeachingState();
@@ -3675,38 +3696,199 @@ function buildOfficialTimetableSlots() {
       return { tableHTML, totalPeriods, totalMinutes, involved: Array.from(involvedSet) };
     }
 
+    // Paparan tarikh relief dalam format Malaysia dd/mm/yyyy.
+    function formatReliefDate(dateValue) {
+      if (!dateValue) return "";
+      const parts = String(dateValue).split("-");
+      if (parts.length !== 3) return String(dateValue);
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    // Pengurusan relief harian berdasarkan rekod ketidakhadiran guru sehari penuh.
+    function getReliefDateContext() {
+      const dateInput = document.getElementById("reliefAbsenceDate");
+      const date = dateInput ? dateInput.value : "";
+      if (!date) return { date: "", day: "" };
+      const parts = date.split("-").map(Number);
+      const d = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0);
+      const days = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
+      return { date, day: days[d.getDay()] };
+    }
+
+    function getDailyReliefRecord(date) {
+      if (!Array.isArray(appState.absenceReliefRecords)) appState.absenceReliefRecords = [];
+      return appState.absenceReliefRecords.find(r => r.tarikh === date) || null;
+    }
+
+    function reliefTimeToMinutes(value) {
+      const m = String(value || "").match(/(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})/);
+      if (!m) return null;
+      return { start: Number(m[1]) * 60 + Number(m[2]), end: Number(m[3]) * 60 + Number(m[4]) };
+    }
+
+    function reliefTimesOverlap(a, b) {
+      const x = reliefTimeToMinutes(a), y = reliefTimeToMinutes(b);
+      return !!(x && y && x.start < y.end && y.start < x.end);
+    }
+
+    function getDailyReliefConflict(teacherName, reliefSlot, record) {
+      if (!teacherName || !reliefSlot || !record) return "";
+      const targetName = normalizeName(teacherName);
+      if ((record.guruTidakHadir || []).some(n => normalizeName(n) === targetName)) return "Guru ini direkodkan tidak hadir pada tarikh tersebut.";
+
+      const ttData = appState.timetable || {};
+      for (const className of Object.keys(ttData)) {
+        const dayData = ttData[className] && ttData[className][record.hari];
+        if (!dayData) continue;
+        for (const slotKey of Object.keys(dayData)) {
+          const entry = dayData[slotKey];
+          if (!entry || !entry.teacher || !normalizeName(entry.teacher).includes(targetName)) continue;
+          const officialTime = getTimetableSlotLabel(record.hari, Number(slotKey));
+          if (officialTime && reliefTimesOverlap(reliefSlot.masa, officialTime)) {
+            return `Bertindih dengan jadual mengajar ${className} (${entry.subject || "Mata pelajaran"}, ${officialTime}).`;
+          }
+        }
+      }
+
+      const other = (record.slots || []).find(slot => slot.id !== reliefSlot.id &&
+        normalizeName(slot.guruRelief || "") === targetName && reliefTimesOverlap(reliefSlot.masa, slot.masa));
+      if (other) return `Bertindih dengan tugasan relief lain (${other.kelas}, ${other.masa}).`;
+      return "";
+    }
+
+    let reliefLastRenderedDate = "";
+
+    function getReliefEligibleTeachers() {
+      return (appState.staff || []).filter(st => !/(\bppm\b|pembantu pengurusan murid)/i.test(st.jawatan || "") && st.nama && st.status !== "Tidak Aktif");
+    }
+
     function renderReliefPanel() {
       const body = document.getElementById("reliefTableBody");
       if (!body) return;
-      if (!Array.isArray(appState.reliefSlots)) appState.reliefSlots = buildOfficialReliefSlots();
-      const teachers = (appState.staff || []).filter(st => !/ppm/i.test(st.jawatan || "") && !/MIMI ZANARIAH/i.test(st.nama || ""));
-      const assigned = appState.reliefSlots.filter(x => (x.guruRelief || "").trim()).length;
-      const totalPeriods = appState.reliefSlots.reduce((n,x) => n + Number(x.waktu || 0), 0);
+      if (!Array.isArray(appState.absenceReliefRecords)) appState.absenceReliefRecords = [];
+      const dateEl = document.getElementById("reliefAbsenceDate");
+      if (dateEl && !dateEl.value) dateEl.value = getMalaysiaDateStr();
+      const ctx = getReliefDateContext();
+      const teachers = getReliefEligibleTeachers();
+      const absentSelect = document.getElementById("reliefAbsentTeachers");
+      const record = ctx.date ? getDailyReliefRecord(ctx.date) : null;
+      const absentNow = record ? record.guruTidakHadir || [] : [];
+      if (absentSelect) {
+        const previous = ctx.date === reliefLastRenderedDate ? Array.from(absentSelect.selectedOptions).map(o => o.value) : [];
+        absentSelect.innerHTML = teachers.map(t => `<option value="${escapeHtml(t.nama)}" ${absentNow.includes(t.nama) || (!record && previous.includes(t.nama)) ? "selected" : ""}>${escapeHtml(t.nama)}</option>`).join("");
+        if (record) Array.from(absentSelect.options).forEach(o => { o.selected = absentNow.includes(o.value); });
+      }
+      reliefLastRenderedDate = ctx.date;
+      const slots = record && Array.isArray(record.slots) ? record.slots : [];
+      const assigned = slots.filter(x => (x.guruRelief || "").trim()).length;
       const totalBadge = document.getElementById("reliefTotalBadge");
       const assignedBadge = document.getElementById("reliefAssignedBadge");
-      if (totalBadge) totalBadge.textContent = `${totalPeriods} waktu relief`;
-      if (assignedBadge) assignedBadge.textContent = `${assigned} / ${appState.reliefSlots.length} slot diagihkan`;
-      body.innerHTML = appState.reliefSlots.map((x,idx) => {
-        const options = `<option value="">— Belum diagihkan —</option>` + teachers.map(t => `<option value="${escapeHtml(t.nama)}" ${x.guruRelief === t.nama ? "selected" : ""}>${escapeHtml(t.nama)}</option>`).join("");
+      if (totalBadge) totalBadge.textContent = `${slots.length} slot perlu diganti`;
+      if (assignedBadge) assignedBadge.textContent = `${assigned} / ${slots.length} diagihkan`;
+      const summary = document.getElementById("reliefDateSummary");
+      const dayLabel = document.getElementById("reliefDayLabel");
+      if (summary) summary.textContent = record ? `Guru tidak hadir: ${record.guruTidakHadir.join(", ")}` : "Pilih tarikh dan guru tidak hadir, kemudian klik Jana Slot Relief.";
+      if (dayLabel) dayLabel.textContent = ctx.day ? `${ctx.day} • ${formatReliefDate(ctx.date)}` : "";
+      if (!slots.length) {
+        body.innerHTML = `<tr><td colspan="6" class="px-3 py-5 text-center text-slate-500">Belum ada slot relief untuk tarikh ini.</td></tr>`;
+        return;
+      }
+      body.innerHTML = slots.map(slot => {
+        const currentConflict = slot.guruRelief ? getDailyReliefConflict(slot.guruRelief, slot, record) : "";
+        const options = teachers.map(t => {
+          const conflict = getDailyReliefConflict(t.nama, slot, record);
+          const selected = slot.guruRelief === t.nama;
+          const disabled = conflict && !selected ? "disabled" : "";
+          return `<option value="${escapeHtml(t.nama)}" ${selected ? "selected" : ""} ${disabled}>${escapeHtml(t.nama + (conflict ? " — BERTINDIH" : ""))}</option>`;
+        }).join("");
+        const status = currentConflict
+          ? `<span class="px-2 py-1 rounded-full bg-red-100 text-red-800 font-bold">Semak pertindihan</span><p class="mt-1 text-[10px] text-red-700">${escapeHtml(currentConflict)}</p>`
+          : slot.guruRelief
+            ? `<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">✓ Diagihkan</span>`
+            : `<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">Belum diagihkan</span>`;
         return `<tr class="hover:bg-amber-50/60">
-          <td class="px-3 py-2.5 font-bold text-slate-800">${escapeHtml(x.hari)}</td>
-          <td class="px-3 py-2.5 font-mono whitespace-nowrap">${escapeHtml(x.masa)}</td>
-          <td class="px-3 py-2.5 font-bold text-indigo-900">${escapeHtml(x.kelas)}</td>
-          <td class="px-3 py-2.5 font-extrabold">${escapeHtml(x.subjek)}</td>
-          <td class="px-3 py-2.5 text-center">${Number(x.waktu || 0)}</td>
-          <td class="px-3 py-2.5"><select aria-label="Guru relief ${escapeHtml(x.hari)} ${escapeHtml(x.masa)}" onchange="updateReliefTeacher(${idx},this.value)" class="w-full min-w-[220px] px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold"><option value="">— Belum diagihkan —</option>${teachers.map(t => `<option value="${escapeHtml(t.nama)}" ${x.guruRelief === t.nama ? "selected" : ""}>${escapeHtml(t.nama)}</option>`).join("")}</select></td>
-          <td class="px-3 py-2.5">${x.guruRelief ? `<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">✓ Diagihkan</span>` : `<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">Belum diagihkan</span>`}</td>
+          <td class="px-3 py-2.5 font-mono whitespace-nowrap">${escapeHtml(slot.masa)}</td>
+          <td class="px-3 py-2.5 font-bold text-indigo-900">${escapeHtml(slot.kelas)}</td>
+          <td class="px-3 py-2.5 font-extrabold">${escapeHtml(slot.subjek)}</td>
+          <td class="px-3 py-2.5">${escapeHtml(slot.guruTidakHadir)}</td>
+          <td class="px-3 py-2.5"><select aria-label="Guru relief ${escapeHtml(slot.masa)} ${escapeHtml(slot.kelas)}" onchange="updateDailyReliefTeacher('${escapeHtml(slot.id)}',this.value)" class="w-full min-w-[230px] px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold"><option value="">— Belum diagihkan —</option>${options}</select></td>
+          <td class="px-3 py-2.5">${status}</td>
         </tr>`;
       }).join("");
     }
 
-    function updateReliefTeacher(index, teacherName) {
-      if (!Array.isArray(appState.reliefSlots) || !appState.reliefSlots[index]) return;
-      appState.reliefSlots[index].guruRelief = teacherName || "";
+    function generateDailyRelief() {
+      const ctx = getReliefDateContext();
+      const absentSelect = document.getElementById("reliefAbsentTeachers");
+      const absent = absentSelect ? Array.from(absentSelect.selectedOptions).map(o => o.value) : [];
+      if (!ctx.date || !ctx.day) { showToast("Sila pilih tarikh ketidakhadiran.", "⚠️"); return; }
+      if (!["Isnin", "Selasa", "Rabu", "Khamis", "Jumaat"].includes(ctx.day)) { showToast("Tarikh yang dipilih ialah hujung minggu. Sila pilih hari persekolahan.", "⚠️"); return; }
+      if (!absent.length) { showToast("Sila pilih sekurang-kurangnya seorang guru tidak hadir.", "⚠️"); return; }
+
+      const existing = getDailyReliefRecord(ctx.date);
+      if (existing && existing.slots && existing.slots.length && !confirm("Jana semula slot untuk tarikh ini? Agihan sedia ada bagi slot yang sepadan akan dikekalkan.")) return;
+      const tt = appState.timetable || {};
+      const generated = [];
+      Object.keys(tt).forEach(className => {
+        const dayData = tt[className] && tt[className][ctx.day];
+        if (!dayData) return;
+        Object.keys(dayData).forEach(slotKey => {
+          const entry = dayData[slotKey];
+          if (!entry || !entry.teacher) return;
+          const subject = String(entry.subject || "").trim();
+          if (!subject || /^(REHAT|PERHIMPUNAN)$/i.test(subject)) return;
+          absent.forEach(absentName => {
+            if (!normalizeName(entry.teacher).includes(normalizeName(absentName))) return;
+            const time = getTimetableSlotLabel(ctx.day, Number(slotKey));
+            if (!time) return;
+            const id = `${className}|${ctx.day}|${slotKey}|${absentName}`;
+            const oldSlot = existing && (existing.slots || []).find(x => x.id === id);
+            generated.push({ id, masa: time, kelas: className, subjek: subject, guruTidakHadir: absentName, guruRelief: oldSlot ? oldSlot.guruRelief || "" : "", waktu: 1, slotIndex: Number(slotKey) });
+          });
+        });
+      });
+      generated.sort((a,b) => a.masa.localeCompare(b.masa) || a.kelas.localeCompare(b.kelas));
+      const record = { tarikh: ctx.date, hari: ctx.day, guruTidakHadir: absent, slots: generated, updatedAt: new Date().toISOString() };
+      if (!Array.isArray(appState.absenceReliefRecords)) appState.absenceReliefRecords = [];
+      const idx = appState.absenceReliefRecords.findIndex(r => r.tarikh === ctx.date);
+      if (idx >= 0) appState.absenceReliefRecords[idx] = record; else appState.absenceReliefRecords.push(record);
+      saveLocal();
+      renderReliefPanel();
+      pushToCloud(false);
+      showToast(`${generated.length} slot relief dijana untuk ${ctx.day}, ${formatReliefDate(ctx.date)}.`, "✅");
+    }
+
+    function updateDailyReliefTeacher(slotId, teacherName) {
+      const ctx = getReliefDateContext();
+      const record = getDailyReliefRecord(ctx.date);
+      if (!record) return;
+      const slot = (record.slots || []).find(x => x.id === slotId);
+      if (!slot) return;
+      if (teacherName) {
+        const conflict = getDailyReliefConflict(teacherName, slot, record);
+        if (conflict) { showToast(`Tidak boleh diagihkan: ${conflict}`, "⚠️"); renderReliefPanel(); return; }
+      }
+      slot.guruRelief = teacherName || "";
+      record.updatedAt = new Date().toISOString();
       saveLocal();
       renderReliefPanel();
       pushToCloud(false);
       showToast(teacherName ? "Guru relief berjaya direkodkan." : "Agihan relief dikosongkan.", "☁️");
+    }
+
+    function printReliefSlip() {
+      const ctx = getReliefDateContext();
+      const record = getDailyReliefRecord(ctx.date);
+      const rows = record ? (record.slots || []).filter(x => (x.guruRelief || "").trim()) : [];
+      if (!rows.length) { showToast("Tiada agihan relief direkodkan untuk tarikh ini.", "⚠️"); return; }
+      const printRows = rows.map((x, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(x.masa)}</td><td>${escapeHtml(x.kelas)}</td><td>${escapeHtml(x.subjek)}</td><td>${escapeHtml(x.guruTidakHadir)}</td><td><strong>${escapeHtml(x.guruRelief)}</strong></td></tr>`).join("");
+      const printWindow = window.open("", "_blank", "width=1000,height=750");
+      if (!printWindow) { showToast("Tetingkap cetakan disekat. Benarkan pop-up untuk portal ini.", "⚠️"); return; }
+      printWindow.document.open();
+      printWindow.document.write(`<!DOCTYPE html><html lang="ms"><head><meta charset="UTF-8"><title>Slip Makluman Guru Relief - ${escapeHtml(ctx.date)}</title><style>
+        @page{size:A4 landscape;margin:14mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#111827;margin:0}h1{font-size:20px;text-align:center;margin:0 0 5px;text-transform:uppercase}h2{font-size:15px;text-align:center;margin:0 0 18px;font-weight:600}.meta{display:flex;justify-content:space-between;font-size:12px;margin:0 0 12px}.note{font-size:11px;margin-top:12px;color:#374151}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #64748b;padding:8px;text-align:left}th{background:#e2e8f0;text-transform:uppercase;font-size:10px}.sign{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.sign div{width:32%;border-top:1px solid #64748b;padding-top:6px;text-align:center}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+        </style></head><body><h1>Slip Makluman Guru Relief</h1><h2>Program Pendidikan Khas Integrasi — SK Kesang Tua</h2><div class="meta"><span><strong>Tarikh:</strong> ${escapeHtml(formatReliefDate(ctx.date))}</span><span><strong>Hari:</strong> ${escapeHtml(ctx.day)}</span><span><strong>Guru tidak hadir:</strong> ${escapeHtml(record.guruTidakHadir.join(", "))}</span><span><strong>Jumlah tugasan:</strong> ${rows.length}</span></div><table><thead><tr><th>Bil.</th><th>Masa</th><th>Kelas</th><th>Mata Pelajaran</th><th>Guru Tidak Hadir</th><th>Guru Relief</th></tr></thead><tbody>${printRows}</tbody></table><p class="note">Mohon guru yang dinamakan mengambil maklum dan melaksanakan tugasan relief mengikut masa serta kelas yang ditetapkan.</p><div class="sign"><div>Disediakan oleh</div><div>Disemak oleh</div><div>Tarikh / Masa Edaran</div></div><script>window.onload=function(){window.focus();window.print();};<\/script></body></html>`);
+      printWindow.document.close();
     }
 
     function renderTimetable() {
