@@ -693,6 +693,29 @@
         </div>
       </div>
 
+      <!-- PENGURUSAN RELIEF MENGIKUT JADUAL PERSENDIRIAN CIKGU MIMI -->
+      <div id="reliefPanel" class="no-print mx-5 mt-5 p-4 sm:p-5 rounded-2xl border border-amber-200 bg-amber-50/70 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-extrabold text-amber-950 flex items-center gap-2"><span>🔁</span> Pengurusan Relief — Slot Jadual Cikgu Mimi Zanariah</h3>
+            <p class="text-xs text-amber-900/80 mt-1">Cikgu Mimi telah berpindah. Slot mengajar Cikgu Mimi dalam jadual rasmi 2026 ditandakan sebagai relief kerana beliau telah berpindah. Agihan guru relief belum ditetapkan.</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs font-extrabold">
+            <span id="reliefTotalBadge" class="px-3 py-1.5 rounded-lg bg-white border border-amber-200 text-amber-900">35 waktu relief</span>
+            <span id="reliefAssignedBadge" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-900">0 diagihkan</span>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-amber-200 bg-white">
+          <table class="w-full min-w-[760px] text-left text-xs">
+            <thead class="bg-amber-100 text-amber-950"><tr>
+              <th class="px-3 py-2.5">Hari</th><th class="px-3 py-2.5">Masa</th><th class="px-3 py-2.5">Kelas</th><th class="px-3 py-2.5">Subjek</th><th class="px-3 py-2.5">Bil. Waktu</th><th class="px-3 py-2.5">Guru Relief</th><th class="px-3 py-2.5">Status</th>
+            </tr></thead>
+            <tbody id="reliefTableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+        <p class="text-[11px] text-amber-900/80">Nota: Peruntukan asal jadual persendirian Cikgu Mimi ialah 36 waktu termasuk 1 waktu perhimpunan. Jadual di atas memaparkan 35 waktu mata pelajaran untuk agihan relief. Pilih nama guru pada setiap slot; pilihan akan disimpan dan disegerakkan ke Google Sheets apabila sambungan awan tersedia.</p>
+      </div>
+
       <!-- KAWASAN CETAKAN & GRID JADUAL WAKTU -->
       <div class="p-5 sm:p-6 space-y-6">
         <!-- Kepala Surat Rasmi Cetakan Jadual Waktu -->
@@ -1547,214 +1570,50 @@
       ];
     }
 
-    function buildOfficialTimetableSlots() {
-      return [
-        { index: 1, label: "07:40 - 08:10", minutes: 30, isBreak: false },
-        { index: 2, label: "08:10 - 08:40", minutes: 30, isBreak: false },
-        { index: 3, label: "08:40 - 09:10", minutes: 30, isBreak: false },
-        { index: 4, label: "09:10 - 09:40", minutes: 30, isBreak: false },
-        { index: 5, label: "09:40 - 10:10", minutes: 30, isBreak: true },
-        { index: 6, label: "10:10 - 10:40", minutes: 30, isBreak: false },
-        { index: 7, label: "10:40 - 11:10", minutes: 30, isBreak: false },
-        { index: 8, label: "11:10 - 11:40", minutes: 30, isBreak: false },
-        { index: 9, label: "11:40 - 12:10", minutes: 30, isBreak: false },
-        { index: 10, label: "12:10 - 12:40", minutes: 30, isBreak: false }
+function buildOfficialTimetableSlots() {
+      return Array.from({ length: 11 }, (_, i) => {
+        const index = i + 1;
+        return { index, label: getTimetableSlotLabel("Isnin", index), minutes: index === 6 ? 25 : 30, isBreak: index === 6 };
+      });
+    }
+
+    function getTimetableSlotLabel(day, index) {
+      const weekday = ["07:35–08:05","08:05–08:35","08:35–09:05","09:05–09:35","09:35–10:05","10:05–10:30","10:30–11:00","11:00–11:30","11:30–12:00","12:00–12:30","12:30–13:00"];
+      const friday = ["07:45–08:15","08:15–08:45","08:45–09:15","09:15–09:45","09:45–10:15","10:15–10:35","10:35–11:05","11:05–11:35","11:35–12:05"];
+      return (day === "Jumaat" ? friday : weekday)[Number(index) - 1] || "";
+    }
+
+    function buildOfficialReliefSlots() {
+      const rows = [
+        ["RLF-01","Isnin","08:05–09:05","4 Dinamik","BI",2],
+        ["RLF-02","Isnin","09:35–10:05","2 Efektif","PKH",1],
+        ["RLF-03","Isnin","10:30–11:30","4 Dinamik","MORAL",2],
+        ["RLF-04","Isnin","11:30–12:30","2 Efektif","PKH",2],
+        ["RLF-05","Selasa","07:35–09:05","2 Efektif","PKH",3],
+        ["RLF-06","Selasa","09:05–10:05","4 Dinamik","MORAL",2],
+        ["RLF-07","Selasa","11:00–12:00","4 Dinamik","BI",2],
+        ["RLF-08","Selasa","12:00–13:00","4 Dinamik","TMK",2],
+        ["RLF-09","Rabu","07:35–09:35","1 Kreatif","PKH",4],
+        ["RLF-10","Rabu","10:30–12:00","2 Efektif","PKH",3],
+        ["RLF-11","Khamis","09:05–09:35","2 Efektif","PKH",1],
+        ["RLF-12","Khamis","09:35–10:05","4 Dinamik","MORAL",1],
+        ["RLF-13","Khamis","10:30–11:30","2 Efektif","PKH",2],
+        ["RLF-14","Khamis","12:00–13:00","1 Kreatif","PKH",2],
+        ["RLF-15","Jumaat","07:45–08:15","4 Dinamik","MORAL",1],
+        ["RLF-16","Jumaat","08:45–10:15","2 Efektif","PKH",3],
+        ["RLF-17","Jumaat","10:35–11:35","1 Kreatif","PKH",2]
       ];
+      return rows.map(r => ({ id:r[0], hari:r[1], masa:r[2], kelas:r[3], subjek:r[4], waktu:r[5], guruRelief:"", catatan:"" }));
     }
 
     function buildOfficialTimetable() {
-      const g1 = "PUAN NORZAITIE AYU BINTI ZAIMI";
-      const g2 = "CIK NUR INAS FATHINI BINTI BADRUL HISHAM";
-      const g3 = "PUAN NOR AZWIN BINTI AZLAN";
-      const g4 = "ENCIK ROHAIZI BIN ISMAIL";
-      const gPi = "USTAZAH MAHMUDAH BINTI A. RAHIM";
-
-      const days = ["Isnin", "Selasa", "Rabu", "Khamis", "Jumaat"];
       const tt = {};
-      const setSlot = (cls, day, slot, subject, teacher, room = "", minutes = 30) => {
-        if (!tt[cls]) tt[cls] = {};
-        if (!tt[cls][day]) tt[cls][day] = {};
-        tt[cls][day][slot] = { subject, teacher, room, minutes };
-      };
-
-      // Set Perhimpunan (Isnin Slot 1) & Rehat (Slot 5)
-      ["1 Inovatif", "1 Kreatif", "2 Efektif", "4 Dinamik"].forEach((cls, idx) => {
-        const classTeacher = [g1, g2, g3, g4][idx];
-        setSlot(cls, "Isnin", 1, "Perhimpunan Rasmi", classTeacher, "Dataran Perhimpunan", 30);
-        days.forEach(d => setSlot(cls, d, 5, "REHAT", "", "Kantin PPKI", 30));
+      const entries = [{"cls":"4 Dinamik","day":"Isnin","slot":1,"subject":"Perhimpunan","teacher":"","minutes":30,"room":"Dataran Perhimpunan"},{"cls":"4 Dinamik","day":"Isnin","slot":2,"subject":"BI","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":3,"subject":"BI","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":4,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":5,"subject":"PSSAS","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"4 Dinamik","day":"Isnin","slot":7,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":8,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":9,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":10,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Isnin","slot":11,"subject":"MZK","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":1,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":2,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":3,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":4,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":5,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"4 Dinamik","day":"Selasa","slot":7,"subject":"MAT","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":8,"subject":"BI","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":9,"subject":"BI","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":10,"subject":"TMK","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Selasa","slot":11,"subject":"TMK","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":2,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":3,"subject":"PSV","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":4,"subject":"PSV","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":5,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"4 Dinamik","day":"Rabu","slot":7,"subject":"MZK","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":8,"subject":"PSSAS","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":9,"subject":"PSSAS","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":10,"subject":"MAT","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Rabu","slot":11,"subject":"MAT","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":1,"subject":"PSSAS","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":2,"subject":"PSSAS","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":5,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"4 Dinamik","day":"Khamis","slot":7,"subject":"PK","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":8,"subject":"MAT","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":9,"subject":"MAT","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":10,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Khamis","slot":11,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":1,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / RELIEF — BELUM DIAGIHKAN (MORAL)","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":2,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":3,"subject":"BM","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":5,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":6,"subject":"REHAT","teacher":"","minutes":20,"room":"Rehat"},{"cls":"4 Dinamik","day":"Jumaat","slot":7,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":8,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"4 Dinamik","day":"Jumaat","slot":9,"subject":"KH","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":1,"subject":"Perhimpunan","teacher":"","minutes":30,"room":"Dataran Perhimpunan"},{"cls":"1 Inovatif","day":"Isnin","slot":2,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":3,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":4,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":5,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Inovatif","day":"Isnin","slot":7,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":8,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":9,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Isnin","slot":10,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":2,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":3,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":4,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":5,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Inovatif","day":"Selasa","slot":7,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":8,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":9,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Selasa","slot":10,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":1,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":2,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":3,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":4,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":5,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Inovatif","day":"Rabu","slot":7,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":8,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":9,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":10,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Rabu","slot":11,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":2,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NOR AZWIN BINTI AZLAN (MORAL)","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":3,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":4,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":5,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Inovatif","day":"Khamis","slot":7,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":8,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":9,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":10,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Khamis","slot":11,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":2,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":3,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":4,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":5,"subject":"3M","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":6,"subject":"REHAT","teacher":"","minutes":20,"room":"Rehat"},{"cls":"1 Inovatif","day":"Jumaat","slot":7,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":8,"subject":"PKH","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Inovatif","day":"Jumaat","slot":9,"subject":"PSK","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":1,"subject":"Perhimpunan","teacher":"","minutes":30,"room":"Dataran Perhimpunan"},{"cls":"1 Kreatif","day":"Isnin","slot":2,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":5,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Kreatif","day":"Isnin","slot":7,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":8,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":9,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Isnin","slot":10,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":2,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":5,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Kreatif","day":"Selasa","slot":7,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":8,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":9,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Selasa","slot":10,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":1,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":2,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":5,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Kreatif","day":"Rabu","slot":7,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":8,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":9,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":10,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Rabu","slot":11,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":2,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":4,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":5,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"1 Kreatif","day":"Khamis","slot":7,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":8,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":9,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":10,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Khamis","slot":11,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":2,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":3,"subject":"PSK","teacher":"PUAN NORZAITIE AYU BINTI ZAIMI","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":4,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":5,"subject":"3M","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":6,"subject":"REHAT","teacher":"","minutes":20,"room":"Rehat"},{"cls":"1 Kreatif","day":"Jumaat","slot":7,"subject":"PAI","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":8,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"1 Kreatif","day":"Jumaat","slot":9,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":1,"subject":"Perhimpunan","teacher":"","minutes":30,"room":"Dataran Perhimpunan"},{"cls":"2 Efektif","day":"Isnin","slot":2,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":3,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":4,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":5,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"2 Efektif","day":"Isnin","slot":7,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":8,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":9,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Isnin","slot":10,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":1,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":2,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":4,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":5,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"2 Efektif","day":"Selasa","slot":7,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":8,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":9,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Selasa","slot":10,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":1,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":2,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":3,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":4,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":5,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"2 Efektif","day":"Rabu","slot":7,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":8,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":9,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":10,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Rabu","slot":11,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":1,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":2,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":3,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":5,"subject":"PJ","teacher":"ENCIK ROHAIZI BIN ISMAIL","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":6,"subject":"REHAT","teacher":"","minutes":25,"room":"Rehat"},{"cls":"2 Efektif","day":"Khamis","slot":7,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":8,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":9,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":10,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Khamis","slot":11,"subject":"PAI/MORAL","teacher":"USTAZAH MAHMUDAH BINTI A. RAHIM (PAI) / PUAN NORZAITIE AYU BINTI ZAIMI (MORAL)","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":1,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":2,"subject":"3M","teacher":"PUAN NOR AZWIN BINTI AZLAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":3,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":4,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":5,"subject":"PKH","teacher":"RELIEF — BELUM DIAGIHKAN","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":6,"subject":"REHAT","teacher":"","minutes":20,"room":"Rehat"},{"cls":"2 Efektif","day":"Jumaat","slot":7,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":8,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""},{"cls":"2 Efektif","day":"Jumaat","slot":9,"subject":"PSK","teacher":"CIK NUR INAS FATHINI BINTI BADRUL HISHAM","minutes":30,"room":""}];
+      entries.forEach(x => {
+        if (!tt[x.cls]) tt[x.cls] = {};
+        if (!tt[x.cls][x.day]) tt[x.cls][x.day] = {};
+        tt[x.cls][x.day][x.slot] = { subject:x.subject, teacher:x.teacher, room:x.room, minutes:x.minutes };
       });
-
-      // 1 Inovatif (Guru Kelas: Puan Norzaitie Ayu)
-      setSlot("1 Inovatif", "Isnin", 2, "Pengurusan Kehidupan (Pengurusan Diri)", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Isnin", 3, "Pengurusan Kehidupan (Pengurusan Diri)", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Isnin", 4, "Bahasa Melayu", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Isnin", 6, "Pendidikan Islam", gPi, "Surau / Kelas");
-      setSlot("1 Inovatif", "Isnin", 7, "Pendidikan Islam", gPi, "Surau / Kelas");
-      setSlot("1 Inovatif", "Isnin", 8, "Matematik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Isnin", 9, "Pendidikan Seni Visual", g1, "Bilik Darjah");
-
-      setSlot("1 Inovatif", "Selasa", 1, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("1 Inovatif", "Selasa", 2, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("1 Inovatif", "Selasa", 3, "Bahasa Melayu", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Selasa", 4, "Bahasa Melayu", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Selasa", 6, "Pengurusan Kehidupan (Manipulatif)", g1, "Bilik Terapi");
-      setSlot("1 Inovatif", "Selasa", 7, "Pengurusan Kehidupan (Manipulatif)", g1, "Bilik Terapi");
-      setSlot("1 Inovatif", "Selasa", 8, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Inovatif", "Selasa", 9, "Pendidikan Muzik", g1, "Bilik Darjah");
-
-      setSlot("1 Inovatif", "Rabu", 1, "Matematik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 2, "Matematik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 3, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 4, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 6, "Bahasa Melayu", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 7, "Pengurusan Kehidupan (Pengurusan Diri)", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Rabu", 8, "Aktiviti Terapi / Kokurikulum", g1, "Bilik Terapi");
-      setSlot("1 Inovatif", "Rabu", 9, "Aktiviti Terapi / Kokurikulum", g1, "Bilik Terapi");
-
-      setSlot("1 Inovatif", "Khamis", 1, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 2, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 3, "Pengurusan Kehidupan (Manipulatif)", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 4, "Matematik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 6, "Pendidikan Seni Visual", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 7, "Pendidikan Seni Visual", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Khamis", 8, "Bahasa Melayu", g1, "Bilik Darjah");
-
-      setSlot("1 Inovatif", "Jumaat", 1, "Bacaan Yasin & Kerohanian", gPi, "Surau");
-      setSlot("1 Inovatif", "Jumaat", 2, "Pengurusan Kehidupan (Pengurusan Diri)", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Jumaat", 3, "Bahasa Melayu", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Jumaat", 4, "Matematik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Jumaat", 6, "Pendidikan Muzik", g1, "Bilik Darjah");
-      setSlot("1 Inovatif", "Jumaat", 7, "Pengurusan Kehidupan (Manipulatif)", g1, "Bilik Darjah");
-
-      // 1 Kreatif (Guru Kelas: Cik Nur Inas Fathini)
-      setSlot("1 Kreatif", "Isnin", 2, "Bahasa Melayu", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 3, "Bahasa Melayu", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 4, "Pengurusan Kehidupan (Pengurusan Diri)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 6, "Matematik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 7, "Matematik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 8, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("1 Kreatif", "Isnin", 9, "Pendidikan Islam", gPi, "Bilik Darjah");
-
-      setSlot("1 Kreatif", "Selasa", 1, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("1 Kreatif", "Selasa", 2, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("1 Kreatif", "Selasa", 3, "Pengurusan Kehidupan (Manipulatif)", g2, "Bilik Terapi");
-      setSlot("1 Kreatif", "Selasa", 4, "Pengurusan Kehidupan (Manipulatif)", g2, "Bilik Terapi");
-      setSlot("1 Kreatif", "Selasa", 6, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Selasa", 7, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Selasa", 8, "Pendidikan Seni Visual", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Selasa", 9, "Pendidikan Seni Visual", g2, "Bilik Darjah");
-
-      setSlot("1 Kreatif", "Rabu", 1, "Pengurusan Kehidupan (Pengurusan Diri)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 2, "Pengurusan Kehidupan (Pengurusan Diri)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 3, "Bahasa Melayu", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 4, "Matematik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 6, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 7, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("1 Kreatif", "Rabu", 8, "Aktiviti Terapi / Kokurikulum", g2, "Bilik Terapi");
-      setSlot("1 Kreatif", "Rabu", 9, "Aktiviti Terapi / Kokurikulum", g2, "Bilik Terapi");
-
-      setSlot("1 Kreatif", "Khamis", 1, "Matematik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 2, "Bahasa Melayu", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 3, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 4, "Pengurusan Kehidupan (Manipulatif)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 6, "Pendidikan Muzik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 7, "Pengurusan Kehidupan (Pengurusan Diri)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Khamis", 8, "Pendidikan Seni Visual", g2, "Bilik Darjah");
-
-      setSlot("1 Kreatif", "Jumaat", 1, "Bacaan Yasin & Kerohanian", gPi, "Surau");
-      setSlot("1 Kreatif", "Jumaat", 2, "Bahasa Melayu", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Jumaat", 3, "Matematik", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Jumaat", 4, "Pengurusan Kehidupan (Pengurusan Diri)", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Jumaat", 6, "Bahasa Inggeris", g2, "Bilik Darjah");
-      setSlot("1 Kreatif", "Jumaat", 7, "Pendidikan Muzik", g2, "Bilik Darjah");
-
-      // 2 Efektif (Guru Kelas: Puan Nor Azwin)
-      setSlot("2 Efektif", "Isnin", 2, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 3, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 4, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 6, "Matematik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 7, "Matematik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 8, "Pengurusan Kehidupan (Pengurusan Diri)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Isnin", 9, "Pengurusan Kehidupan (Pengurusan Diri)", g3, "Bilik Darjah");
-
-      setSlot("2 Efektif", "Selasa", 1, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Selasa", 2, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Selasa", 3, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("2 Efektif", "Selasa", 4, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("2 Efektif", "Selasa", 6, "Pengurusan Kehidupan (Manipulatif)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Selasa", 7, "Pengurusan Kehidupan (Manipulatif)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Selasa", 8, "Pendidikan Seni Visual", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Selasa", 9, "Pendidikan Seni Visual", g3, "Bilik Darjah");
-
-      setSlot("2 Efektif", "Rabu", 1, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 2, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 3, "Matematik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 4, "Pengurusan Kehidupan (Pengurusan Diri)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 6, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 7, "Pendidikan Muzik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Rabu", 8, "Aktiviti Terapi / Kokurikulum", g3, "Bilik Terapi");
-      setSlot("2 Efektif", "Rabu", 9, "Aktiviti Terapi / Kokurikulum", g3, "Bilik Terapi");
-
-      setSlot("2 Efektif", "Khamis", 1, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 2, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 3, "Matematik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 4, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 6, "Pengurusan Kehidupan (Manipulatif)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 7, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Khamis", 8, "Pendidikan Seni Visual", g3, "Bilik Darjah");
-
-      setSlot("2 Efektif", "Jumaat", 1, "Bacaan Yasin & Kerohanian", gPi, "Surau");
-      setSlot("2 Efektif", "Jumaat", 2, "Pengurusan Kehidupan (Pengurusan Diri)", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Jumaat", 3, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Jumaat", 4, "Matematik", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Jumaat", 6, "Bahasa Melayu", g3, "Bilik Darjah");
-      setSlot("2 Efektif", "Jumaat", 7, "Pendidikan Muzik", g3, "Bilik Darjah");
-
-      // 4 Dinamik (Guru Kelas: Encik Rohaizi)
-      setSlot("4 Dinamik", "Isnin", 2, "Matematik", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Isnin", 3, "Matematik", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Isnin", 4, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("4 Dinamik", "Isnin", 6, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Isnin", 7, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Isnin", 8, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Isnin", 9, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Isnin", 10, "Teknologi Maklumat & Komunikasi (TMK)", g4, "Makmal Komputer");
-
-      setSlot("4 Dinamik", "Selasa", 1, "Kemahiran Hidup Asas", g1, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Selasa", 2, "Kemahiran Hidup Asas", g1, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Selasa", 3, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("4 Dinamik", "Selasa", 4, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("4 Dinamik", "Selasa", 6, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("4 Dinamik", "Selasa", 7, "Pendidikan Jasmani & Kesihatan", g4, "Padang");
-      setSlot("4 Dinamik", "Selasa", 8, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("4 Dinamik", "Selasa", 9, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("4 Dinamik", "Selasa", 10, "Pengurusan Kehidupan (Pengurusan Diri)", g4, "Bilik Darjah");
-
-      setSlot("4 Dinamik", "Rabu", 1, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Rabu", 2, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Rabu", 3, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Rabu", 4, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Rabu", 6, "Matematik", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Rabu", 7, "Teknologi Maklumat & Komunikasi (TMK)", g4, "Makmal Komputer");
-      setSlot("4 Dinamik", "Rabu", 8, "Aktiviti Terapi / Kokurikulum", g4, "Padang / Dewan");
-      setSlot("4 Dinamik", "Rabu", 9, "Aktiviti Terapi / Kokurikulum", g4, "Padang / Dewan");
-
-      setSlot("4 Dinamik", "Khamis", 1, "Pengurusan Kehidupan (Pengurusan Diri)", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 2, "Matematik", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 3, "Pendidikan Islam", gPi, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 4, "Pendidikan Seni Visual", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 6, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 7, "Bahasa Inggeris", g3, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 8, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Khamis", 9, "Pendidikan Muzik", g4, "Bilik Darjah");
-
-      setSlot("4 Dinamik", "Jumaat", 1, "Bacaan Yasin & Kerohanian", gPi, "Surau");
-      setSlot("4 Dinamik", "Jumaat", 2, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Jumaat", 3, "Kemahiran Hidup Asas", g4, "Bengkel / Dapur");
-      setSlot("4 Dinamik", "Jumaat", 4, "Bahasa Melayu", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Jumaat", 6, "Matematik", g4, "Bilik Darjah");
-      setSlot("4 Dinamik", "Jumaat", 7, "Pendidikan Seni Visual", g4, "Bilik Darjah");
-
       return tt;
     }
 
@@ -1770,6 +1629,8 @@
       achievements: buildOfficialAchievements(),
       timetableSlots: buildOfficialTimetableSlots(),
       timetable: buildOfficialTimetable(),
+      reliefSlots: buildOfficialReliefSlots(),
+      timetableTemplateVersion: "",
       teaching: { resources: [], rph: [] },
       updatedAt: new Date().toISOString()
     };
@@ -1789,6 +1650,13 @@
 
     function ensureOfficialDataRules() {
       let removedNonPpkiRecord = false;
+      if (appState.timetableTemplateVersion !== "2026-official-v10") {
+        appState.timetableSlots = buildOfficialTimetableSlots();
+        appState.timetable = buildOfficialTimetable();
+        appState.reliefSlots = buildOfficialReliefSlots();
+        appState.timetableTemplateVersion = "2026-official-v10";
+        removedNonPpkiRecord = true;
+      }
       if (Array.isArray(appState.staff) && appState.staff.length > 0) {
         const hasUstazah = appState.staff.some(st => (st.nama || "").toUpperCase().includes("MAHMUDAH"));
         if (!hasUstazah) {
@@ -1831,6 +1699,10 @@
       if (!Array.isArray(appState.classes) || appState.classes.length === 0) appState.classes = buildOfficialClasses();
       if (!Array.isArray(appState.timetableSlots) || appState.timetableSlots.length === 0) appState.timetableSlots = buildOfficialTimetableSlots();
       if (!appState.timetable || typeof appState.timetable !== "object" || Object.keys(appState.timetable).length === 0) appState.timetable = buildOfficialTimetable();
+      if (!Array.isArray(appState.reliefSlots) || appState.reliefSlots.length === 0) {
+        appState.reliefSlots = buildOfficialReliefSlots();
+        removedNonPpkiRecord = true;
+      }
       appState.students.forEach(s => {
         const k = (s.kelas || "").trim();
         if (k && !appState.classes.some(c => c.nama.toLowerCase() === k.toLowerCase())) {
@@ -2122,7 +1994,14 @@
             needCloudPush = true;
           }
 
+          if (Array.isArray(data.reliefSlots) && data.reliefSlots.length > 0) {
+            appState.reliefSlots = data.reliefSlots;
+          } else {
+            appState.reliefSlots = buildOfficialReliefSlots();
+            needCloudPush = true;
+          }
           if (data.teaching && typeof data.teaching === "object") appState.teaching = data.teaching;
+          appState.timetableTemplateVersion = data.timetableTemplateVersion || "";
           ensureTeachingState();
           if (ensureOfficialDataRules()) needCloudPush = true;
 
@@ -3693,7 +3572,7 @@
         headerCells += `
           <th class="py-2 px-1.5 ${sl.isBreak ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-800'} border-l border-slate-300 text-center min-w-[95px]">
             <div class="text-[10px] font-extrabold uppercase">${sl.isBreak ? 'REHAT' : 'Waktu ' + sl.index}</div>
-            <div class="text-[10px] font-mono font-semibold opacity-90 mt-0.5">${sl.label}</div>
+            <div class="text-[10px] font-mono font-semibold opacity-90 mt-0.5">Masa ikut hari</div>
           </th>
         `;
       });
@@ -3703,6 +3582,11 @@
         let rowCells = `<td class="py-2.5 px-2.5 font-extrabold text-xs text-indigo-950 bg-slate-50 border-r border-slate-300 whitespace-nowrap">${day}</td>`;
 
         slots.forEach(sl => {
+          const dayTimeLabel = getTimetableSlotLabel(day, sl.index);
+          if (day === "Jumaat" && sl.index > 9) {
+            rowCells += `<td class="p-1.5 border border-slate-200 bg-slate-50"></td>`;
+            return;
+          }
           if (mode === "class") {
             const cell = (ttData[targetName] && ttData[targetName][day] && ttData[targetName][day][sl.index]) || null;
             const subj = cell ? (cell.subject || "") : (sl.isBreak ? "REHAT" : "");
@@ -3722,11 +3606,13 @@
                   title="Klik untuk kemaskini slot ${day} (${sl.label})"
                   class="cursor-pointer p-1.5 border border-slate-200 align-top transition hover:ring-2 hover:ring-indigo-500 ${badgeClass}">
                 ${subj ? `
+                  <div class="text-[9px] font-mono opacity-70 mb-1">${dayTimeLabel}</div>
                   <div class="font-extrabold text-[10.5px] leading-snug">${subj}</div>
                   ${teacher ? `<div class="text-[9.5px] font-semibold opacity-85 mt-1 leading-tight">👩‍🏫 ${shortTeacherName(teacher)}</div>` : ''}
                   ${room ? `<div class="text-[9px] opacity-75 mt-0.5">📍 ${room}</div>` : ''}
                 ` : `
-                  <div class="h-10 flex items-center justify-center text-[10px] opacity-60">+ Isi</div>
+                  <div class="text-[9px] font-mono opacity-60">${dayTimeLabel}</div>
+                  <div class="h-7 flex items-center justify-center text-[10px] opacity-60">+ Isi</div>
                 `}
               </td>
             `;
@@ -3755,6 +3641,7 @@
                 <td onclick="openTimetableModal('${m.clsName.replace(/'/g, "\\'")}', '${day}', ${sl.index})"
                     title="Klik untuk kemaskini jadual ${allClassesLabel}"
                     class="cursor-pointer p-1.5 border border-slate-200 align-top transition hover:ring-2 hover:ring-indigo-500 ${badgeClass}">
+                  <div class="text-[9px] font-mono opacity-70 mb-1">${dayTimeLabel}</div>
                   <div class="inline-block px-1.5 py-0.5 rounded bg-indigo-900 text-white font-extrabold text-[9.5px] mb-1">🏫 ${allClassesLabel}</div>
                   <div class="font-extrabold text-[10.5px] leading-snug">${m.subject}</div>
                   ${m.room ? `<div class="text-[9px] opacity-75 mt-0.5">📍 ${m.room}</div>` : ''}
@@ -3766,7 +3653,7 @@
                 <td onclick="openTimetableModal('${defaultClass.replace(/'/g, "\\'")}', '${day}', ${sl.index}, '${targetName.replace(/'/g, "\\'")}')"
                     title="Waktu luang — Klik untuk tambah waktu mengajar guru ini"
                     class="cursor-pointer p-1.5 border border-slate-200 align-middle text-center ${sl.isBreak ? 'bg-amber-50/70 text-amber-800 font-bold text-[10px]' : 'bg-white hover:bg-indigo-50/50 text-slate-300 text-[10px]'}">
-                  ${sl.isBreak ? 'REHAT' : '—'}
+                  ${sl.isBreak ? 'REHAT' : `<span class="block text-[9px] font-mono opacity-60">${dayTimeLabel}</span>—`}
                 </td>
               `;
             }
@@ -3788,8 +3675,43 @@
       return { tableHTML, totalPeriods, totalMinutes, involved: Array.from(involvedSet) };
     }
 
+    function renderReliefPanel() {
+      const body = document.getElementById("reliefTableBody");
+      if (!body) return;
+      if (!Array.isArray(appState.reliefSlots)) appState.reliefSlots = buildOfficialReliefSlots();
+      const teachers = (appState.staff || []).filter(st => !/ppm/i.test(st.jawatan || "") && !/MIMI ZANARIAH/i.test(st.nama || ""));
+      const assigned = appState.reliefSlots.filter(x => (x.guruRelief || "").trim()).length;
+      const totalPeriods = appState.reliefSlots.reduce((n,x) => n + Number(x.waktu || 0), 0);
+      const totalBadge = document.getElementById("reliefTotalBadge");
+      const assignedBadge = document.getElementById("reliefAssignedBadge");
+      if (totalBadge) totalBadge.textContent = `${totalPeriods} waktu relief`;
+      if (assignedBadge) assignedBadge.textContent = `${assigned} / ${appState.reliefSlots.length} slot diagihkan`;
+      body.innerHTML = appState.reliefSlots.map((x,idx) => {
+        const options = `<option value="">— Belum diagihkan —</option>` + teachers.map(t => `<option value="${escapeHtml(t.nama)}" ${x.guruRelief === t.nama ? "selected" : ""}>${escapeHtml(t.nama)}</option>`).join("");
+        return `<tr class="hover:bg-amber-50/60">
+          <td class="px-3 py-2.5 font-bold text-slate-800">${escapeHtml(x.hari)}</td>
+          <td class="px-3 py-2.5 font-mono whitespace-nowrap">${escapeHtml(x.masa)}</td>
+          <td class="px-3 py-2.5 font-bold text-indigo-900">${escapeHtml(x.kelas)}</td>
+          <td class="px-3 py-2.5 font-extrabold">${escapeHtml(x.subjek)}</td>
+          <td class="px-3 py-2.5 text-center">${Number(x.waktu || 0)}</td>
+          <td class="px-3 py-2.5"><select aria-label="Guru relief ${escapeHtml(x.hari)} ${escapeHtml(x.masa)}" onchange="updateReliefTeacher(${idx},this.value)" class="w-full min-w-[220px] px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold"><option value="">— Belum diagihkan —</option>${teachers.map(t => `<option value="${escapeHtml(t.nama)}" ${x.guruRelief === t.nama ? "selected" : ""}>${escapeHtml(t.nama)}</option>`).join("")}</select></td>
+          <td class="px-3 py-2.5">${x.guruRelief ? `<span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold">✓ Diagihkan</span>` : `<span class="px-2 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">Belum diagihkan</span>`}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updateReliefTeacher(index, teacherName) {
+      if (!Array.isArray(appState.reliefSlots) || !appState.reliefSlots[index]) return;
+      appState.reliefSlots[index].guruRelief = teacherName || "";
+      saveLocal();
+      renderReliefPanel();
+      pushToCloud(false);
+      showToast(teacherName ? "Guru relief berjaya direkodkan." : "Agihan relief dikosongkan.", "☁️");
+    }
+
     function renderTimetable() {
       syncTimetableDropdowns();
+      renderReliefPanel();
       const ttLogo = document.getElementById("ttPrintLogoImg");
       const mainLogo = document.getElementById("schoolLogoImg");
       if (ttLogo && mainLogo) ttLogo.src = appState.schoolLogo || mainLogo.src;
@@ -3905,10 +3827,10 @@
 
       const slotSel = document.getElementById("ttFormSlot");
       slotSel.innerHTML = "";
-      slots.forEach(sl => {
+      slots.filter(sl => document.getElementById("ttFormDay").value !== "Jumaat" || sl.index <= 9).forEach(sl => {
         const opt = document.createElement("option");
         opt.value = sl.index;
-        opt.textContent = `Waktu ${sl.index} (${sl.label})`;
+        opt.textContent = `Waktu ${sl.index} (${getTimetableSlotLabel(day, sl.index)})`;
         slotSel.appendChild(opt);
       });
       slotSel.value = String(slotIndex);
@@ -3957,7 +3879,7 @@
         document.getElementById("ttFormMinutes").value = slotMeta ? slotMeta.minutes : 30;
       }
 
-      document.getElementById("ttModalSub").textContent = `${className} • ${day} • Waktu ${slotIndex} (${slotMeta ? slotMeta.label : ''})`;
+      document.getElementById("ttModalSub").textContent = `${className} • ${day} • Waktu ${slotIndex} (${getTimetableSlotLabel(day, slotIndex)})`;
       checkTimetableClash();
       document.getElementById("timetableModal").classList.remove("hidden");
     }
@@ -4140,6 +4062,8 @@
         () => {
           appState.timetableSlots = buildOfficialTimetableSlots();
           appState.timetable = buildOfficialTimetable();
+          appState.reliefSlots = buildOfficialReliefSlots();
+          appState.timetableTemplateVersion = "2026-official-v10";
           renderTimetable();
           pushToCloud(true);
         }
