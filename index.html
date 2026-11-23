@@ -947,33 +947,50 @@
   </div>
 </div>
 
-           <!-- MAKLUMAT ASAS PDP -->
+<!-- MAKLUMAT ASAS PDP -->
+            <input type="hidden" id="rphTeacher" value="">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div><label class="block text-xs font-bold text-slate-700 mb-1">Minggu PdPc <span class="text-rose-600">*</span></label><select id="rphWeek" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"></select></div>
-              <div><label class="block text-xs font-bold text-slate-700 mb-1">Tarikh PdP <span class="text-rose-600">*</span></label><input id="rphDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm"></div>
-              <div><label class="block text-xs font-bold text-slate-700 mb-1">Masa / Slot Waktu</label><input id="rphDuration" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm" placeholder="Contoh: 08:10–09:10 (60 minit)"></div>
-              <div><label class="block text-xs font-bold text-slate-700 mb-1">Nama Guru</label><input id="rphTeacher" readonly class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-2.5 text-sm" placeholder="Diisi berdasarkan guru kelas"></div>
-              <div><label class="block text-xs font-bold text-slate-700 mb-1">Kelas PPKI <span class="text-rose-600">*</span></label><select id="rphClass" onchange="onRPHClassChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"><option value="">Pilih kelas</option></select></div>
               <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Minggu PdPc <span class="text-rose-600">*</span></label>
+                <select id="rphWeek" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Tarikh PdP <span class="text-rose-600">*</span></label>
+                <input id="rphDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Masa / Slot Waktu</label>
+                <input id="rphDuration" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm" placeholder="Contoh: 08:10–09:10 (60 minit)">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kelas PPKI <span class="text-rose-600">*</span></label>
+                <select id="rphClass" onchange="onRPHClassChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white">
+                  <option value="">Pilih kelas</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
                 <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran <span class="text-rose-600">*</span></label>
-                <input id="rphSubject" list="rphSubjectOptions" oninput="onRPHSubjectChange()" onchange="onRPHSubjectChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm" placeholder="Pilih atau taip mata pelajaran">
-                <datalist id="rphSubjectOptions">
-                  <option value="Bahasa Melayu"></option>
-                  <option value="Bahasa Inggeris"></option>
-                  <option value="Matematik"></option>
-                  <option value="Pengurusan Diri"></option>
-                  <option value="Kemahiran Manipulatif"></option>
-                  <option value="Pendidikan Islam"></option>
-                  <option value="Pendidikan Moral"></option>
-                  <option value="Pendidikan Seni Visual"></option>
-                  <option value="Pendidikan Muzik"></option>
-                  <option value="Pendidikan Jasmani & Kesihatan"></option>
-                </datalist>
+                <select id="rphSubject" onchange="onRPHSubjectChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white">
+                  <option value="">-- Pilih Mata Pelajaran KSSRPK --</option>
+                  <option value="Bahasa Melayu">Bahasa Melayu</option>
+                  <option value="Bahasa Inggeris">Bahasa Inggeris</option>
+                  <option value="Matematik">Matematik</option>
+                  <option value="Asas 3M (Bahasa Melayu)">Asas 3M (Bahasa Melayu)</option>
+                  <option value="Asas 3M (Matematik)">Asas 3M (Matematik)</option>
+                  <option value="Pengurusan Diri">Pengurusan Diri</option>
+                  <option value="Kemahiran Manipulatif">Kemahiran Manipulatif</option>
+                  <option value="Pendidikan Islam">Pendidikan Islam</option>
+                  <option value="Pendidikan Moral">Pendidikan Moral</option>
+                  <option value="Pendidikan Sains, Sosial & Alam Sekitar (PSSAS)">Pendidikan Sains, Sosial &amp; Alam Sekitar (PSSAS)</option>
+                  <option value="Pendidikan Seni Visual">Pendidikan Seni Visual</option>
+                  <option value="Pendidikan Muzik">Pendidikan Muzik</option>
+                  <option value="Pendidikan Jasmani & Kesihatan">Pendidikan Jasmani &amp; Kesihatan</option>
+                  <option value="Kemahiran Hidup Asas">Kemahiran Hidup Asas</option>
+                  <option value="Teknologi Maklumat & Komunikasi (TMK)">Teknologi Maklumat &amp; Komunikasi (TMK)</option>
+                </select>
               </div>
             </div>
-
-            <!-- SENARAI MURID (DITAPIS AUTOMATIK MENGIKUT KELAS & PAI / PM) -->
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <div class="flex items-center gap-2">
