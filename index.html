@@ -926,19 +926,28 @@
             <input type="hidden" id="rphStudent" value="">
 
             <!-- TETAPAN KUNCI API GEMINI (SELAMAT UNTUK GITHUB PUBLIC) -->
-            <details class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-3">
-              <summary class="cursor-pointer text-xs font-extrabold text-indigo-900 flex items-center justify-between">
-                <span>🔑 Tetapan Kunci API Gemini (Untuk Auto-Jana AI Terus ke Borang)</span>
-                <span id="geminiKeyStatus" class="text-[11px] font-bold text-slate-500">Semak status...</span>
-              </summary>
-              <div class="mt-2.5 flex flex-col sm:flex-row gap-2">
-                <input id="rphGeminiApiKey" type="password" class="flex-1 border border-indigo-200 rounded-lg px-3 py-2 text-xs bg-white" placeholder="Tampal Gemini API Key anda di sini (AIzaSy...)">
-                <button type="button" onclick="saveRPHGeminiKey()" class="rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 text-xs font-bold">Simpan Kunci</button>
-              </div>
-              <p class="text-[11px] text-indigo-800 mt-1.5">Kunci ini hanya disimpan dalam pelayar peranti anda (localStorage) dan tidak dimuat naik ke GitHub.</p>
-            </details>
+            <!-- MODUL JANAAN RPH TANPA API KEY (PERCUMA & SELAMAT UNTUK GITHUB) -->
+<div class="rounded-xl border border-violet-200 bg-violet-50/80 p-3.5 space-y-2.5">
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <div>
+      <p class="text-xs font-extrabold text-violet-950">🤖 Penjana RPH Pintar Tanpa API Key (KSSRPK)</p>
+      <p class="text-[11px] text-violet-800">Jana draf terus secara automatik mengikut tahap murid, atau salin prompt lengkap untuk ditampal ke ChatGPT / Gemini percuma.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" onclick="generateRPHSmartOffline('all')" class="rounded-lg bg-violet-700 hover:bg-violet-800 text-white px-3.5 py-2 text-xs font-bold shadow-sm transition">
+        ⚡ Jana Draf Auto (Terus ke Borang)
+      </button>
+      <button type="button" onclick="copyRPHPromptToExternalAI('gemini')" class="rounded-lg bg-indigo-900 hover:bg-indigo-800 text-white px-3.5 py-2 text-xs font-bold shadow-sm transition">
+        📋 Salin Prompt & Buka Gemini
+      </button>
+      <button type="button" onclick="copyRPHPromptToExternalAI('chatgpt')" class="rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 text-xs font-bold shadow-sm transition">
+        📋 Salin Prompt & Buka ChatGPT
+      </button>
+    </div>
+  </div>
+</div>
 
-            <!-- MAKLUMAT ASAS PDP -->
+           <!-- MAKLUMAT ASAS PDP -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div><label class="block text-xs font-bold text-slate-700 mb-1">Minggu PdPc <span class="text-rose-600">*</span></label><select id="rphWeek" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"></select></div>
               <div><label class="block text-xs font-bold text-slate-700 mb-1">Tarikh PdP <span class="text-rose-600">*</span></label><input id="rphDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm"></div>
@@ -5030,6 +5039,191 @@ Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut
       syncFromCloud(false);
       fetchParentAttendanceCSV(false);
     });
-  </script>
+  
+// =========================================================================
+// ENJIN JANAAN RPH PINTAR TANPA API KEY (KSSRPK - SK KESANG TUA)
+// =========================================================================
+
+const PPKI_SMART_BANK = {
+  "Bahasa Melayu": {
+    tema: "Kemahiran Mendengar, Bertutur & Membaca — Mengenal Perkataan KV+KV",
+    sk: "1.1 Mendengar dan memberikan respons dengan betul.\n2.1 Membaca perkataan dan ayat mudah dengan sebutan yang betul.",
+    sp: "1.1.1 Mendengar dan menyebut semula perkataan yang didengar.\n2.1.1 Membaca perkataan suku kata terbuka KV+KV dengan bimbingan.",
+    bbm: "Kad imbasan bergambar, carta suku kata KV+KV, papan putih mini, slaid interaktif • Terapi Pertuturan & Cara Kerja • EMK: Bahasa & TMK • Nilai: Yakin Diri & Kerjasama"
+  },
+  "Matematik": {
+    tema: "Nombor Bulat dan Operasi Asas — Mengenal & Membilang Nombor 1 hingga 20",
+    sk: "1.1 Konsep nombor bulat dalam lingkungan 20.\n2.1 Operasi tambah dalam lingkungan 10.",
+    sp: "1.1.1 Menyebut dan memadankan angka dengan kuantiti objek maujud.\n2.1.1 Menyelesaikan ayat matematik tambah menggunakan bahan maujud.",
+    bbm: "Pembilang maujud (blok kayu/butang), kad nombor timbul, lembaran kerja bertingkat • Terapi Cara Kerja (Motor Halus) • EMK: Kreativiti & Inovasi • Nilai: Teliti & Tekun"
+  },
+  "Pengurusan Diri": {
+    tema: "Kebersihan, Kesihatan dan Keselamatan Diri — Amalan Penjagaan Kebersihan Diri",
+    sk: "1.2 Mengamalkan penjagaan kebersihan diri dalam kehidupan harian.",
+    sp: "1.2.1 Mengenal pasti alatan kebersihan diri dengan betul.\n1.2.2 Menunjuk cara penggunaan alatan kebersihan diri mengikut urutan.",
+    bbm: "Model gigi, berus gigi, ubat gigi, sabun, tuala muka, carta urutan bergambar • Terapi Cara Kerja & Pertuturan • EMK: Nilai Murni • Nilai: Kebersihan Fizikal & Mental"
+  },
+  "Kemahiran Manipulatif": {
+    tema: "Kemahiran Motor Halus & Koordinasi Mata-Tangan — Menguntai, Menggunting & Menampal",
+    sk: "1.1 Melakukan pergerakan motor halus dengan kawalan yang betul.",
+    sp: "1.1.1 Menguntai manik besar mengikut urutan warna.\n1.1.2 Menggunting mengikut garisan lurus dan melengkung dengan selamat.",
+    bbm: "Manik kayu besar, tali kasut, gunting khas keselamatan, kertas warna, gam • Terapi Cara Kerja • EMK: Keusahawanan • Nilai: Sabar & Berhati-hati"
+  },
+  "Pendidikan Islam": {
+    tema: "Asas Ibadah & Akhlak — Amalan Wuduk dan Adab Harian",
+    sk: "3.1 Memahami dan mengamalkan rukun serta sunat wuduk dengan tertib.",
+    sp: "3.1.1 Menyebut anggota wuduk mengikut urutan.\n3.1.2 Melakukan simulasi amali wuduk dengan bimbingan.",
+    bbm: "Carta langkah wuduk bergambar, kad urutan amali, audio nasyid wuduk • Terapi Pertuturan • EMK: Nilai Murni • Nilai: Berdisiplin & Taat"
+  },
+  "Pendidikan Moral": {
+    tema: "Nilai Baik Hati dan Kerjasama — Membantu Rakan dan Guru di Kelas",
+    sk: "2.1 Mengamalkan sikap baik hati terhadap warga sekolah.",
+    sp: "2.1.1 Menyatakan cara membantu rakan di dalam kelas.\n2.1.2 Menunjukkan perlakuan baik hati melalui aktiviti berpasangan.",
+    bbm: "Kad situasi bergambar, boneka tangan, carta ganjaran bintang • Terapi Tingkah Laku • EMK: Nilai Murni • Nilai: Baik Hati & Hormat-menghormati"
+  },
+  "Bahasa Inggeris": {
+    tema: "Listening, Speaking & Reading — Common Objects in the Classroom",
+    sk: "1.1 Listen to and respond appropriately to simple instructions.\n2.1 Recognise and read familiar words.",
+    sp: "1.1.1 Point to and name at least 4 classroom objects correctly.\n2.1.1 Match picture cards with correct word labels.",
+    bbm: "Realia classroom objects, picture flashcards, matching board, audio song • Speech Therapy • EMK: Language • Value: Cooperation & Confidence"
+  },
+  "DEFAULT": {
+    tema: "Penguasaan Kemahiran Asas & Aplikasi Kehidupan Harian",
+    sk: "1.1 Memahami konsep asas dan kemahiran mengikut tahap keupayaan murid.",
+    sp: "1.1.1 Mengenal pasti dan menyebut maklumat asas dengan bimbingan.\n1.1.2 Melakukan aktiviti amali mudah secara individu atau berkumpulan.",
+    bbm: "Bahan maujud, kad bergambar, lembaran kerja terbeza, slaid paparan • Terapi Cara Kerja & Pertuturan • EMK: Nilai Murni & Kreativiti • Nilai: Kerjasama & Berdikari"
+  }
+};
+
+function getSelectedStudentStageStats() {
+  const counts = { Tinggi: 0, Sederhana: 0, Bimbingan: 0, Total: 0 };
+  document.querySelectorAll("#rphStudentGrid select").forEach(sel => {
+    counts.Total++;
+    if (sel.value === "Tinggi") counts.Tinggi++;
+    else if (sel.value === "Sederhana") counts.Sederhana++;
+    else if (sel.value === "Bimbingan") counts.Bimbingan++;
+  });
+  return counts;
+}
+
+// Sambungkan fungsi butang "✨ Jana AI" sedia ada terus ke enjin pintar tanpa API key
+function generateRPHWithAI(section = "all") {
+  generateRPHSmartOffline(section);
+}
+
+function generateRPHSmartOffline(section = "all") {
+  const subjectRaw = (document.getElementById("rphSubject")?.value || "").trim();
+  const kelas = (document.getElementById("rphClass")?.value || "PPKI").trim();
+  const bankKey = Object.keys(PPKI_SMART_BANK).find(
+    k => k !== "DEFAULT" && subjectRaw.toLowerCase().includes(k.toLowerCase())
+  ) || "DEFAULT";
+  const tpl = PPKI_SMART_BANK[bankKey];
+  const stats = getSelectedStudentStageStats();
+
+  const temaEl = document.getElementById("rphTema");
+  const skEl = document.getElementById("rphSK");
+  const spEl = document.getElementById("rphSP");
+  const objEl = document.getElementById("rphObjective");
+  const actEl = document.getElementById("rphActivities");
+  const bbmEl = document.getElementById("rphBBM");
+  const refEl = document.getElementById("rphReflection");
+
+  if ((section === "all" || section === "tema") && temaEl) {
+    if (!temaEl.value.trim() || section === "tema") temaEl.value = tpl.tema;
+  }
+  const activeTema = (temaEl?.value || tpl.tema).trim();
+
+  if ((section === "all" || section === "sk") && skEl) {
+    skEl.value = tpl.sk;
+  }
+  if ((section === "all" || section === "sp") && spEl) {
+    spEl.value = tpl.sp;
+  }
+
+  if (section === "all" || section === "objective") {
+    const objLines = ["Pada akhir sesi PdPc, murid kelas " + kelas + " berupaya:"];
+    if (stats.Tinggi > 0) {
+      objLines.push(`1. (Kumpulan Tinggi - ${stats.Tinggi} murid): Menguasai dan melengkapkan sekurang-kurangnya 4/5 tugasan berkaitan "${activeTema}" secara berdikari dengan tepat.`);
+    }
+    if (stats.Sederhana > 0) {
+      objLines.push(`2. (Kumpulan Sederhana - ${stats.Sederhana} murid): Melengkapkan sekurang-kurangnya 3/5 aktiviti berkaitan "${activeTema}" dengan panduan guru/PPM.`);
+    }
+    if (stats.Bimbingan > 0) {
+      objLines.push(`3. (Kumpulan Bimbingan - ${stats.Bimbingan} murid): Mengenal pasti dan melakukan sekurang-kurangnya 2 gerak kerja asas berkaitan "${activeTema}" dengan bimbingan penuh (hand-over-hand / lisan).`);
+    }
+    if (stats.Tinggi === 0 && stats.Sederhana === 0 && stats.Bimbingan === 0) {
+      objLines.push(`1. (Kumpulan Tinggi): Melengkapkan 4/5 tugasan "${activeTema}" secara berdikari.`);
+      objLines.push(`2. (Kumpulan Sederhana): Melengkapkan 3/5 tugasan "${activeTema}" dengan panduan.`);
+      objLines.push(`3. (Kumpulan Bimbingan): Menunjukkan respons positif dan melakukan 2 langkah asas dengan bimbingan penuh.`);
+    }
+    if (objEl) objEl.value = objLines.join("\n");
+  }
+
+  if (section === "all" || section === "activities") {
+    const actText = [
+      `Set Induksi (5 minit): Guru menunjukkan bahan maujud / kad bergambar berkaitan "${activeTema}" dan bersoal jawab secara ringkas untuk menarik minat murid.`,
+      `Langkah 1 — Penerangan & Demonstrasi (15 minit): Guru menerangkan konsep utama menggunakan kaedah multisensori (visual, audio dan sentuhan) serta membuat tunjuk cara di hadapan kelas.`,
+      `Langkah 2 — Aktiviti PdPc Terbeza (30 minit):`,
+      `• Kumpulan Tinggi: Menyelesaikan lembaran kerja pengayaan dan aktiviti padanan/aplikasi secara berdikari.`,
+      `• Kumpulan Sederhana: Melengkapkan aktiviti berpandu secara berpasangan dengan bimbingan minimum guru.`,
+      `• Kumpulan Bimbingan: Latihan amali berstruktur satu-dengan-satu (1-to-1) bersama guru/PPM menggunakan bahan maujud.`,
+      `Penutup & Pentaksiran (10 minit): Guru membuat rumusan isi pelajaran, memberikan peneguhan positif (pujian/stiker ganjaran) dan merekod tahap penguasaan murid.`
+    ].join("\n");
+    if (actEl) actEl.value = actText;
+
+    // Isi juga ruangan terperinci mengikut tahap jika ada
+    const actHigh = document.getElementById("rphActivityHigh");
+    const actMid = document.getElementById("rphActivityMid");
+    const actLow = document.getElementById("rphActivityLow");
+    if (actHigh) actHigh.value = `Menyelesaikan tugasan pengayaan "${activeTema}" secara berdikari dan membentangkan hasil kerja.`;
+    if (actMid) actMid.value = `Melengkapkan aktiviti berpandu dengan bantuan kad petunjuk visual.`;
+    if (actLow) actLow.value = `Aktiviti amali ringkas menggunakan bahan maujud dengan bimbingan penuh guru/PPM.`;
+  }
+
+  if ((section === "all" || section === "bbm") && bbmEl) {
+    bbmEl.value = tpl.bbm;
+  }
+
+  if ((section === "all" || section === "reflection") && refEl) {
+    const total = stats.Total || "___";
+    refEl.value = `${total}/${total} orang murid hadir dan melibatkan diri secara aktif dalam aktiviti PdPc. Murid mencapai objektif pembelajaran mengikut tahap penguasaan masing-masing dengan bimbingan guru dan PPM. PdPc berjalan lancar.`;
+  }
+
+  showToast(`Draf RPH (${section === "all" ? "Semua Bahagian" : section.toUpperCase()}) dijana tanpa API Key!`, "✨");
+}
+
+function copyRPHPromptToExternalAI(target = "gemini") {
+  const kelas = document.getElementById("rphClass")?.value || "PPKI";
+  const subject = document.getElementById("rphSubject")?.value || "Pendidikan Khas";
+  const tema = document.getElementById("rphTema")?.value || "(Cadangkan tajuk yang sesuai mengikut DSKP KSSRPK)";
+  const sk = document.getElementById("rphSK")?.value || "(Sila rujuk DSKP KSSRPK terkini)";
+  const sp = document.getElementById("rphSP")?.value || "(Sila rujuk DSKP KSSRPK terkini)";
+  const stats = getSelectedStudentStageStats();
+
+  const promptText = `Sila bantu saya menyediakan Rancangan Pengajaran Harian (RPH) lengkap mengikut format KSSR Pendidikan Khas (Semakan) Kementerian Pendidikan Malaysia untuk SK Kesang Tua:
+
+- Kelas: ${kelas}
+- Mata Pelajaran: ${subject}
+- Tema / Tajuk: ${tema}
+- Standard Kandungan (SK): ${sk}
+- Standard Pembelajaran (SP): ${sp}
+- Pecahan Tahap Murid: Tinggi (${stats.Tinggi} murid), Sederhana (${stats.Sederhana} murid), Bimbingan (${stats.Bimbingan} murid)
+
+Sila hasilkan dalam Bahasa Melayu yang kemas dan teratur bagi bahagian berikut:
+1. Objektif Pembelajaran (Terbeza mengikut kumpulan Tinggi, Sederhana dan Bimbingan, serta boleh diukur)
+2. Aktiviti PdPc Terbeza (Set Induksi, Langkah 1 Penerangan, Langkah 2 Aktiviti Kumpulan Terbeza, dan Penutup)
+3. Bahan Bantu Mengajar (BBM), Elemen Terapi (Cara Kerja/Pertuturan), EMK & Nilai Murni
+4. Cadangan Pentaksiran Bilik Darjah (PBD) & Refleksi`;
+
+  navigator.clipboard.writeText(promptText).then(() => {
+    showToast("Prompt RPH disalin! Tampal (Ctrl+V) di tetingkap AI yang dibuka.", "📋");
+    const url = target === "chatgpt" ? "https://chatgpt.com/" : "https://gemini.google.com/app";
+    window.open(url, "_blank", "noopener");
+  }).catch(() => {
+    alert("Salin prompt ini secara manual:\n\n" + promptText);
+  });
+}
+
+</script>
 </body>
 </html>
