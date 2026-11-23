@@ -2502,7 +2502,7 @@ function buildOfficialTimetableSlots() {
         const matchClass = kelasFilter === "SEMUA" || s.kelas === kelasFilter;
         return matchText && matchClass;
       });
-
+      filtered.sort((a, b) => (a.kelas || "").trim().localeCompare((b.kelas || "").trim()) || (a.id || "").localeCompare(b.id || ""));
       filtered.forEach((s, idx) => {
         const inkBadge = isStudentInklusifPenuh(s)
           ? `<span class="ml-1.5 px-2 py-0.5 rounded-md bg-sky-100 text-sky-900 text-[10px] font-bold">Inklusif Penuh</span>`
