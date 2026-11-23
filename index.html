@@ -115,7 +115,21 @@
       }
     }
     #view-pengajaran input:focus, #view-pengajaran select:focus, #view-pengajaran textarea:focus { outline: 2px solid #10b981; outline-offset: 1px; }
-  </style>
+  
+    .gridtable{border-collapse:collapse;width:100%;table-layout:fixed;font-size:10px}
+    .gridtable th,.gridtable td{border:1px solid #cbd5e1;padding:6px 4px;text-align:center;vertical-align:middle;overflow-wrap:anywhere}
+    .gridtable thead th{background:#f1f5f9;font-weight:800;color:#1e293b}
+    .gridtable .day{width:90px;min-width:90px;background:#e2e8f0;font-weight:800}
+    .gridtable .slot-head{min-width:66px;font-size:10px;white-space:nowrap}
+    .gridtable .slot-head small{font-size:9px;font-weight:600}
+    .gridtable td.lesson{background:#e0e7ff;color:#1e3a8a;min-width:0}
+    .gridtable td.lesson strong{display:block;font-size:10px;line-height:1.25}
+    .gridtable td.lesson small{display:block;font-size:8px;font-weight:500;margin-top:4px;color:#475569;white-space:nowrap}
+    .gridtable td.empty{background:#fff;height:42px;padding:0}
+    .gridtable .break-head{background:#fff7d6;color:#92400e;min-width:76px;font-size:10px}
+    .gridtable .break-head small{font-size:9px;font-weight:600}
+    .gridtable td.break-cell{background:#fff7d6;color:#92400e;font-weight:800;font-size:10px;min-width:76px}
+</style>
 </head>
 <body class="min-h-screen pb-12">
 
@@ -328,7 +342,7 @@
               <span>🖨️</span> Pusat Cetakan Maklumat Lengkap Murid (MBPK)
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">
-              Paparan ini menghimpunkan <strong>semua maklumat murid</strong> (No. Daftar, MyKid, Jantina, Kelas, Kategori Masalah, No. Kad OKU, Status Inklusif, Status RPI, Akaun Bank EMK &amp; No. Tel Penjaga) dalam format sedia cetak A4.
+              Paparan ini menghimpunkan <strong>semua maklumat murid</strong> (No. Daftar, MyKid, Jantina, Kelas, Kategori Masalah, No. Kad OKU, Status Inklusif, Akaun Bank EMK &amp; No. Tel Penjaga) dalam format sedia cetak A4.
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-2 shrink-0">
@@ -391,9 +405,6 @@
           </label>
           <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" class="print-col-cb accent-indigo-900" value="inklusif" checked onchange="renderPrintView()" /> Status Inklusif
-          </label>
-          <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
-            <input type="checkbox" class="print-col-cb accent-indigo-900" value="rpi" checked onchange="renderPrintView()" /> Status RPI (F1-F3)
           </label>
           <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
             <input type="checkbox" class="print-col-cb accent-indigo-900" value="akaunBank" checked onchange="renderPrintView()" /> No. Akaun Bank
@@ -634,7 +645,7 @@
               <span>🕒</span> Jadual Waktu Induk Guru &amp; Kelas PPKI (KSSRPK)
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">
-              Klik mana-mana petak waktu untuk menetapkan atau mengemaskini mata pelajaran dan guru mengajar. Perubahan disegerakkan secara automatik ke Google Sheets.
+              Masukkan jadual rasmi yang telah disediakan di luar portal dengan mengisi petak waktu mengikut kelas atau guru. Jadual yang disimpan akan dipaparkan dan boleh dicetak di sini.
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-2 shrink-0">
@@ -880,8 +891,12 @@
         <div class="bg-white rounded-2xl p-4 border border-slate-200"><p class="text-xs text-slate-500 font-bold uppercase">Minggu PdPC</p><p class="text-2xl font-extrabold text-slate-900 mt-1">1–43</p><p class="text-xs text-slate-500">Tapisan rekod RPH</p></div>
         <div class="bg-white rounded-2xl p-4 border border-slate-200"><p class="text-xs text-slate-500 font-bold uppercase">Jadual waktu</p><p class="text-lg font-extrabold text-slate-900 mt-2">Sedia digunakan</p><button onclick="switchTab('jadual')" class="text-xs font-bold text-emerald-700 mt-1">Pergi ke modul →</button></div>
       </div>
-      <div class="grid grid-cols-1 xl:grid-cols-5 gap-5">
-        <div class="xl:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="flex flex-wrap gap-2">
+        <button id="teachingNavRPH" type="button" onclick="showTeachingSection('rph')" class="rounded-xl bg-indigo-900 text-white px-5 py-3 text-sm font-bold shadow">📝 Pengurusan RPH Mingguan</button>
+        <button id="teachingNavDocs" type="button" onclick="showTeachingSection('docs')" class="rounded-xl bg-white border border-slate-200 text-slate-700 px-5 py-3 text-sm font-bold">📂 Pusat Dokumen DSKP & RPT</button>
+      </div>
+      <div id="teachingDocsPanel" class="hidden space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200"><h3 class="font-extrabold text-slate-900">📂 Pusat Dokumen DSKP & RPT</h3><p class="text-xs text-slate-500 mt-1">Muat naik dokumen rujukan mengikut mata pelajaran dan tahun.</p></div>
           <div class="p-4 space-y-3">
             <div><label class="block text-xs font-bold text-slate-600 mb-1">Jenis dokumen</label><select id="resourceType" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"><option>DSKP</option><option>RPT</option><option>Lain-lain</option></select></div>
@@ -889,34 +904,220 @@
             <div><label class="block text-xs font-bold text-slate-600 mb-1">Tahun / kelas</label><input id="resourceYear" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Contoh: Tahun 2 / 2 Efektif"></div>
             <div><label class="block text-xs font-bold text-slate-600 mb-1">Fail dokumen (PDF / Word / Excel)</label><input id="resourceFile" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" class="w-full text-xs"></div>
             <button onclick="saveTeachingResource()" class="w-full rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 text-sm">＋ Simpan Dokumen</button>
-            <p class="text-[11px] text-amber-700 bg-amber-50 rounded-lg p-2">Versi awal menyimpan fail pada pelayar/peranti ini. Perkongsian awan semua guru memerlukan sambungan storan Google Drive.</p>
+            <p class="text-[11px] text-amber-700 bg-amber-50 rounded-lg p-2">Dokumen DSKP/RPT masih disimpan pada peranti ini. Sambungan Google Drive akan dibuat dalam langkah berasingan.</p>
             <div id="resourceList" class="space-y-2 pt-2"></div>
           </div>
         </div>
-        <div class="xl:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200"><h3 class="font-extrabold text-slate-900">📝 Pembina RPH Mingguan</h3><p class="text-xs text-slate-500 mt-1">Rekod RPH mengikut minggu PdPC dan mata pelajaran.</p></div>
-          <div class="p-4 space-y-3">
-            <input type="hidden" id="rphEditId">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Minggu PdPC</label><select id="rphWeek" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></select></div>
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Tarikh</label><input id="rphDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></div>
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Kelas</label><select id="rphClass" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"></select></div>
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Mata pelajaran</label><input id="rphSubject" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Contoh: Matematik"></div>
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Masa / tempoh</label><input id="rphDuration" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Contoh: 30 minit"></div>
-              <div><label class="block text-xs font-bold text-slate-600 mb-1">Status PdPC</label><select id="rphStatus" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm"><option>Dirancang</option><option>Selesai</option><option>Ditunda</option></select></div>
+      </div>
+      <div id="teachingRPHPanel" class="space-y-5">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-lg">📝 Tulis Rancangan Pengajaran Harian (RPH)</h3>
+              <p class="text-xs text-slate-500 mt-1">KSSR Pendidikan Khas (Semakan) — SK Kesang Tua. Lengkapkan maklumat dan jana draf dengan bantuan AI.</p>
             </div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Standard Kandungan (SK)</label><textarea id="rphSK" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Masukkan standard kandungan daripada DSKP"></textarea></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Standard Pembelajaran (SP)</label><textarea id="rphSP" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Masukkan standard pembelajaran daripada DSKP"></textarea></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Objektif pembelajaran</label><textarea id="rphObjective" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Pada akhir PdPC, murid dapat..."></textarea></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Aktiviti pengajaran dan pembelajaran</label><textarea id="rphActivities" rows="3" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Set induksi, langkah aktiviti, penutup..."></textarea></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Refleksi / catatan</label><textarea id="rphReflection" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" placeholder="Catatan selepas PdPC dilaksanakan"></textarea></div>
-            <div class="flex flex-wrap gap-2"><button onclick="saveRPH()" class="rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white font-bold px-5 py-2.5 text-sm">💾 Simpan RPH</button><button onclick="resetRPHForm()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Kosongkan</button><button onclick="printRPHList()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">🖨️ Cetak senarai</button></div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="generateRPHWithAI('all')" class="rounded-xl bg-violet-700 hover:bg-violet-800 text-white font-bold px-4 py-2.5 text-sm">✨ Jana Semua Bahagian (AI)</button>
+              <button type="button" onclick="resetRPHForm()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">🔄 Kosongkan Borang</button>
+            </div>
+          </div>
+          <div class="p-4 md:p-5 space-y-4">
+            <input type="hidden" id="rphEditId">
+            <input type="hidden" id="rphStudent" value="">
+
+            <!-- TETAPAN KUNCI API GEMINI (SELAMAT UNTUK GITHUB PUBLIC) -->
+            <details class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-3">
+              <summary class="cursor-pointer text-xs font-extrabold text-indigo-900 flex items-center justify-between">
+                <span>🔑 Tetapan Kunci API Gemini (Untuk Auto-Jana AI Terus ke Borang)</span>
+                <span id="geminiKeyStatus" class="text-[11px] font-bold text-slate-500">Semak status...</span>
+              </summary>
+              <div class="mt-2.5 flex flex-col sm:flex-row gap-2">
+                <input id="rphGeminiApiKey" type="password" class="flex-1 border border-indigo-200 rounded-lg px-3 py-2 text-xs bg-white" placeholder="Tampal Gemini API Key anda di sini (AIzaSy...)">
+                <button type="button" onclick="saveRPHGeminiKey()" class="rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 text-xs font-bold">Simpan Kunci</button>
+              </div>
+              <p class="text-[11px] text-indigo-800 mt-1.5">Kunci ini hanya disimpan dalam pelayar peranti anda (localStorage) dan tidak dimuat naik ke GitHub.</p>
+            </details>
+
+            <!-- MAKLUMAT ASAS PDP -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div><label class="block text-xs font-bold text-slate-700 mb-1">Minggu PdPc <span class="text-rose-600">*</span></label><select id="rphWeek" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"></select></div>
+              <div><label class="block text-xs font-bold text-slate-700 mb-1">Tarikh PdP <span class="text-rose-600">*</span></label><input id="rphDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm"></div>
+              <div><label class="block text-xs font-bold text-slate-700 mb-1">Masa / Slot Waktu</label><input id="rphDuration" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm" placeholder="Contoh: 08:10–09:10 (60 minit)"></div>
+              <div><label class="block text-xs font-bold text-slate-700 mb-1">Nama Guru</label><input id="rphTeacher" readonly class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-2.5 text-sm" placeholder="Diisi berdasarkan guru kelas"></div>
+              <div><label class="block text-xs font-bold text-slate-700 mb-1">Kelas PPKI <span class="text-rose-600">*</span></label><select id="rphClass" onchange="onRPHClassChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white"><option value="">Pilih kelas</option></select></div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran <span class="text-rose-600">*</span></label>
+                <input id="rphSubject" list="rphSubjectOptions" oninput="onRPHSubjectChange()" onchange="onRPHSubjectChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm" placeholder="Pilih atau taip mata pelajaran">
+                <datalist id="rphSubjectOptions">
+                  <option value="Bahasa Melayu"></option>
+                  <option value="Bahasa Inggeris"></option>
+                  <option value="Matematik"></option>
+                  <option value="Pengurusan Diri"></option>
+                  <option value="Kemahiran Manipulatif"></option>
+                  <option value="Pendidikan Islam"></option>
+                  <option value="Pendidikan Moral"></option>
+                  <option value="Pendidikan Seni Visual"></option>
+                  <option value="Pendidikan Muzik"></option>
+                  <option value="Pendidikan Jasmani & Kesihatan"></option>
+                </datalist>
+              </div>
+            </div>
+
+            <!-- SENARAI MURID (DITAPIS AUTOMATIK MENGIKUT KELAS & PAI / PM) -->
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-extrabold text-slate-800 text-sm">👧 SENARAI MURID KELAS</h4>
+                    <span id="rphSubjectFilterBadge" class="hidden rounded-full bg-sky-100 text-sky-800 px-2.5 py-0.5 text-[11px] font-extrabold"></span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Senarai murid ditapis automatik mengikut kelas (serta agama bagi subjek Pendidikan Islam / Pendidikan Moral).</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                  <span class="rounded-lg bg-emerald-100 text-emerald-800 px-2.5 py-1">🟢 Tinggi: <b id="rphCountHigh">0</b></span>
+                  <span class="rounded-lg bg-amber-100 text-amber-800 px-2.5 py-1">🟡 Sederhana: <b id="rphCountMid">0</b></span>
+                  <span class="rounded-lg bg-rose-100 text-rose-800 px-2.5 py-1">🔴 Bimbingan: <b id="rphCountGuide">0</b></span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 justify-end">
+                <button type="button" onclick="setAllRPHStudentStages('Tinggi')" class="rounded-lg bg-emerald-100 text-emerald-800 px-3 py-1.5 text-xs font-bold">Semua Tinggi</button>
+                <button type="button" onclick="setAllRPHStudentStages('Sederhana')" class="rounded-lg bg-amber-100 text-amber-800 px-3 py-1.5 text-xs font-bold">Semua Sederhana</button>
+                <button type="button" onclick="setAllRPHStudentStages('Bimbingan')" class="rounded-lg bg-rose-100 text-rose-800 px-3 py-1.5 text-xs font-bold">Semua Bimbingan</button>
+                <button type="button" onclick="setAllRPHStudentStages('')" class="rounded-lg bg-white border border-slate-300 text-slate-600 px-3 py-1.5 text-xs font-bold">Kosongkan Tahap</button>
+              </div>
+              <div id="rphStudentGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+                <p class="text-xs text-slate-400 sm:col-span-2 xl:col-span-3">Pilih kelas untuk memaparkan senarai murid.</p>
+              </div>
+              <div id="rphProfileSummary" class="text-[11px] text-slate-500">Tahap murid ialah penetapan guru untuk perancangan RPH dan boleh disemak semula pada setiap PdP.</div>
+            </div>
+
+            <!-- 1. TEMA / TAJUK PDP -->
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-sm font-extrabold text-slate-800">1. TEMA / TAJUK PDP <span class="text-rose-600">*</span></label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="rphTemaSelect" onchange="applyRPHTemplate('tema', this.value)" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white max-w-[240px]">
+                    <option value="">-- Pilih Templat Tema --</option>
+                  </select>
+                  <button type="button" id="btnAiTema" onclick="generateRPHWithAI('tema')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                </div>
+              </div>
+              <input id="rphTema" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm" placeholder="Contoh: Kebersihan Diri — Menggosok Gigi dengan Betul">
+            </div>
+
+            <!-- 2. SK & 3. SP -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <label class="text-sm font-extrabold text-slate-800">2. STANDARD KANDUNGAN (SK)</label>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <select id="rphSKSelect" onchange="applyRPHTemplate('sk', this.value)" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white max-w-[180px]">
+                      <option value="">-- Pilih SK --</option>
+                    </select>
+                    <button type="button" id="btnAiSK" onclick="generateRPHWithAI('sk')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                  </div>
+                </div>
+                <textarea id="rphSK" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm bg-white" placeholder="Masukkan standard kandungan daripada DSKP"></textarea>
+              </div>
+
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <label class="text-sm font-extrabold text-slate-800">3. STANDARD PEMBELAJARAN (SP)</label>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <select id="rphSPSelect" onchange="applyRPHTemplate('sp', this.value)" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white max-w-[180px]">
+                      <option value="">-- Pilih SP --</option>
+                    </select>
+                    <button type="button" id="btnAiSP" onclick="generateRPHWithAI('sp')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                  </div>
+                </div>
+                <textarea id="rphSP" rows="2" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm bg-white" placeholder="Masukkan standard pembelajaran daripada DSKP"></textarea>
+              </div>
+            </div>
+
+            <!-- 4. OBJEKTIF PEMBELAJARAN -->
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-sm font-extrabold text-slate-800">4. OBJEKTIF PEMBELAJARAN (OB) — TERBEZA & BOLEH DIUKUR</label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="rphObjectiveSelect" onchange="applyRPHTemplate('objective', this.value)" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white max-w-[240px]">
+                    <option value="">-- Pilih Templat Objektif --</option>
+                  </select>
+                  <button type="button" id="btnAiObjective" onclick="generateRPHWithAI('objective')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                </div>
+              </div>
+              <textarea id="rphObjective" rows="3" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm" placeholder="Pada akhir PdP, murid berupaya... Nyatakan hasil yang boleh diperhatikan dan diukur."></textarea>
+            </div>
+
+            <!-- 5. AKTIVITI PDPC TERBEZA -->
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-sm font-extrabold text-slate-800">5. AKTIVITI PDPC TERBEZA (MENGIKUT TAHAP PENGUASAAN MURID)</label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="rphActivitiesSelect" onchange="applyRPHTemplate('activities', this.value)" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white max-w-[240px]">
+                    <option value="">-- Pilih Templat Aktiviti --</option>
+                  </select>
+                  <button type="button" id="btnAiActivities" onclick="generateRPHWithAI('activities')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                </div>
+              </div>
+              <textarea id="rphActivities" rows="5" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm" placeholder="Set Induksi: ...&#10;Langkah 1 (Penerangan): ...&#10;Langkah 2 (Aktiviti PdPc Terbeza — Kumpulan Tinggi / Sederhana / Bimbingan): ...&#10;Penutup: ..."></textarea>
+              <details class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <summary class="cursor-pointer text-xs font-bold text-slate-700">Perincian aktiviti mengikut tahap (pilihan)</summary>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                  <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3"><label class="block text-xs font-extrabold text-emerald-900 mb-1">Aktiviti — Tinggi</label><textarea id="rphActivityHigh" rows="3" class="w-full border border-emerald-200 rounded-lg p-2 text-sm bg-white" placeholder="Pengayaan dan tugasan lebih berdikari"></textarea><label class="block text-xs font-bold text-emerald-900 mt-2 mb-1">Pentaksiran — Tinggi</label><textarea id="rphAssessHigh" rows="2" class="w-full border border-emerald-200 rounded-lg p-2 text-sm bg-white" placeholder="Kaedah pentaksiran"></textarea></div>
+                  <div class="rounded-lg border border-amber-200 bg-amber-50 p-3"><label class="block text-xs font-extrabold text-amber-900 mb-1">Aktiviti — Sederhana</label><textarea id="rphActivityMid" rows="3" class="w-full border border-amber-200 rounded-lg p-2 text-sm bg-white" placeholder="Aktiviti dengan panduan"></textarea><label class="block text-xs font-bold text-amber-900 mt-2 mb-1">Pentaksiran — Sederhana</label><textarea id="rphAssessMid" rows="2" class="w-full border border-amber-200 rounded-lg p-2 text-sm bg-white" placeholder="Kaedah pentaksiran"></textarea></div>
+                  <div class="rounded-lg border border-rose-200 bg-rose-50 p-3"><label class="block text-xs font-extrabold text-rose-900 mb-1">Aktiviti — Bimbingan</label><textarea id="rphActivityLow" rows="3" class="w-full border border-rose-200 rounded-lg p-2 text-sm bg-white" placeholder="Aktiviti ringkas dengan bantuan"></textarea><label class="block text-xs font-bold text-rose-900 mt-2 mb-1">Pentaksiran — Bimbingan</label><textarea id="rphAssessLow" rows="2" class="w-full border border-rose-200 rounded-lg p-2 text-sm bg-white" placeholder="Kaedah pentaksiran"></textarea></div>
+                </div>
+              </details>
+            </div>
+
+            <!-- 6. BBM / ELEMEN TERAPI / EMK / NILAI MURNI -->
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-sm font-extrabold text-slate-800">6. BBM / ELEMEN TERAPI / EMK / NILAI MURNI</label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="rphBBMSelect" onchange="applyRPHTemplate('bbm', this.value)" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white max-w-[240px]">
+                    <option value="">-- Pilih Gabungan BBM/Terapi --</option>
+                  </select>
+                  <button type="button" id="btnAiBBM" onclick="generateRPHWithAI('bbm')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                </div>
+              </div>
+              <input id="rphBBM" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm" placeholder="Contoh: Kad bergambar, bahan maujud, LCD • Terapi Pertuturan • EMK: TMK • Nilai: Kerjasama dan Kebersihan">
+              <details class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <summary class="cursor-pointer text-xs font-bold text-slate-700">Perincian BBM mengikut tahap (pilihan)</summary>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                  <div><label class="block text-xs font-bold text-emerald-800 mb-1">BBM — Tinggi</label><textarea id="rphBBMHigh" rows="2" class="w-full border border-emerald-200 rounded-lg p-2 text-sm" placeholder="Bahan tahap tinggi"></textarea></div>
+                  <div><label class="block text-xs font-bold text-amber-800 mb-1">BBM — Sederhana</label><textarea id="rphBBMMid" rows="2" class="w-full border border-amber-200 rounded-lg p-2 text-sm" placeholder="Bahan tahap sederhana"></textarea></div>
+                  <div><label class="block text-xs font-bold text-rose-800 mb-1">BBM — Bimbingan</label><textarea id="rphBBMLow" rows="2" class="w-full border border-rose-200 rounded-lg p-2 text-sm" placeholder="Bahan tahap bimbingan"></textarea></div>
+                </div>
+              </details>
+            </div>
+
+            <!-- 7. REFLEKSI / IMPAK PDP -->
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-sm font-extrabold text-slate-800">7. REFLEKSI / IMPAK PDP (BILANGAN MURID MENGUASAI)</label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="rphReflectionSelect" onchange="applyRPHTemplate('reflection', this.value)" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white max-w-[240px]">
+                    <option value="">-- Pilih Templat Refleksi --</option>
+                  </select>
+                  <button type="button" id="btnAiReflection" onclick="generateRPHWithAI('reflection')" class="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold">✨ Jana AI</button>
+                </div>
+              </div>
+              <textarea id="rphReflection" rows="3" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm" placeholder="Contoh: 5/6 orang murid mencapai objektif pembelajaran dengan bimbingan minimum. 1 orang murid diberi latihan pengukuhan."></textarea>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button onclick="saveRPH()" class="rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white font-bold px-5 py-2.5 text-sm">💾 Simpan RPH</button>
+              <button onclick="resetRPHForm()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">Kosongkan</button>
+              <button onclick="printRPHList()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold">🖨️ Cetak senarai</button>
+            </div>
           </div>
         </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h3 class="font-extrabold text-slate-900">📚 Rekod RPH Tersimpan</h3><p class="text-xs text-slate-500 mt-1">Cari dan tapis mengikut minggu atau kelas.</p></div><div class="flex gap-2"><select id="rphFilterWeek" onchange="renderTeaching()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs"><option value="">Semua minggu</option></select><select id="rphFilterClass" onchange="renderTeaching()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs"><option value="">Semua kelas</option></select></div></div>
+          <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="p-3">Minggu</th><th class="p-3">Tarikh</th><th class="p-3">Kelas</th><th class="p-3">Mata pelajaran</th><th class="p-3">Guru</th><th class="p-3 text-right">Tindakan</th></tr></thead><tbody id="rphTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div>
+        </div>
       </div>
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h3 class="font-extrabold text-slate-900">📚 Rekod RPH Tersimpan</h3><p class="text-xs text-slate-500 mt-1">Cari dan tapis mengikut minggu atau kelas.</p></div><div class="flex gap-2"><select id="rphFilterWeek" onchange="renderTeaching()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs"><option value="">Semua minggu</option></select><select id="rphFilterClass" onchange="renderTeaching()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs"><option value="">Semua kelas</option></select></div></div>
-        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="p-3">Minggu</th><th class="p-3">Tarikh</th><th class="p-3">Kelas</th><th class="p-3">Mata pelajaran</th><th class="p-3">Status</th><th class="p-3 text-right">Tindakan</th></tr></thead><tbody id="rphTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div>
       </div>
     </section>
     </div>
@@ -1365,18 +1566,23 @@
     <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl">
       <div class="bg-[#1e1b4b] text-white px-6 py-4 flex items-center justify-between">
         <h3 class="font-extrabold text-base sm:text-lg flex items-center gap-2">
-          <span>🗄️</span> Pangkalan Data Kekal Google Sheets (Guru & PPM)
+          <span>🗄️</span> Tetapan Dua Pangkalan Data PPKI
         </h3>
         <button onclick="closeCloudModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold">&times;</button>
       </div>
       <div class="p-6 space-y-4 text-sm text-slate-700">
         <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs leading-relaxed space-y-1">
           <p><strong>1. Pangkalan Data Utama (Logo, 40 Murid, RPI, Inklusif, Takwim & Pencapaian):</strong> Tersambung kekal ke Apps Script PPKI SK Kesang Tua.</p>
-          <p><strong>2. Suapan CSV Kehadiran Ibu Bapa:</strong> Tersambung terus ke pautan terbitan web rasmi tab <code>REKOD KEHADIRAN</code>.</p>
+          <p><strong>2. Sistem Kehadiran Ibu Bapa:</strong> Disambungkan secara berasingan melalui Apps Script kehadiran (API JSONP), bukan ke pangkalan data utama PPKI.</p>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Web App URL Google Sheets Aktif:</label>
-          <input type="text" id="sheetUrlInput" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono text-slate-700" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">1. Web App URL Pangkalan Data Utama PPKI (JSON API):</label>
+          <input type="text" id="sheetUrlInput" placeholder="URL Apps Script pangkalan data utama PPKI" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono text-slate-700" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">2. Web App URL Kehadiran Ibu Bapa (API JSONP):</label>
+          <input type="text" id="attendanceApiUrlInput" placeholder="URL Apps Script sistem kehadiran ibu bapa" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono text-slate-700" />
+          <p class="mt-1 text-[10px] text-slate-500">Sambungan ini berasingan daripada pangkalan data utama PPKI.</p>
         </div>
         <div class="flex flex-wrap gap-2 pt-2">
           <button onclick="saveUrlAndPush()" class="flex-1 px-4 py-2.5 rounded-xl bg-indigo-700 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm shadow">
@@ -1394,13 +1600,18 @@
   </div>
 
   <script>
-    // 1. URL WEB APP GOOGLE SHEETS UTAMA
+    // 1. URL WEB APP PANGKALAN DATA UTAMA PPKI (JSON API)
+    // URL ini dikenal pasti daripada tetapan portal lama dan repositori GitHub V13.
     const DEFAULT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhtzeXuASFlSvvjC5HFinig9V-DK9sOBjKyL47RNO83kSfqIaYVoI80qUFv53J_woS/exec";
-    const STORAGE_KEY = "ppki_skkt_rasmi_41_v8";
+    const STORAGE_KEY = "ppki_skkt_rasmi_41_v8"; // Kekalkan untuk membaca data tempatan sedia ada.
     const PENDING_STAFF_KEY = "ppki_skkt_pending_staff_v1";
-    const URL_STORAGE_KEY = "ppki_skkt_webapp_url_v7";
+    const URL_STORAGE_KEY = "ppki_skkt_management_webapp_url_v9";
 
-    // 2. PAUTAN PUBLISH TO WEB CSV RASMI TAB 'REKOD KEHADIRAN'
+    // 2. URL WEB APP SISTEM KEHADIRAN IBU BAPA (API JSONP) - PANGKALAN DATA BERASINGAN
+    const DEFAULT_ATTENDANCE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxa7nxcotmBZDxBNGNdZ4h50TeqiTiZVtt8zU-6MSkKLkYPo4mlWQz9n6Q_D2MDfK0Ogw/exec";
+    const ATTENDANCE_URL_STORAGE_KEY = "ppki_skkt_attendance_webapp_url_v1";
+
+    // 3. Pautan CSV asal dikekalkan sebagai rujukan/fallback manual.
     const ATTENDANCE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnQwrIRXUMIz4Nvh49AX2Yf94mm90b7NC7eMwS_aQy_H81MFMpSFPYcIXxbnAcl_qaX-oUxWx8r9Vs/pub?gid=489169524&single=true&output=csv";
 
     let toastTimer = null;
@@ -1442,6 +1653,17 @@
         const myTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
         return myTime.toISOString().split("T")[0];
       }
+    }
+
+
+    // Format paparan tarikh Malaysia: dd/mm/yyyy. Rekod dalaman kekal yyyy-mm-dd.
+    function formatDateDMY(value) {
+      if (!value) return "-";
+      const s = String(value).trim();
+      const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+      return s;
     }
 
     function normalizeName(str) {
@@ -1592,14 +1814,19 @@
 function buildOfficialTimetableSlots() {
       return Array.from({ length: 11 }, (_, i) => {
         const index = i + 1;
-        return { index, label: getTimetableSlotLabel("Isnin", index), minutes: index === 6 ? 25 : 30, isBreak: index === 6 };
+        return { index, label: ["07:35–08:05","08:05–08:35","08:35–09:05","09:05–09:35","09:35–10:05","10:05–10:35","10:35–11:05","11:05–11:35","11:35–12:05","12:05–12:35","12:35–13:05"][i], minutes: index === 6 ? 30 : 30, isBreak: index === 6 };
       });
     }
 
+    function buildOfficialFridaySlots() {
+      const labels = ["07:45–08:15","08:15–08:45","08:45–09:15","09:15–09:45","09:45–10:15","10:15–10:35","10:35–11:05","11:05–11:35","11:35–12:05"];
+      return labels.map((label, i) => ({ index:i+1, label, minutes:i===5?20:30, isBreak:i===5 }));
+    }
+
     function getTimetableSlotLabel(day, index) {
-      const weekday = ["07:35–08:05","08:05–08:35","08:35–09:05","09:05–09:35","09:35–10:05","10:05–10:30","10:30–11:00","11:00–11:30","11:30–12:00","12:00–12:30","12:30–13:00"];
-      const friday = ["07:45–08:15","08:15–08:45","08:45–09:15","09:15–09:45","09:45–10:15","10:15–10:35","10:35–11:05","11:05–11:35","11:35–12:05"];
-      return (day === "Jumaat" ? friday : weekday)[Number(index) - 1] || "";
+      const weekday = (typeof appState !== "undefined" && Array.isArray(appState.timetableSlots) ? appState.timetableSlots : buildOfficialTimetableSlots());
+      const friday = (typeof appState !== "undefined" && Array.isArray(appState.timetableFridaySlots) ? appState.timetableFridaySlots : buildOfficialFridaySlots());
+      return ((day === "Jumaat" ? friday : weekday).find(sl => Number(sl.index) === Number(index)) || {}).label || "";
     }
 
     function buildOfficialReliefSlots() {
@@ -1647,6 +1874,7 @@ function buildOfficialTimetableSlots() {
       takwim: buildOfficialTakwim(),
       achievements: buildOfficialAchievements(),
       timetableSlots: buildOfficialTimetableSlots(),
+      timetableFridaySlots: buildOfficialFridaySlots(),
       timetable: buildOfficialTimetable(),
       reliefSlots: buildOfficialReliefSlots(),
       absenceReliefRecords: [],
@@ -1670,6 +1898,15 @@ function buildOfficialTimetableSlots() {
 
     function ensureOfficialDataRules() {
       let removedNonPpkiRecord = false;
+      if (!Array.isArray(appState.timetableFridaySlots)) appState.timetableFridaySlots = buildOfficialFridaySlots();
+      // Migrasi tetapan Isnin-Khamis lama: rehat 25 minit kepada 30 minit,
+      // dan anjak semua slot selepas rehat sebanyak 5 minit.
+      const oldWeekdayLabels = ["07:35–08:05","08:05–08:35","08:35–09:05","09:05–09:35","09:35–10:05","10:05–10:30","10:30–11:00","11:00–11:30","11:30–12:00","12:00–12:30","12:30–13:00"];
+      const newWeekdayLabels = ["07:35–08:05","08:05–08:35","08:35–09:05","09:05–09:35","09:35–10:05","10:05–10:35","10:35–11:05","11:05–11:35","11:35–12:05","12:05–12:35","12:35–13:05"];
+      if (Array.isArray(appState.timetableSlots)) appState.timetableSlots.forEach((sl, i) => {
+        if (sl && sl.label === oldWeekdayLabels[i]) sl.label = newWeekdayLabels[i];
+        if (sl && i === 5 && sl.minutes === 25) sl.minutes = 30;
+      });
       if (appState.timetableTemplateVersion !== "2026-official-v10") {
         appState.timetableSlots = buildOfficialTimetableSlots();
         appState.timetable = buildOfficialTimetable();
@@ -1736,6 +1973,10 @@ function buildOfficialTimetableSlots() {
       return localStorage.getItem(URL_STORAGE_KEY) || DEFAULT_WEB_APP_URL;
     }
 
+    function getAttendanceWebAppUrl() {
+      return localStorage.getItem(ATTENDANCE_URL_STORAGE_KEY) || DEFAULT_ATTENDANCE_WEB_APP_URL;
+    }
+
     function setCloudStatus(text, isOk = true, state = "") {
       const statusEl = document.getElementById("cloudStatusText");
       const dotEl = document.getElementById("cloudDot");
@@ -1781,44 +2022,71 @@ function buildOfficialTimetableSlots() {
         badgeEl.textContent = "⏳ Menarik rekod ibu bapa (" + selectedDate + ")...";
       }
 
+      let scriptEl = null;
+      let callbackName = "";
       try {
-        const res = await fetch(ATTENDANCE_CSV_URL + "&_ts=" + Date.now());
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const csvText = await res.text();
-        const rows = parseCSV(csvText);
+        const baseUrl = getAttendanceWebAppUrl();
+        if (!baseUrl) throw new Error("Pautan Web App kehadiran ibu bapa belum ditetapkan.");
+
+        const result = await new Promise((resolve, reject) => {
+          callbackName = "__ppkiAttendanceCallback" + Date.now() + Math.floor(Math.random() * 1000);
+          const params = new URLSearchParams({
+            action: "dashboard",
+            tarikh: selectedDate,
+            kelas: "Semua Kelas",
+            callback: callbackName,
+            _ts: String(Date.now())
+          });
+          const separator = baseUrl.includes("?") ? "&" : "?";
+          scriptEl = document.createElement("script");
+          scriptEl.src = baseUrl + separator + params.toString();
+          scriptEl.async = true;
+
+          let settled = false;
+          const finish = (fn, value) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeoutId);
+            fn(value);
+          };
+          const timeoutId = setTimeout(() => finish(reject, new Error("Masa menunggu API kehadiran tamat.")), 15000);
+
+          window[callbackName] = data => finish(resolve, data);
+          scriptEl.onerror = () => finish(reject, new Error("Web App tidak dapat dicapai. Semak deployment Apps Script."));
+          document.head.appendChild(scriptEl);
+        });
+
+        if (!result || !Array.isArray(result.murid)) {
+          throw new Error("Respons API tidak sah. Pastikan versi Apps Script terkini telah diterbitkan.");
+        }
 
         const freshMap = {};
-        const byDate = {};
+        const byDate = { [selectedDate]: {} };
         let matchCount = 0;
 
-        for (let i = 1; i < rows.length; i++) {
-          const c = rows[i];
-          if (!c || c.length < 6) continue;
-          const rowDate = normalizeSheetDate(c[1], selectedDate);
-          if (!rowDate) continue;
-          const idMurid = (c[2] || "").trim().toUpperCase();
-          const namaMurid = (c[3] || "").trim();
-          const rawStatus = (c[5] || "").trim().toUpperCase();
-          const sebab = (c[6] || "").trim();
-          const masa = (c[7] || "").trim();
-
+        result.murid.forEach(m => {
+          const rawStatus = String(m.status || "").trim().toUpperCase();
+          if (rawStatus !== "HADIR" && rawStatus !== "TIDAK HADIR") return;
+          const idMurid = String(m.id || "").trim().toUpperCase();
+          const namaMurid = String(m.nama || "").trim();
           const entry = {
             status: rawStatus === "TIDAK HADIR" ? "Tidak Hadir" : "Hadir",
-            rawStatus: rawStatus,
-            sebab: sebab,
-            masa: masa
+            rawStatus,
+            sebab: String(m.sebab || ""),
+            masa: ""
           };
-
-          if (!byDate[rowDate]) byDate[rowDate] = {};
-          if (namaMurid) byDate[rowDate]["NAME_" + normalizeName(namaMurid)] = entry;
-          if (idMurid) byDate[rowDate]["ID_" + idMurid] = entry;
-
-          if (rowDate === selectedDate) {
-            if (namaMurid) freshMap["NAME_" + normalizeName(namaMurid)] = entry;
-            if (idMurid) freshMap["ID_" + idMurid] = entry;
-            matchCount++;
+          if (namaMurid) {
+            const key = "NAME_" + normalizeName(namaMurid);
+            freshMap[key] = entry;
+            byDate[selectedDate][key] = entry;
           }
-        }
+          if (idMurid) {
+            const key = "ID_" + idMurid;
+            freshMap[key] = entry;
+            byDate[selectedDate][key] = entry;
+          }
+          matchCount++;
+        });
 
         parentAttendanceMap = freshMap;
         parentAttendanceByDate = byDate;
@@ -1829,18 +2097,19 @@ function buildOfficialTimetableSlots() {
             : `✅ Bersambung • Tiada Rekod Ibu Bapa pada ${selectedDate}`;
         }
         renderAttendance();
-        if (showNotice) {
-          showToast(`${matchCount} rekod kehadiran ibu bapa (${selectedDate}) dimuatkan.`, "📡");
-        }
+        if (showNotice) showToast(`${matchCount} rekod kehadiran ibu bapa (${selectedDate}) dimuatkan.`, "📡");
         return true;
       } catch (err) {
         if (badgeEl) {
           badgeEl.className = "px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-900 text-[11px] font-bold";
-          badgeEl.textContent = "⚠️ Gagal tarik CSV: " + (err && err.message ? err.message : "Rangkaian / CORS");
-          badgeEl.title = "Semak pautan CSV diterbitkan, sambungan internet dan cara portal dibuka.";
+          badgeEl.textContent = "⚠️ Gagal tarik API: " + (err && err.message ? err.message : "Rangkaian / API");
+          badgeEl.title = "Semak URL Web App dan pastikan kod Apps Script terkini telah diterbitkan.";
         }
         renderAttendance();
         return false;
+      } finally {
+        if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+        if (callbackName) { try { delete window[callbackName]; } catch (e) { window[callbackName] = undefined; } }
       }
     }
 
@@ -2023,7 +2292,7 @@ function buildOfficialTimetableSlots() {
           appState.absenceReliefRecords = Array.isArray(data.absenceReliefRecords) ? data.absenceReliefRecords : [];
           if (data.teaching && typeof data.teaching === "object") appState.teaching = data.teaching;
           appState.timetableTemplateVersion = data.timetableTemplateVersion || "";
-          ensureTeachingState();
+          ensureTeachingState();showTeachingSection("rph");
           if (ensureOfficialDataRules()) needCloudPush = true;
 
           if (needCloudPush) {
@@ -2080,6 +2349,7 @@ function buildOfficialTimetableSlots() {
           appState.takwim = buildOfficialTakwim();
           appState.achievements = buildOfficialAchievements();
           appState.timetableSlots = buildOfficialTimetableSlots();
+          appState.timetableFridaySlots = buildOfficialFridaySlots();
           appState.timetable = buildOfficialTimetable();
           saveLocal();
           renderAll();
@@ -2621,7 +2891,7 @@ function buildOfficialTimetableSlots() {
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50";
         tr.innerHTML = `
-          <td class="py-3 px-4 font-mono text-xs font-bold text-slate-700 whitespace-nowrap">${item.tarikh}</td>
+          <td class="py-3 px-4 font-mono text-xs font-bold text-slate-700 whitespace-nowrap">${escapeHtml(formatDateDMY(item.tarikh))}</td>
           <td class="py-3 px-4">
             <div class="font-bold text-slate-900">${item.program}</div>
             <div class="text-xs text-slate-500 mt-0.5">${item.catatan || ''}</div>
@@ -3013,6 +3283,7 @@ function buildOfficialTimetableSlots() {
 
     function openCloudModal() {
       document.getElementById("sheetUrlInput").value = getWebAppUrl();
+      document.getElementById("attendanceApiUrlInput").value = getAttendanceWebAppUrl();
       document.getElementById("cloudModal").classList.remove("hidden");
     }
 
@@ -3021,10 +3292,12 @@ function buildOfficialTimetableSlots() {
     }
 
     function saveUrlAndPush() {
-      const val = document.getElementById("sheetUrlInput").value.trim();
-      if (val) {
-        localStorage.setItem(URL_STORAGE_KEY, val);
-      }
+      const managementUrl = document.getElementById("sheetUrlInput").value.trim();
+      const attendanceUrl = document.getElementById("attendanceApiUrlInput").value.trim();
+
+      if (managementUrl) localStorage.setItem(URL_STORAGE_KEY, managementUrl);
+      if (attendanceUrl) localStorage.setItem(ATTENDANCE_URL_STORAGE_KEY, attendanceUrl);
+
       closeCloudModal();
       pushToCloud(true);
     }
@@ -3330,14 +3603,6 @@ function buildOfficialTimetableSlots() {
       return "PPKI Sahaja";
     }
 
-    function getStudentRpiSummary(s) {
-      if (isStudentInklusifPenuh(s)) return "Dikecualikan (Inklusif Penuh)";
-      const f1 = s.rpi1 ? "✓F1" : "✗F1";
-      const f2 = s.rpi2 ? "✓F2" : "✗F2";
-      const f3 = s.rpi3 ? "✓F3" : "✗F3";
-      return `${f1} | ${f2} | ${f3}`;
-    }
-
     function renderPrintView() {
       const printLogo = document.getElementById("printLogoImg");
       const mainLogo = document.getElementById("schoolLogoImg");
@@ -3378,7 +3643,7 @@ function buildOfficialTimetableSlots() {
       }
       const dateEl = document.getElementById("printDateStamp");
       if (dateEl) {
-        dateEl.textContent = `Tarikh Cetakan: ${getMalaysiaDateStr()}`;
+        dateEl.textContent = `Tarikh Cetakan: ${formatDateDMY(getMalaysiaDateStr())}`;
       }
 
       const tableWrap = document.getElementById("printTableWrapper");
@@ -3415,7 +3680,6 @@ function buildOfficialTimetableSlots() {
                 <div><span class="text-slate-500">Jenis Masalah:</span> <strong class="text-slate-900">${s.kategori || '-'}</strong></div>
                 <div><span class="text-slate-500">No. Kad OKU:</span> <strong class="font-mono text-slate-900">${s.oku || '-'}</strong></div>
                 <div><span class="text-slate-500">Status Inklusif:</span> <strong class="text-sky-900">${getStudentInklusifLabel(s)}</strong></div>
-                <div><span class="text-slate-500">Status RPI:</span> <strong class="text-slate-900">${getStudentRpiSummary(s)}</strong></div>
                 <div class="col-span-2"><span class="text-slate-500">Guru Kelas PPKI:</span> <strong class="text-slate-800">${guruKelas}</strong></div>
                 <div><span class="text-slate-500">No. Akaun Bank (EMK):</span> <strong class="font-mono text-slate-900">${s.akaunBank || '-'}</strong></div>
                 <div><span class="text-slate-500">No. Tel Penjaga:</span> <strong class="text-emerald-900">${s.noTel || '-'}</strong></div>
@@ -3450,7 +3714,6 @@ function buildOfficialTimetableSlots() {
           ${cols.kategori ? '<th class="py-2 px-2">Jenis Masalah</th>' : ''}
           ${cols.oku ? '<th class="py-2 px-2">No. Kad OKU</th>' : ''}
           ${cols.inklusif ? '<th class="py-2 px-2">Status Inklusif</th>' : ''}
-          ${cols.rpi ? '<th class="py-2 px-2">Status RPI</th>' : ''}
           ${cols.akaunBank ? '<th class="py-2 px-2">No. Akaun Bank</th>' : ''}
           ${cols.noTel ? '<th class="py-2 px-2">No. Tel Penjaga</th>' : ''}
         </tr>
@@ -3470,7 +3733,6 @@ function buildOfficialTimetableSlots() {
           ${cols.kategori ? `<td class="py-2 px-2 text-slate-800">${s.kategori || '-'}</td>` : ''}
           ${cols.oku ? `<td class="py-2 px-2 font-mono text-[11px] text-slate-700">${s.oku || '-'}</td>` : ''}
           ${cols.inklusif ? `<td class="py-2 px-2 font-semibold text-sky-900">${getStudentInklusifLabel(s)}</td>` : ''}
-          ${cols.rpi ? `<td class="py-2 px-2 font-semibold text-slate-700">${getStudentRpiSummary(s)}</td>` : ''}
           ${cols.akaunBank ? `<td class="py-2 px-2 font-mono text-[11px] text-slate-800">${s.akaunBank || '-'}</td>` : ''}
           ${cols.noTel ? `<td class="py-2 px-2 font-semibold text-slate-800">${s.noTel || '-'}</td>` : ''}
         `;
@@ -3899,7 +4161,7 @@ function buildOfficialTimetableSlots() {
       if (ttLogo && mainLogo) ttLogo.src = appState.schoolLogo || mainLogo.src;
 
       const dateEl = document.getElementById("ttPrintDateStamp");
-      if (dateEl) dateEl.textContent = `Tarikh Cetakan: ${getMalaysiaDateStr()}`;
+      if (dateEl) dateEl.textContent = `Tarikh Cetakan: ${formatDateDMY(getMalaysiaDateStr())}`;
 
       const slots = appState.timetableSlots || buildOfficialTimetableSlots();
       const ttData = appState.timetable || {};
@@ -4195,24 +4457,32 @@ function buildOfficialTimetableSlots() {
 
     function openSlotConfigModal() {
       const listEl = document.getElementById("slotConfigList");
-      const slots = appState.timetableSlots || buildOfficialTimetableSlots();
+      const weekday = appState.timetableSlots || buildOfficialTimetableSlots();
+      const friday = appState.timetableFridaySlots || buildOfficialFridaySlots();
       listEl.innerHTML = "";
-      slots.forEach((sl, idx) => {
-        const row = document.createElement("div");
-        row.className = "grid grid-cols-12 gap-2 items-center p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs";
-        row.innerHTML = `
-          <span class="col-span-2 font-extrabold text-indigo-950">Waktu ${sl.index}</span>
-          <input type="text" data-slot-label="${idx}" value="${sl.label}" class="col-span-5 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono bg-white" />
-          <div class="col-span-2 flex items-center gap-1">
-            <input type="number" data-slot-min="${idx}" value="${sl.minutes || 30}" min="10" max="120" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 bg-white font-bold" />
-            <span class="text-[10px] text-slate-500">m</span>
-          </div>
-          <label class="col-span-3 inline-flex items-center gap-1.5 font-bold text-amber-900 cursor-pointer">
-            <input type="checkbox" data-slot-break="${idx}" ${sl.isBreak ? "checked" : ""} class="accent-amber-600" /> Slot Rehat
-          </label>
-        `;
-        listEl.appendChild(row);
-      });
+      const addGroup = (title, slots, prefix) => {
+        const heading = document.createElement("div");
+        heading.className = "pt-2 pb-1 text-sm font-extrabold text-indigo-950";
+        heading.textContent = title;
+        listEl.appendChild(heading);
+        slots.forEach((sl, idx) => {
+          const row = document.createElement("div");
+          row.className = "grid grid-cols-12 gap-2 items-center p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs";
+          row.innerHTML = `
+            <span class="col-span-2 font-extrabold text-indigo-950">Waktu ${sl.index}</span>
+            <input type="text" data-slot-label="${prefix}-${idx}" value="${sl.label}" class="col-span-5 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono bg-white" />
+            <div class="col-span-2 flex items-center gap-1">
+              <input type="number" data-slot-min="${prefix}-${idx}" value="${sl.minutes || 30}" min="10" max="120" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 bg-white font-bold" />
+              <span class="text-[10px] text-slate-500">m</span>
+            </div>
+            <label class="col-span-3 inline-flex items-center gap-1.5 font-bold text-amber-900 cursor-pointer">
+              <input type="checkbox" data-slot-break="${prefix}-${idx}" ${sl.isBreak ? "checked" : ""} class="accent-amber-600" /> Slot Rehat
+            </label>`;
+          listEl.appendChild(row);
+        });
+      };
+      addGroup("Isnin – Khamis", weekday, "wd");
+      addGroup("Jumaat", friday, "fri");
       document.getElementById("slotConfigModal").classList.remove("hidden");
     }
 
@@ -4221,16 +4491,21 @@ function buildOfficialTimetableSlots() {
     }
 
     function saveSlotConfig() {
-      const slots = appState.timetableSlots || buildOfficialTimetableSlots();
-      slots.forEach((sl, idx) => {
-        const lblInp = document.querySelector(`[data-slot-label="${idx}"]`);
-        const minInp = document.querySelector(`[data-slot-min="${idx}"]`);
-        const brkInp = document.querySelector(`[data-slot-break="${idx}"]`);
+      const saveGroup = (slots, prefix) => slots.forEach((sl, idx) => {
+        const key = `${prefix}-${idx}`;
+        const lblInp = document.querySelector(`[data-slot-label="${key}"]`);
+        const minInp = document.querySelector(`[data-slot-min="${key}"]`);
+        const brkInp = document.querySelector(`[data-slot-break="${key}"]`);
         if (lblInp && lblInp.value.trim()) sl.label = lblInp.value.trim();
         if (minInp) sl.minutes = Math.max(10, Number(minInp.value) || 30);
         if (brkInp) sl.isBreak = brkInp.checked;
       });
-      appState.timetableSlots = slots;
+      const weekday = appState.timetableSlots || buildOfficialTimetableSlots();
+      const friday = appState.timetableFridaySlots || buildOfficialFridaySlots();
+      saveGroup(weekday, "wd");
+      saveGroup(friday, "fri");
+      appState.timetableSlots = weekday;
+      appState.timetableFridaySlots = friday;
       closeSlotConfigModal();
       renderTimetable();
       pushToCloud(true);
@@ -4265,21 +4540,289 @@ function buildOfficialTimetableSlots() {
     }
 
 
+    const RPH_API_URL = "https://script.google.com/macros/s/AKfycbzA8NgRef2Aw0hrrS_3ZOQ56YDDlu5dRQEP4n35ukOcBJ1FNqWGTK0-KDrAGKZugWn0/exec";
+    function callRPHApi(params){return new Promise((resolve,reject)=>{const cb="rphJsonp_"+Date.now()+"_"+Math.floor(Math.random()*100000);const script=document.createElement("script");const query=new URLSearchParams({...params,callback:cb});const timer=setTimeout(()=>{cleanup();reject(new Error("Sambungan API RPH mengambil masa terlalu lama."));},20000);function cleanup(){clearTimeout(timer);delete window[cb];script.remove();}window[cb]=result=>{cleanup();if(result&&result.success)resolve(result);else reject(new Error(result?.message||"API RPH tidak berjaya."));};script.onerror=()=>{cleanup();reject(new Error("Tidak dapat menghubungi API RPH."));};script.src=RPH_API_URL+"?"+query.toString();document.head.appendChild(script);});}
+    function mapRPHFromApi(row){return {id:String(row.id||""),week:String(row.minggu||""),date:String(row.tarikh||""),className:String(row.kelas||""),subject:String(row.mataPelajaran||""),duration:String(row.masa||""),sk:String(row.standardKandungan||""),sp:String(row.standardPembelajaran||""),objective:String(row.objektifPembelajaran||""),activities:String(row.aktiviti||""),bbm:String(row.bbm||""),reflection:String(row.refleksi||""),teacher:String(row.namaGuru||""),year:String(row.tahunKurikulum||""),student:String(row.namaMBPK||""),activityHigh:String(row.aktivitiTinggi||""),activityMid:String(row.aktivitiSederhana||""),activityLow:String(row.aktivitiRendah||""),bbmHigh:String(row.bbmTinggi||""),bbmMid:String(row.bbmSederhana||""),bbmLow:String(row.bbmRendah||""),assessHigh:String(row.pentaksiranTinggi||""),assessMid:String(row.pentaksiranSederhana||""),assessLow:String(row.pentaksiranRendah||""),tema:String(row.temaPdP||"")};}
+    async function loadRPHFromCloud(showMessage=false){try{const result=await callRPHApi({action:"list"});appState.teaching.rph=(result.data||[]).map(mapRPHFromApi);renderTeaching();if(showMessage)showToast("Rekod RPH berjaya dimuatkan dari pangkalan data bersama.","☁️");return true;}catch(error){if(showMessage)showToast(error.message,"⚠️");return false;}}
+    let rphReferenceData={students:[],profiles:[],subjects:[]};
+    let rphStudentStages={};
+    async function loadRPHReferenceData(){
+      try{
+        const result=await callRPHApi({action:"config"});
+        rphReferenceData={students:result.students||[],profiles:result.profiles||[],subjects:result.subjects||[]};
+      }catch(err){
+        rphReferenceData={students:[],profiles:[],subjects:[]};
+      }
+      const note=document.getElementById("rphReferenceStatus");
+      if(note)note.textContent="Senarai kelas, murid dan guru menggunakan data portal. Mata pelajaran boleh ditaip atau dipilih jika senarai rujukan tersedia.";
+      const cls=document.getElementById("rphClass");
+      if(cls){
+        const keep=cls.value;
+        const names=[...new Set([...(appState.classes||[]).map(x=>String(x.nama||"").trim()),...rphReferenceData.students.map(x=>String(x.kelas||"").trim())].filter(Boolean))];
+        cls.innerHTML='<option value="">Pilih kelas</option>'+names.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
+        if(names.includes(keep))cls.value=keep;
+      }
+      const dl=document.getElementById("rphSubjectOptions");
+      if(dl)dl.innerHTML=[...new Set(rphReferenceData.subjects.map(x=>String(x.mataPelajaran||"").trim()).filter(Boolean))].map(x=>`<option value="${escapeHtml(x)}"></option>`).join("");
+      onRPHClassChange();
+      return true;
+    }
+    // ==========================================
+    // PANGKALAN DATA TEMPLAT DROPDOWN RPH PPKI
+    // ==========================================
+    const RPH_TEMPLATES = {
+      default: {
+        tema: [
+          "Diri Saya dan Keluarga",
+          "Kebersihan dan Kesihatan Diri",
+          "Keselamatan di Sekolah dan Rumah",
+          "Alam Sekitar dan Hidupan",
+          "Kemahiran Sosial dan Komunikasi"
+        ],
+        sk: [
+          "1.1 Mendengar dan memberikan respons dengan betul.",
+          "2.1 Mengenal pasti dan mengamalkan penjagaan kebersihan diri.",
+          "3.1 Mengaplikasikan kemahiran asas dalam kehidupan harian."
+        ],
+        sp: [
+          "1.1.1 Mendengar dan menyebut semula perkataan/arahan mudah.",
+          "2.1.1 Menyatakan alatan kebersihan diri dan kegunaannya.",
+          "3.1.1 Melakukan aktiviti mengikut langkah yang betul dengan bimbingan."
+        ],
+        objective: [
+          "Pada akhir PdP, murid berupaya:\n1. (Tinggi): Menyatakan dan melakukan sekurang-kurangnya 3 daripada 4 tugasan dengan betul secara berdikari.\n2. (Sederhana): Melakukan sekurang-kurangnya 2 daripada 4 tugasan dengan bimbingan minimum guru.\n3. (Bimbingan): Mengecam atau meniru sekurang-kurangnya 1 tugasan dengan bimbingan penuh guru/PPM.",
+          "Pada akhir PdP, murid dapat:\n- Kumpulan Tinggi: Menyiapkan lembaran kerja pengayaan dengan 80% ketepatan.\n- Kumpulan Sederhana: Memadankan kad gambar dengan perkataan yang betul.\n- Kumpulan Bimbingan: Menunjuk objek maujud yang disebut oleh guru dengan bantuan."
+        ],
+        activities: [
+          "Set Induksi (5 minit):\n- Guru menunjukkan bahan maujud / video pendek berkaitan tajuk dan bersoal jawab secara ringkas dengan murid.\n\nLangkah 1 — Penerangan & Demonstrasi (15 minit):\n- Guru menerangkan konsep utama menggunakan kad imbasan dan membuat tunjuk cara langkah demi langkah.\n\nLangkah 2 — Aktiviti PdPc Terbeza (30 minit):\n- Kumpulan Tinggi: Murid menyelesaikan tugasan secara berdikari dan membentangkan hasil kerja.\n- Kumpulan Sederhana: Murid melaksanakan aktiviti berpandu secara berpasangan dengan pemantauan guru.\n- Kumpulan Bimbingan: Murid melakukan aktiviti sensori/praktikal secara individu dengan bimbingan fizikal dan lisan guru/PPM.\n\nPenutup (10 minit):\n- Guru merumuskan isi pelajaran, memberikan pujian/peneguhan positif dan menyimpan alatan."
+        ],
+        bbm: [
+          "Kad bergambar, bahan maujud, lembaran kerja terbeza • Terapi Pertuturan & Cara Kerja • EMK: Nilai Murni & Kreativiti • Nilai: Kerjasama, Berdikari",
+          "Paparan LCD/TV Pintar, lagu interaktif, kit aktiviti tangan • Terapi Muzik & Sensori • EMK: TMK • Nilai: Kebersihan, Keyakinan Diri"
+        ],
+        reflection: [
+          "___ / ___ orang murid mencapai objektif pembelajaran dengan baik dan diberi aktiviti pengayaan. ___ / ___ orang murid memerlukan bimbingan berterusan pada sesi PdP akan datang.",
+          "PdP berjalan lancar. Murid menunjukkan minat yang tinggi melalui aktiviti hands-on dan bahan maujud. Tindak susul latihan pengukuhan akan diteruskan."
+        ]
+      },
+      "Pendidikan Islam": {
+        tema: [
+          "Akidah: Rukun Iman & Rukun Islam",
+          "Ibadah: Bersuci dan Berwuduk dengan Sempurna",
+          "Al-Quran: Mengenal Huruf Hijaiyah Berbaris",
+          "Sirah: Kisah Kelahiran Nabi Muhammad SAW",
+          "Adab: Adab Makan, Minum dan Menghormati Ibu Bapa"
+        ],
+        sk: [
+          "1.1 Mengenal dan menyebut huruf-huruf hijaiyah tunggal dan berbaris.",
+          "3.1 Memahami dan mengamalkan tatacara berwuduk dengan betul.",
+          "5.1 Mengamalkan adab dalam kehidupan seharian mengikut sunnah."
+        ],
+        sp: [
+          "1.1.1 Menyebut dan membunyikan huruf hijaiyah berbaris atas (fathah) dengan betul.",
+          "3.1.1 Menyatakan anggota wuduk yang wajib dan sunat.",
+          "3.1.2 Melakukan simulasi amali wuduk mengikut tertib dengan bimbingan.",
+          "5.1.1 Membaca doa sebelum dan selepas makan dengan betul."
+        ]
+      },
+      "Pendidikan Moral": {
+        tema: [
+          "Kepercayaan kepada Tuhan",
+          "Baik Hati dan Membantu Warga Sekolah",
+          "Bertanggungjawab Terhadap Diri dan Kelas",
+          "Berterima Kasih dan Menghargai Jasa",
+          "Hormat-menghormati Sesama Rakan"
+        ],
+        sk: [
+          "1.0 Kepercayaan kepada Tuhan — Menghormati kepelbagaian agama dan kepercayaan.",
+          "2.0 Baik Hati — Memberi bantuan kepada warga sekolah yang memerlukan.",
+          "6.0 Hormat — Menghormati warga sekolah dan rakan sekelas."
+        ],
+        sp: [
+          "1.1 Menyatakan cara menghormati amalan ibadat rakan pelbagai kaum.",
+          "2.1 Menyenaraikan cara membantu rakan dan guru di dalam kelas.",
+          "6.1 Menunjukkan pertuturan dan tingkah laku yang sopan terhadap warga sekolah."
+        ]
+      }
+    };
+
+    function populateRPHTemplateDropdowns() {
+      const subj = (document.getElementById("rphSubject")?.value || "").trim();
+      const specific = RPH_TEMPLATES[subj] || {};
+      const base = RPH_TEMPLATES.default;
+
+      const mapFields = [
+        ["rphTemaSelect", specific.tema || base.tema, "-- Pilih Templat Tema --"],
+        ["rphSKSelect", specific.sk || base.sk, "-- Pilih SK --"],
+        ["rphSPSelect", specific.sp || base.sp, "-- Pilih SP --"],
+        ["rphObjectiveSelect", specific.objective || base.objective, "-- Pilih Templat Objektif --"],
+        ["rphActivitiesSelect", specific.activities || base.activities, "-- Pilih Templat Aktiviti --"],
+        ["rphBBMSelect", specific.bbm || base.bbm, "-- Pilih Gabungan BBM/Terapi --"],
+        ["rphReflectionSelect", specific.reflection || base.reflection, "-- Pilih Templat Refleksi --"]
+      ];
+
+      mapFields.forEach(([id, list, placeholder]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = `<option value="">${placeholder}</option>` + list.map((item, idx) => {
+          const shortLabel = item.replace(/\n/g, " ").slice(0, 58) + (item.length > 58 ? "..." : "");
+          return `<option value="${idx}">${escapeHtml(shortLabel)}</option>`;
+        }).join("");
+        el.dataset.items = JSON.stringify(list);
+      });
+    }
+
+    function applyRPHTemplate(fieldKey, idxStr) {
+      if (idxStr === "") return;
+      const selectMap = {
+        tema: ["rphTemaSelect", "rphTema"],
+        sk: ["rphSKSelect", "rphSK"],
+        sp: ["rphSPSelect", "rphSP"],
+        objective: ["rphObjectiveSelect", "rphObjective"],
+        activities: ["rphActivitiesSelect", "rphActivities"],
+        bbm: ["rphBBMSelect", "rphBBM"],
+        reflection: ["rphReflectionSelect", "rphReflection"]
+      };
+      const [selId, targetId] = selectMap[fieldKey] || [];
+      const selEl = document.getElementById(selId);
+      const targetEl = document.getElementById(targetId);
+      if (!selEl || !targetEl) return;
+      try {
+        const list = JSON.parse(selEl.dataset.items || "[]");
+        const val = list[Number(idxStr)];
+        if (val) {
+          targetEl.value = val;
+          showToast("Templat berjaya dimasukkan. Anda boleh menyunting teks ini.", "✅");
+        }
+      } catch (e) {}
+      selEl.value = "";
+    }
+
+    // ==========================================
+    // PENAPISAN MURID KELAS + PAI / PM
+    // ==========================================
+    function isStudentMuslim(st) {
+      const agama = String(st.agama || st.religion || "").toLowerCase().trim();
+      if (agama) return agama.includes("islam");
+      const kaum = String(st.kaum || st.bangsa || st.race || "").toLowerCase().trim();
+      if (kaum) return kaum.includes("melayu") || kaum.includes("islam");
+      const nama = String(st.nama || st.namaMurid || "").toUpperCase();
+      return /\b(BIN|BINTI|MUHAMMAD|MOHD|AHMAD|NUR|SITI|WAN|NIK|SYED|SHARIFAH|PUTERA|PUTERI|AIMAN|DANISH|ADAM|AISYAH|FATIMAH|ZAHRA)\b/.test(nama);
+    }
+
+    function getRPHStudentsForClass(cls) {
+      const local = (appState.students || []).filter(x => String(x.kelas || "").trim() === cls);
+      const baseList = local.length ? local : rphReferenceData.students.filter(x => String(x.kelas || "").trim() === cls).map((x, i) => ({
+        id: x.id || "API-" + i,
+        nama: x.nama || "",
+        kategori: x.kategori || "",
+        agama: x.agama || "",
+        kaum: x.kaum || ""
+      }));
+
+      const subj = (document.getElementById("rphSubject")?.value || "").toLowerCase().trim();
+      if (subj.includes("pendidikan islam") || subj === "pai") {
+        return baseList.filter(st => isStudentMuslim(st));
+      }
+      if (subj.includes("pendidikan moral") || subj === "pm") {
+        return baseList.filter(st => !isStudentMuslim(st));
+      }
+      return baseList;
+    }
+
+    function onRPHSubjectChange() {
+      const subj = (document.getElementById("rphSubject")?.value || "").toLowerCase().trim();
+      const badge = document.getElementById("rphSubjectFilterBadge");
+      if (badge) {
+        if (subj.includes("pendidikan islam") || subj === "pai") {
+          badge.textContent = "🕌 Tapisan: Murid Islam Sahaja (PAI)";
+          badge.className = "rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-0.5 text-[11px] font-extrabold";
+        } else if (subj.includes("pendidikan moral") || subj === "pm") {
+          badge.textContent = "🤝 Tapisan: Murid Bukan Islam Sahaja (PM)";
+          badge.className = "rounded-full bg-amber-100 text-amber-800 px-2.5 py-0.5 text-[11px] font-extrabold";
+        } else {
+          badge.className = "hidden";
+        }
+      }
+      populateRPHTemplateDropdowns();
+      renderRPHStudentCards();
+    }
+
+    function onRPHClassChange(){
+      const cls=document.getElementById("rphClass")?.value||"";
+      const classObj=(appState.classes||[]).find(x=>String(x.nama||"")===cls);
+      const teacher=document.getElementById("rphTeacher");
+      if(teacher)teacher.value=classObj?.guruKelas||"";
+      const yearEl=document.getElementById("rphYear");
+      if(yearEl){
+        const match=cls.match(/^(\d+)/);
+        yearEl.value=match?("Tahun "+match[1]):"";
+      }
+      rphStudentStages={};
+      populateRPHTemplateDropdowns();
+      renderRPHStudentCards();
+    }
+    function updateRPHStudentCounts(){
+      const vals=Object.values(rphStudentStages);
+      const high=vals.filter(x=>x==="Tinggi").length,mid=vals.filter(x=>x==="Sederhana").length,guide=vals.filter(x=>x==="Bimbingan").length;
+      const total=getRPHStudentsForClass(document.getElementById("rphClass")?.value||"").length;
+      [["rphCountHigh",high],["rphCountMid",mid],["rphCountGuide",guide]].forEach(([id,n])=>{const el=document.getElementById(id);if(el)el.textContent=n;});
+      const hidden=document.getElementById("rphStudent");if(hidden)hidden.value=JSON.stringify(rphStudentStages);
+      const summary=document.getElementById("rphProfileSummary");if(summary)summary.textContent=`Penetapan tahap: ${vals.filter(Boolean).length} daripada ${total} murid. Sila semak tahap setiap murid berdasarkan pemerhatian dan pentaksiran guru.`;
+    }
+    function renderRPHStudentCards(){
+      const cls=document.getElementById("rphClass")?.value||"",grid=document.getElementById("rphStudentGrid");
+      if(!grid)return;
+      const students=getRPHStudentsForClass(cls);
+      if(!cls){grid.innerHTML='<p class="text-xs text-slate-400 sm:col-span-2 xl:col-span-3">Pilih kelas untuk memaparkan senarai murid.</p>';updateRPHStudentCounts();return;}
+      if(!students.length){grid.innerHTML='<p class="text-xs text-amber-700 sm:col-span-2 xl:col-span-3">Tiada murid bagi tapisan kelas / subjek ini.</p>';updateRPHStudentCounts();return;}
+      grid.innerHTML=students.map((st,i)=>{
+        const id=String(st.id||st.studentId||st.nama||i),name=String(st.nama||st.namaMurid||"Nama belum direkod"),cat=String(st.kategori||st.kategoriPembelajaran||"");
+        const value=rphStudentStages[id]||"";
+        return `<div class="rounded-xl border border-slate-200 bg-white p-3"><div class="text-xs font-bold text-slate-800 mb-1"><span class="text-slate-400">${i+1}.</span> ${escapeHtml(name)}</div><div class="text-[10px] uppercase font-bold tracking-wide text-slate-400 mb-2">${escapeHtml(cat||"MBPK")}</div><select aria-label="Tahap penguasaan ${escapeHtml(name)}" onchange="setRPHStudentStage('${escapeHtml(id)}',this.value)" class="w-full rounded-lg border px-2.5 py-2 text-xs font-bold ${value==='Tinggi'?'border-emerald-300 bg-emerald-50 text-emerald-900':value==='Sederhana'?'border-amber-300 bg-amber-50 text-amber-900':value==='Bimbingan'?'border-rose-300 bg-rose-50 text-rose-900':'border-slate-200 bg-white text-slate-600'}"><option value="">Pilih tahap</option><option value="Tinggi" ${value==='Tinggi'?'selected':''}>🟢 Tinggi</option><option value="Sederhana" ${value==='Sederhana'?'selected':''}>🟡 Sederhana</option><option value="Bimbingan" ${value==='Bimbingan'?'selected':''}>🔴 Bimbingan</option></select></div>`;
+      }).join("");
+      updateRPHStudentCounts();
+    }
+    function setRPHStudentStage(id,value){if(value)rphStudentStages[id]=value;else delete rphStudentStages[id];renderRPHStudentCards();}
+    function setAllRPHStudentStages(value){
+      const students=getRPHStudentsForClass(document.getElementById("rphClass")?.value||"");
+      rphStudentStages={};if(value)students.forEach((st,i)=>{rphStudentStages[String(st.id||st.studentId||st.nama||i)]=value;});
+      renderRPHStudentCards();
+    }
+    function restoreRPHStudentStages(raw){
+      rphStudentStages={};
+      if(!raw)return;
+      try{const parsed=JSON.parse(raw);if(parsed&&typeof parsed==="object"&&!Array.isArray(parsed))rphStudentStages=parsed;}
+      catch(e){}
+      renderRPHStudentCards();
+    }
     function ensureTeachingState(){if(!appState.teaching||typeof appState.teaching!=="object")appState.teaching={resources:[],rph:[]};if(!Array.isArray(appState.teaching.resources))appState.teaching.resources=[];if(!Array.isArray(appState.teaching.rph))appState.teaching.rph=[];}
     function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+    function showTeachingSection(section){
+      const docs=document.getElementById("teachingDocsPanel");
+      const rph=document.getElementById("teachingRPHPanel");
+      const docsBtn=document.getElementById("teachingNavDocs");
+      const rphBtn=document.getElementById("teachingNavRPH");
+      if(!docs||!rph)return;
+      const showDocs=section==="docs";
+      docs.classList.toggle("hidden",!showDocs);
+      rph.classList.toggle("hidden",showDocs);
+      if(docsBtn){docsBtn.className=showDocs?"rounded-xl bg-emerald-700 text-white px-5 py-3 text-sm font-bold shadow":"rounded-xl bg-white border border-slate-200 text-slate-700 px-5 py-3 text-sm font-bold";}
+      if(rphBtn){rphBtn.className=!showDocs?"rounded-xl bg-indigo-900 text-white px-5 py-3 text-sm font-bold shadow":"rounded-xl bg-white border border-slate-200 text-slate-700 px-5 py-3 text-sm font-bold";}
+    }
     function renderTeaching(){
       ensureTeachingState();
       const fillWeeks=(id,includeAll)=>{const el=document.getElementById(id);if(!el||el.options.length>(includeAll?1:0))return;for(let i=1;i<=43;i++){const o=document.createElement("option");o.value=String(i);o.textContent="Minggu "+i;el.appendChild(o);}};
       fillWeeks("rphWeek",false);fillWeeks("rphFilterWeek",true);
       const cls=document.getElementById("rphClass"),fc=document.getElementById("rphFilterClass");
       if(cls&&cls.options.length===0)(appState.classes||[]).forEach(c=>{const o=document.createElement("option");o.value=c.nama;o.textContent=c.nama;cls.appendChild(o);});
-      if(fc&&fc.options.length===1)(appState.classes||[]).forEach(c=>{const o=document.createElement("option");o.value=c.nama;o.textContent=c.nama;fc.appendChild(o);});
+      if(fc&&fc.options.length===1){const filterClasses=[...new Set([...(rphReferenceData.students||[]).map(x=>String(x.kelas||"")),...(appState.classes||[]).map(c=>String(c.nama||""))].filter(Boolean))];filterClasses.forEach(name=>{const o=document.createElement("option");o.value=name;o.textContent=name;fc.appendChild(o);});}
       const resources=appState.teaching.resources,rph=appState.teaching.rph;
       document.getElementById("teachResourceCount").textContent=resources.length;document.getElementById("teachRphCount").textContent=rph.length;
       document.getElementById("resourceList").innerHTML=resources.length?resources.map(x=>`<div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs"><div class="min-w-0"><div class="font-bold">${escapeHtml(x.type)} • ${escapeHtml(x.subject)}</div><div class="text-slate-500">${escapeHtml(x.year)} · ${escapeHtml(x.fileName)}</div></div><div class="flex gap-2 shrink-0">${x.dataUrl?`<a class="text-emerald-700 font-bold" href="${x.dataUrl}" download="${escapeHtml(x.fileName)}">Buka</a>`:""}<button onclick="deleteTeachingResource('${x.id}')" class="text-rose-600 font-bold">Padam</button></div></div>`).join(""):'<p class="text-xs text-slate-400">Belum ada dokumen dimuat naik.</p>';
       const fw=document.getElementById("rphFilterWeek").value,cl=document.getElementById("rphFilterClass").value;
       const rows=rph.filter(x=>(!fw||String(x.week)===fw)&&(!cl||x.className===cl)).sort((a,b)=>Number(a.week)-Number(b.week)||String(a.date).localeCompare(String(b.date)));
-      document.getElementById("rphTableBody").innerHTML=rows.length?rows.map(x=>`<tr><td class="p-3 font-bold">Minggu ${escapeHtml(x.week)}</td><td class="p-3">${escapeHtml(x.date||"-")}</td><td class="p-3">${escapeHtml(x.className||"-")}</td><td class="p-3">${escapeHtml(x.subject||"-")}</td><td class="p-3">${escapeHtml(x.status)}</td><td class="p-3 text-right whitespace-nowrap"><button onclick="editRPH('${x.id}')" class="text-indigo-700 font-bold mr-3">Edit</button><button onclick="deleteRPH('${x.id}')" class="text-rose-600 font-bold">Padam</button></td></tr>`).join(""):'<tr><td colspan="6" class="p-6 text-center text-slate-400">Tiada rekod RPH untuk tapisan ini.</td></tr>';
+      document.getElementById("rphTableBody").innerHTML=rows.length?rows.map(x=>`<tr><td class="p-3 font-bold">Minggu ${escapeHtml(x.week)}</td><td class="p-3">${escapeHtml(formatDateDMY(x.date))}</td><td class="p-3">${escapeHtml(x.className||"-")}</td><td class="p-3">${escapeHtml(x.subject||"-")}</td><td class="p-3">${escapeHtml(x.teacher||"-")}</td><td class="p-3 text-right whitespace-nowrap"><button onclick="editRPH('${x.id}')" class="text-indigo-700 font-bold mr-3">Edit</button><button onclick="deleteRPH('${x.id}')" class="text-rose-600 font-bold">Padam</button></td></tr>`).join(""):'<tr><td colspan="6" class="p-6 text-center text-slate-400">Tiada rekod RPH untuk tapisan ini.</td></tr>';
     }
     function saveTeachingResource(){
       ensureTeachingState();const f=document.getElementById("resourceFile").files[0],subject=document.getElementById("resourceSubject").value.trim();
@@ -4287,17 +4830,168 @@ function buildOfficialTimetableSlots() {
       const reader=new FileReader();reader.onload=()=>{appState.teaching.resources.push({id:"DOC-"+Date.now(),type:document.getElementById("resourceType").value,subject,year:document.getElementById("resourceYear").value.trim(),fileName:f.name,dataUrl:reader.result});saveLocal();renderTeaching();document.getElementById("resourceFile").value="";document.getElementById("resourceSubject").value="";document.getElementById("resourceYear").value="";showToast("Dokumen disimpan pada peranti ini.","📂");};reader.readAsDataURL(f);
     }
     function deleteTeachingResource(id){if(!confirm("Padam dokumen ini?"))return;appState.teaching.resources=appState.teaching.resources.filter(x=>x.id!==id);saveLocal();renderTeaching();}
-    function resetRPHForm(){["rphEditId","rphSubject","rphDuration","rphSK","rphSP","rphObjective","rphActivities","rphReflection"].forEach(id=>document.getElementById(id).value="");document.getElementById("rphStatus").value="Dirancang";}
-    function saveRPH(){
-      ensureTeachingState();const id=document.getElementById("rphEditId").value;
-      const x={id:id||"RPH-"+Date.now(),week:document.getElementById("rphWeek").value,date:document.getElementById("rphDate").value,className:document.getElementById("rphClass").value,subject:document.getElementById("rphSubject").value.trim(),duration:document.getElementById("rphDuration").value.trim(),status:document.getElementById("rphStatus").value,sk:document.getElementById("rphSK").value.trim(),sp:document.getElementById("rphSP").value.trim(),objective:document.getElementById("rphObjective").value.trim(),activities:document.getElementById("rphActivities").value.trim(),reflection:document.getElementById("rphReflection").value.trim()};
-      if(!x.week||!x.className||!x.subject){showToast("Lengkapkan minggu, kelas dan mata pelajaran.","⚠️");return;}
-      const i=appState.teaching.rph.findIndex(r=>r.id===x.id);if(i>=0)appState.teaching.rph[i]=x;else appState.teaching.rph.push(x);
-      saveLocal();resetRPHForm();renderTeaching();showToast("RPH disimpan pada peranti ini.","✅");
+    function resetRPHForm(){
+      ["rphEditId","rphDuration","rphTema","rphSK","rphSP","rphObjective","rphActivities","rphBBM","rphReflection","rphActivityHigh","rphActivityMid","rphActivityLow","rphBBMHigh","rphBBMMid","rphBBMLow","rphAssessHigh","rphAssessMid","rphAssessLow"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+      ["rphWeek","rphDate","rphClass","rphSubject"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+      const teacher=document.getElementById("rphTeacher");if(teacher)teacher.value="";
+      rphStudentStages={};onRPHSubjectChange();renderRPHStudentCards();
     }
-    function editRPH(id){const x=appState.teaching.rph.find(r=>r.id===id);if(!x)return;const m={rphEditId:"id",rphWeek:"week",rphDate:"date",rphClass:"className",rphSubject:"subject",rphDuration:"duration",rphStatus:"status",rphSK:"sk",rphSP:"sp",rphObjective:"objective",rphActivities:"activities",rphReflection:"reflection"};Object.entries(m).forEach(([a,b])=>document.getElementById(a).value=x[b]??"");document.getElementById("view-pengajaran").scrollIntoView({behavior:"smooth"});}
-    function deleteRPH(id){if(!confirm("Padam rekod RPH ini?"))return;appState.teaching.rph=appState.teaching.rph.filter(x=>x.id!==id);saveLocal();renderTeaching();}
-    function printRPHList(){const rows=appState.teaching.rph||[],w=window.open("","_blank");if(!w){showToast("Benarkan pop-up untuk cetakan.","⚠️");return;}w.document.write(`<html><head><title>Rekod RPH PPKI</title><style>body{font:12px Arial;padding:24px}h2{text-align:center}table{width:100%;border-collapse:collapse}td,th{border:1px solid #777;padding:7px;text-align:left}</style></head><body><h2>REKOD RPH PPKI SK KESANG TUA</h2><table><tr><th>Minggu</th><th>Tarikh</th><th>Kelas</th><th>Subjek</th><th>Objektif</th><th>Status</th></tr>${rows.map(x=>`<tr><td>${escapeHtml(x.week)}</td><td>${escapeHtml(x.date)}</td><td>${escapeHtml(x.className)}</td><td>${escapeHtml(x.subject)}</td><td>${escapeHtml(x.objective)}</td><td>${escapeHtml(x.status)}</td></tr>`).join("")}</table></body></html>`);w.document.close();w.print();}
+
+    // ==========================================
+    // JANA AI TERUS KE BORANG RPH (GEMINI API)
+    // ==========================================
+    function updateGeminiKeyStatus() {
+      const key = localStorage.getItem("skkt_rph_gemini_key") || "";
+      const el = document.getElementById("geminiKeyStatus");
+      const input = document.getElementById("rphGeminiApiKey");
+      if (input && key && !input.value) input.value = key;
+      if (el) {
+        el.textContent = key ? "🟢 Kunci API Aktif" : "⚪ Belum Ditetapkan";
+        el.className = key ? "text-[11px] font-bold text-emerald-700" : "text-[11px] font-bold text-amber-700";
+      }
+    }
+
+    function saveRPHGeminiKey() {
+      const val = (document.getElementById("rphGeminiApiKey")?.value || "").trim();
+      if (!val) {
+        localStorage.removeItem("skkt_rph_gemini_key");
+        updateGeminiKeyStatus();
+        showToast("Kunci API dipadam dari pelayar.", "ℹ️");
+        return;
+      }
+      localStorage.setItem("skkt_rph_gemini_key", val);
+      updateGeminiKeyStatus();
+      showToast("Kunci API Gemini berjaya disimpan pada peranti ini.", "🔑");
+    }
+
+    async function generateRPHWithAI(section = "all") {
+      const apiKey = (localStorage.getItem("skkt_rph_gemini_key") || document.getElementById("rphGeminiApiKey")?.value || "").trim();
+      const cls = document.getElementById("rphClass")?.value || "";
+      const subj = (document.getElementById("rphSubject")?.value || "").trim();
+
+      if (!cls || !subj) {
+        showToast("Sila pilih Kelas PPKI dan Mata Pelajaran terlebih dahulu.", "⚠️");
+        return;
+      }
+
+      if (!apiKey) {
+        showToast("Sila masukkan Kunci API Gemini di bahagian Tetapan Kunci API di atas borang.", "🔑");
+        const detailsEl = document.getElementById("rphGeminiApiKey")?.closest("details");
+        if (detailsEl) detailsEl.open = true;
+        return;
+      }
+
+      const v = id => document.getElementById(id)?.value?.trim() || "Belum dinyatakan";
+      const students = getRPHStudentsForClass(cls).map((st, i) => {
+        const stg = rphStudentStages[String(st.id || st.studentId || st.nama || i)] || "Belum ditetapkan";
+        return `${st.nama || "Murid " + (i + 1)} (${st.kategori || "MBPK"}) - Tahap: ${stg}`;
+      }).join("\n") || "Tiada senarai murid";
+
+      const btnMap = {
+        tema: "btnAiTema", sk: "btnAiSK", sp: "btnAiSP",
+        objective: "btnAiObjective", activities: "btnAiActivities",
+        bbm: "btnAiBBM", reflection: "btnAiReflection"
+      };
+      const activeBtn = document.getElementById(btnMap[section]);
+      const origText = activeBtn ? activeBtn.innerHTML : "";
+      if (activeBtn) { activeBtn.disabled = true; activeBtn.innerHTML = "⏳ Menjana..."; }
+      showToast("AI sedang menjana kandungan RPH PPKI...", "✨");
+
+      const prompt = `Anda ialah pakar kurikulum Pendidikan Khas (KSSRPK Semakan) sekolah rendah di Malaysia.
+Maklumat PdP semasa:
+- Kelas PPKI: ${cls}
+- Mata Pelajaran: ${subj}
+- Minggu: ${v("rphWeek")}
+- Tema/Tajuk semasa: ${v("rphTema")}
+- Standard Kandungan (SK) semasa: ${v("rphSK")}
+- Standard Pembelajaran (SP) semasa: ${v("rphSP")}
+- Senarai Murid & Tahap Penguasaan:
+${students}
+
+Tugasan: Hasilkan kandungan RPH yang praktikal, jelas, terbeza mengikut tahap murid di atas, dan terus boleh digunakan oleh guru.
+Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut:
+{
+  "tema": "cadangan tajuk PdP ringkas dan jelas",
+  "sk": "kod dan penyataan Standard Kandungan KSSRPK yang sesuai",
+  "sp": "kod dan penyataan Standard Pembelajaran KSSRPK yang selari",
+  "objective": "objektif pembelajaran terbeza (Tinggi, Sederhana, Bimbingan) yang boleh diukur",
+  "activities": "aktiviti lengkap Set Induksi, Langkah 1, Langkah 2 (terbeza mengikut kumpulan murid), dan Penutup",
+  "activityHigh": "perincian aktiviti pengayaan kumpulan Tinggi",
+  "activityMid": "perincian aktiviti berpandu kumpulan Sederhana",
+  "activityLow": "perincian aktiviti bimbingan kumpulan Bimbingan",
+  "bbm": "senarai BBM, Elemen Terapi relevan, EMK dan Nilai Murni",
+  "reflection": "templat refleksi/impak PdP dengan ruang kosong ___ / ___ untuk bilangan murid"
+}`;
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.4, responseMimeType: "application/json" }
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.error?.message || "Ralat sambungan API Gemini.");
+
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+        const parsed = JSON.parse(rawText);
+
+        const fieldMap = {
+          tema: ["rphTema"],
+          sk: ["rphSK"],
+          sp: ["rphSP"],
+          objective: ["rphObjective"],
+          activities: ["rphActivities", "rphActivityHigh", "rphActivityMid", "rphActivityLow"],
+          bbm: ["rphBBM"],
+          reflection: ["rphReflection"]
+        };
+
+        const jsonKeyMap = {
+          rphTema: "tema", rphSK: "sk", rphSP: "sp", rphObjective: "objective",
+          rphActivities: "activities", rphActivityHigh: "activityHigh",
+          rphActivityMid: "activityMid", rphActivityLow: "activityLow",
+          rphBBM: "bbm", rphReflection: "reflection"
+        };
+
+        const targets = section === "all" ? Object.keys(jsonKeyMap) : (fieldMap[section] || []);
+        targets.forEach(elId => {
+          const el = document.getElementById(elId);
+          const jKey = jsonKeyMap[elId];
+          if (el && parsed[jKey]) el.value = parsed[jKey];
+        });
+
+        showToast("Kandungan RPH berjaya dijana dan diisi ke dalam borang!", "🎉");
+      } catch (err) {
+        showToast("Gagal menjana AI: " + err.message, "⚠️");
+      } finally {
+        if (activeBtn) { activeBtn.disabled = false; activeBtn.innerHTML = origText; }
+      }
+    }
+    async function saveRPH(){
+      ensureTeachingState();
+      const id=document.getElementById("rphEditId").value;
+      const val=id=>document.getElementById(id)?.value?.trim()||"";
+      const x={id:id||"RPH-"+Date.now(),week:val("rphWeek"),date:val("rphDate"),className:val("rphClass"),year:(val("rphClass").match(/^(\d+)/)||[])[1]||"",student:val("rphStudent"),teacher:val("rphTeacher"),subject:val("rphSubject"),duration:val("rphDuration"),tema:val("rphTema"),sk:val("rphSK"),sp:val("rphSP"),objective:val("rphObjective"),activities:val("rphActivities"),bbm:val("rphBBM"),reflection:val("rphReflection"),activityHigh:val("rphActivityHigh"),activityMid:val("rphActivityMid"),activityLow:val("rphActivityLow"),bbmHigh:val("rphBBMHigh"),bbmMid:val("rphBBMMid"),bbmLow:val("rphBBMLow"),assessHigh:val("rphAssessHigh"),assessMid:val("rphAssessMid"),assessLow:val("rphAssessLow")};
+      if(!x.week||!x.date||!x.className||!x.subject||!x.tema){showToast("Lengkapkan minggu, tarikh, kelas, mata pelajaran dan tema/tajuk PdP.","⚠️");return;}
+      try{
+        await callRPHApi({action:"save",data:JSON.stringify({id:x.id,tarikh:x.date,minggu:x.week,tahun:new Date().getFullYear(),tahunKurikulum:x.year,kelas:x.className,namaGuru:x.teacher,namaMBPK:x.student,mataPelajaran:x.subject,masa:x.duration,temaPdP:x.tema,standardKandungan:x.sk,standardPembelajaran:x.sp,objektifPembelajaran:x.objective,aktiviti:x.activities,bbm:x.bbm,refleksi:x.reflection,aktivitiTinggi:x.activityHigh,aktivitiSederhana:x.activityMid,aktivitiRendah:x.activityLow,bbmTinggi:x.bbmHigh,bbmSederhana:x.bbmMid,bbmRendah:x.bbmLow,pentaksiranTinggi:x.assessHigh,pentaksiranSederhana:x.assessMid,pentaksiranRendah:x.assessLow})});
+        await loadRPHFromCloud(false);resetRPHForm();showToast("RPH berjaya dihantar ke pangkalan data bersama.","☁️");
+      }catch(error){showToast("RPH tidak disimpan: "+error.message,"⚠️");}
+    }
+    function editRPH(id){
+      const x=appState.teaching.rph.find(r=>r.id===id);if(!x)return;
+      const m={rphEditId:"id",rphWeek:"week",rphDate:"date",rphClass:"className",rphSubject:"subject",rphDuration:"duration",rphTema:"tema",rphSK:"sk",rphSP:"sp",rphObjective:"objective",rphActivities:"activities",rphBBM:"bbm",rphReflection:"reflection",rphActivityHigh:"activityHigh",rphActivityMid:"activityMid",rphActivityLow:"activityLow",rphBBMHigh:"bbmHigh",rphBBMMid:"bbmMid",rphBBMLow:"bbmLow",rphAssessHigh:"assessHigh",rphAssessMid:"assessMid",rphAssessLow:"assessLow"};
+      onRPHClassChange();
+      Object.entries(m).forEach(([a,b])=>{const el=document.getElementById(a);if(el)el.value=x[b]??"";});
+      const teacher=document.getElementById("rphTeacher");if(teacher)teacher.value=x.teacher||"";
+      restoreRPHStudentStages(x.student||"");
+      document.getElementById("view-pengajaran").scrollIntoView({behavior:"smooth"});
+    }
+    function deleteRPH(id){showToast("Fungsi padam rekod awan belum diaktifkan dalam API. Rekod tidak diubah.","ℹ️");}
+    function printRPHList(){const rows=appState.teaching.rph||[],w=window.open("","_blank");if(!w){showToast("Benarkan pop-up untuk cetakan.","⚠️");return;}w.document.write(`<html><head><title>Rekod RPH PPKI</title><style>body{font:12px Arial;padding:24px}h2{text-align:center}table{width:100%;border-collapse:collapse}td,th{border:1px solid #777;padding:7px;text-align:left}</style></head><body><h2>REKOD RPH PPKI SK KESANG TUA</h2><table><tr><th>Minggu</th><th>Tarikh</th><th>Kelas</th><th>Subjek</th><th>Objektif</th><th>Guru</th></tr>${rows.map(x=>`<tr><td>${escapeHtml(x.week)}</td><td>${escapeHtml(formatDateDMY(x.date))}</td><td>${escapeHtml(x.className)}</td><td>${escapeHtml(x.subject)}</td><td>${escapeHtml(x.objective)}</td><td>${escapeHtml(x.teacher||"-")}</td></tr>`).join("")}</table></body></html>`);w.document.close();w.print();}
     function renderAll() {
       syncClassDropdowns();
       renderDirectory();
@@ -4320,6 +5014,9 @@ function buildOfficialTimetableSlots() {
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("attendanceDate").value = getMalaysiaDateStr();
       loadLocal();
+      ensureTeachingState();
+      loadRPHFromCloud(false);
+      loadRPHReferenceData();
       if (appState.schoolLogoVersion !== "skkt-official-2026") {
         appState.schoolLogo = "data:image/webp;base64,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";
         appState.schoolLogoVersion = "skkt-official-2026";
@@ -4327,6 +5024,8 @@ function buildOfficialTimetableSlots() {
       }
       applyLogo();
       renderAll();
+      if (typeof updateGeminiKeyStatus === "function") updateGeminiKeyStatus();
+      if (typeof populateRPHTemplateDropdowns === "function") populateRPHTemplateDropdowns();
       setCloudStatus(navigator.onLine ? "Menyemak sambungan pangkalan data..." : "Mod Luar Talian (Disimpan Tempatan)", false, navigator.onLine ? "syncing" : "offline");
       syncFromCloud(false);
       fetchParentAttendanceCSV(false);
