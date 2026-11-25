@@ -4855,6 +4855,11 @@ function updateSmartActivityTemplates() {
     if (rphSPEl) rphSPEl.addEventListener("input", updateSmartActivityTemplates);
     if (rphSPSelectEl) rphSPSelectEl.addEventListener("change", () => setTimeout(updateSmartActivityTemplates, 50));
     window.addEventListener("load", loadRPTFromGoogleSheets);
+    window.addEventListener("load", () => {
+  setTimeout(() => {
+    if (typeof onRPHClassChange === "function") onRPHClassChange();
+  }, 300);
+});
     // ==========================================
     // PENAPISAN MURID KELAS + PAI / PM
     // ==========================================
