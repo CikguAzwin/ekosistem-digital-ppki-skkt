@@ -4684,10 +4684,11 @@ function populateRPHTemplateDropdowns() {
       }
       const base = RPH_TEMPLATES.default;
 
+      // Jangan isi tema/SK/SP statik BM — biar diisi secara eksklusif oleh data RPT Google Sheets
       const mapFields = [
-        ["rphTemaSelect", specific.tema || base.tema, "-- Pilih Templat Tema --"],
-        ["rphSKSelect", specific.sk || base.sk, "-- Pilih SK --"],
-        ["rphSPSelect", specific.sp || base.sp, "-- Pilih SP --"],
+        ["rphTemaSelect", specific.tema || [], "-- Pilih Templat Tema --"],
+        ["rphSKSelect", specific.sk || [], "-- Pilih SK --"],
+        ["rphSPSelect", specific.sp || [], "-- Pilih SP --"],
         ["rphObjectiveSelect", specific.objective || base.objective, "-- Pilih Templat Objektif --"],
         ["rphActivitiesSelect", specific.activities || base.activities, "-- Pilih Templat Aktiviti --"],
         ["rphBBMSelect", specific.bbm || base.bbm, "-- Pilih Gabungan BBM/Terapi --"],
@@ -4707,7 +4708,6 @@ function populateRPHTemplateDropdowns() {
         el.dataset.items = JSON.stringify(list);
       });
     }
-
     function applyRPHTemplate(fieldKey, idxStr) {
       if (idxStr === "") return;
       const selectMap = {
