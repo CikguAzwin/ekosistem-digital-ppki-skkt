@@ -4757,6 +4757,81 @@ function populateRPHTemplateDropdowns() {
         bind();
       }
     })();
+    // Tarik RPT_KSSRPK dari Google Sheets & gabungkan ke RPH_TEMPLATES secara dinamik
+    let SHEET_RPT_ROWS = [];
+
+    async function loadRPTFromGoogleSheets() {
+      try {
+        const baseUrl = (typeof GAS_WEBAPP_URL !== "undefined" && GAS_WEBAPP_URL)
+          ? GAS_WEBAPP_URL
+          : (localStorage.getItem("ppki_gas_url") || "");
+        if (!baseUrl) return;
+        const sep = baseUrl.includes("?") ? "&" : "?";
+        const res = await fetch(baseUrl + sep + "action=getRPT");
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.rpt) && json.rpt.length > 0) {
+          SHEET_RPT_ROWS = json.rpt;
+          document.querySelectorAll("#rphTemaSelect,#rphSKSelect,#rphSPSelect,#rphObjectiveSelect,#rphBBMSelect")
+            .forEach(el => { delete el.dataset.lastSubject; });
+          populateRPHTemplateDropdowns();
+        }
+      } catch (err) {
+        console.warn("RPT Google Sheets belum dimuatkan:", err);
+      }
+    }
+
+    const _origPopulateRPHTemplateDropdowns = populateRPHTemplateDropdowns;
+    populateRPHTemplateDropdowns = function() {
+      const subj = (document.getElementById("rphSubject")?.value || "").trim().toLowerCase();
+      const kelas = (document.getElementById("rphClass")?.value || "").trim().toLowerCase();
+
+      if (SHEET_RPT_ROWS.length > 0 && subj) {
+        const matchedRows = SHEET_RPT_ROWS.filter(row => {
+          const s = row.subjek.toLowerCase();
+          const subjMatch = s.includes(subj) || subj.includes(s) ||
+            ((subj.includes("inggeris") || subj.includes("english")) && s.includes("inggeris"));
+          if (!subjMatch) return false;
+          const t = row.tahun.toLowerCase();
+          const yearNum = (kelas.match(/[1-6]/) || [])[0];
+          if (yearNum && t.includes("tahun") && !t.includes(yearNum)) return false;
+          return true;
+        });
+
+        if (matchedRows.length > 0) {
+          const unique = arr => [...new Set(arr.filter(Boolean))];
+          const base = RPH_TEMPLATES.default;
+          const isBI = subj.includes("inggeris") || subj.includes("english");
+          const fallback = isBI ? (RPH_TEMPLATES["Bahasa Inggeris"] || base) : base;
+
+          const mapFields = [
+            ["rphTemaSelect", unique(matchedRows.map(r => r.tema)), "-- Pilih Templat Tema --"],
+            ["rphSKSelect", unique(matchedRows.map(r => r.sk)), "-- Pilih SK --"],
+            ["rphSPSelect", unique(matchedRows.map(r => r.sp)), "-- Pilih SP --"],
+            ["rphObjectiveSelect", unique(matchedRows.map(r => r.objektif)).length ? unique(matchedRows.map(r => r.objektif)) : fallback.objective, "-- Pilih Templat Objektif --"],
+            ["rphActivitiesSelect", fallback.activities, "-- Pilih Templat Aktiviti --"],
+            ["rphBBMSelect", unique(matchedRows.map(r => r.bbm)).length ? unique(matchedRows.map(r => r.bbm)) : fallback.bbm, "-- Pilih Gabungan BBM/Terapi --"],
+            ["rphReflectionSelect", fallback.reflection, "-- Pilih Templat Refleksi --"]
+          ];
+
+          mapFields.forEach(([id, list, placeholder]) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const cacheKey = "SHEET::" + subj + "::" + kelas + "::" + list.length;
+            if (el.dataset.lastSubject === cacheKey && el.options.length > 1) return;
+            el.dataset.lastSubject = cacheKey;
+            el.innerHTML = `<option value="">${placeholder}</option>` + list.map((item, idx) => {
+              const shortLabel = item.replace(/\n/g, " ").slice(0, 62) + (item.length > 62 ? "..." : "");
+              return `<option value="${idx}">${escapeHtml(shortLabel)}</option>`;
+            }).join("");
+            el.dataset.items = JSON.stringify(list);
+          });
+          return;
+        }
+      }
+      _origPopulateRPHTemplateDropdowns();
+    };
+
+    window.addEventListener("load", loadRPTFromGoogleSheets);
     // ==========================================
     // PENAPISAN MURID KELAS + PAI / PM
     // ==========================================
