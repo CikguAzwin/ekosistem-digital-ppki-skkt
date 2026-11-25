@@ -5000,16 +5000,27 @@ Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut
       const sel = document.getElementById("rphTeacher");
       if (!sel) return;
       const currentVal = sel.value;
-      const staffList = (appState.staff || []).filter(s => s && s.name);
-      const teachersOnly = staffList.filter(s => !/ppm|pembantu/i.test(s.role || s.position || ""));
-      const finalList = teachersOnly.length ? teachersOnly : staffList;
-      sel.innerHTML = `<option value="">-- Pilih Nama Guru --</option>` + finalList.map(s => {
-        const name = escapeHtml(s.name.trim());
-        return `<option value="${name}">${name}</option>`;
+      const rawStaff = Array.isArray(appState.staff) ? appState.staff : [];
+      const names = [];
+      rawStaff.forEach(s => {
+        if (typeof s === "string" && s.trim()) {
+          names.push(s.trim());
+        } else if (s && typeof s === "object") {
+          const n = s.name || s.nama || s.fullName || s.namaGuru || s.staffName || "";
+          const role = s.role || s.position || s.jawatan || s.kategori || "";
+          if (n && !/ppm|pembantu/i.test(role)) names.push(String(n).trim());
+        }
+      });
+      (appState.teaching?.rph || []).forEach(r => {
+        if (r && r.teacher && r.teacher.trim()) names.push(r.teacher.trim());
+      });
+      const uniqueNames = [...new Set(names)].filter(Boolean);
+      sel.innerHTML = `<option value="">-- Pilih Nama Guru --</option>` + uniqueNames.map(n => {
+        const safe = escapeHtml(n);
+        return `<option value="${safe}">${safe}</option>`;
       }).join("");
-      if (currentVal) sel.value = currentVal;
+      if (currentVal && uniqueNames.includes(currentVal)) sel.value = currentVal;
     }
-
     function openRPHPreviewWindow(x) {
       const w = window.open("", "_blank");
       if (!w) { showToast("Sila benarkan pop-up pada pelayar untuk pratonton RPH.", "⚠️"); return; }
