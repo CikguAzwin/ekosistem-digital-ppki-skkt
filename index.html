@@ -4905,17 +4905,79 @@ function updateSmartActivityTemplates() {
       renderRPHStudentCards();
     }
 
-    function onRPHClassChange(){
-      const cls=document.getElementById("rphClass")?.value||"";
-      const classObj=(appState.classes||[]).find(x=>String(x.nama||"")===cls);
-      const teacher=document.getElementById("rphTeacher");
-      if(teacher)teacher.value=classObj?.guruKelas||"";
-      const yearEl=document.getElementById("rphYear");
-      if(yearEl){
-        const match=cls.match(/^(\d+)/);
-        yearEl.value=match?("Tahun "+match[1]):"";
+    function onRPHClassChange() {
+      const cls = document.getElementById("rphClass")?.value || "";
+      const classObj = (appState.classes || []).find(x => String(x.nama || "") === cls);
+      const teacher = document.getElementById("rphTeacher");
+      if (teacher) teacher.value = classObj?.guruKelas || "";
+      const yearEl = document.getElementById("rphYear");
+      const match = cls.match(/^(\d+)/);
+      const yrNum = match ? Number(match[1]) : 0;
+      if (yearEl) {
+        yearEl.value = yrNum ? ("Tahun " + yrNum) : "";
       }
-      rphStudentStages={};
+
+      // Penapisan Mata Pelajaran Mengikut Tahap Kelas PPKI
+      const subjEl = document.getElementById("rphSubject");
+      if (subjEl) {
+        const prevSubj = subjEl.value;
+        const subjekTahap1 = [
+          "Asas 3M (Bahasa Melayu)",
+          "Asas 3M (Bahasa Inggeris)",
+          "Asas 3M (Matematik)",
+          "Pengurusan Kehidupan (Pengurusan Diri)",
+          "Pengurusan Kehidupan (Kemahiran Manipulatif)",
+          "Pendidikan Islam",
+          "Pendidikan Moral",
+          "Pendidikan Jasmani dan Pendidikan Kesihatan",
+          "Pendidikan Seni Visual",
+          "Pendidikan Muzik"
+        ];
+        const subjekTahap2 = [
+          "Bahasa Melayu",
+          "English for Communication",
+          "Matematik",
+          "Pendidikan Sains, Sosial dan Alam Sekitar",
+          "Pengurusan Diri",
+          "Kemahiran Manipulatif",
+          "Pendidikan Islam",
+          "Pendidikan Moral",
+          "Pendidikan Jasmani dan Pendidikan Kesihatan",
+          "Pendidikan Seni Visual",
+          "Pendidikan Muzik",
+          "Kemahiran Hidup Asas (Masakan)",
+          "Kemahiran Hidup Asas (Jahitan)",
+          "Kemahiran Hidup Asas (Pertanian)",
+          "Kemahiran Hidup Asas (Penternakan)",
+          "Teknologi Maklumat dan Komunikasi (TMK)"
+        ];
+
+        let list = [];
+        if (yrNum >= 1 && yrNum <= 3) {
+          list = [...subjekTahap1];
+        } else if (yrNum >= 4 && yrNum <= 6) {
+          list = [...subjekTahap2];
+        } else {
+          list = [...new Set([...subjekTahap1, ...subjekTahap2])];
+        }
+
+        // Gabungkan jika ada subjek tambahan dari RPT_KSSRPK bagi tahun tersebut
+        const sheetRows = window._sheetRPTRows || [];
+        sheetRows.forEach(r => {
+          const rYr = String(r.tahun || "").replace(/\D/g, "");
+          const rSub = String(r.subjek || "").trim();
+          if (rSub && (!yrNum || Number(rYr) === yrNum) && !list.includes(rSub)) {
+            list.push(rSub);
+          }
+        });
+
+        subjEl.innerHTML = `<option value="">-- Pilih Mata Pelajaran --</option>` +
+          list.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+        if (prevSubj && list.includes(prevSubj)) subjEl.value = prevSubj;
+        if (typeof onRPHSubjectChange === "function") onRPHSubjectChange();
+      }
+
+      rphStudentStages = {};
       populateRPHTemplateDropdowns();
       renderRPHStudentCards();
     }
