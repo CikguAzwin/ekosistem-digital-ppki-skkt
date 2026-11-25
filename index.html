@@ -4828,7 +4828,32 @@ function populateRPHTemplateDropdowns() {
       }
       _origPopulateRPHTemplateDropdowns();
     };
+function updateSmartActivityTemplates() {
+      const spText = (document.getElementById("rphSP")?.value || "").trim();
+      const temaText = (document.getElementById("rphTema")?.value || "").trim();
+      const actSelect = document.getElementById("rphActivitiesSelect");
+      if (!actSelect || !spText) return;
 
+      // Bersihkan nombor kod di depan SP (contoh: "1.2.1 Mengecam..." -> "mengecam...")
+      const cleanSP = spText.replace(/^\d+(\.\d+)*\s*/, "").replace(/\.$/, "");
+      const fokus = cleanSP.charAt(0).toLowerCase() + cleanSP.slice(1);
+      const tajuk = temaText || cleanSP;
+
+      const smartList = [
+        `Set Induksi (5 minit):\n- Guru mempamerkan bahan maujud / kad bergambar berkaitan "${tajuk}" dan bersoal jawab secara ringkas untuk menarik perhatian murid.\n\nLangkah 1 — Penerangan & Tunjuk Cara (15 minit):\n- Guru menerangkan serta menunjukkan cara ${fokus} secara berperingkat menggunakan bahan maujud dan kad imbasan.\n\nLangkah 2 — Aktiviti PdPc Terbeza (30 minit):\n- Kumpulan Tinggi: Murid melaksanakan tugasan ${fokus} secara berdikari dan membentangkan hasil kerja.\n- Kumpulan Sederhana: Murid melaksanakan aktiviti berpandu secara berpasangan berkaitan ${fokus} dengan pemantauan guru.\n- Kumpulan Bimbingan: Murid melakukan latihan praktikal / sensori berkaitan ${fokus} secara individu dengan bimbingan penuh guru/PPM.\n\nPenutup (10 minit):\n- Guru merumuskan isi pelajaran hari ini, memberikan peneguhan positif, dan mengemas alatan bersama murid.`,
+
+        `Set Induksi (5 minit):\n- Murid menonton tayangan video pendek / mendengar audio berkaitan "${tajuk}" dan meneka aktiviti yang akan dipelajari.\n\nLangkah 1 — Simulasi & Latihan Berpandu (15 minit):\n- Guru membimbing murid secara kelas dan kumpulan kecil untuk ${fokus} melalui aktiviti 'hands-on'.\n\nLangkah 2 — Stesen Pembelajaran Terbeza (30 minit):\n- Kumpulan Tinggi: Murid melengkapkan lembaran kerja pengayaan dan latihan aplikasi ${fokus} tanpa bantuan.\n- Kumpulan Sederhana: Murid memadankan dan menyusun bahan berkaitan ${fokus} menggunakan kad petunjuk.\n- Kumpulan Bimbingan: Murid dibimbing secara fizikal dan lisan oleh guru/PPM untuk melakukan aktiviti asas ${fokus}.\n\nPenutup (10 minit):\n- Soal jawab ringkas bagi menilai kefahaman murid dan pemberian token/pujian.`
+      ];
+
+      actSelect.innerHTML = `<option value="">-- Pilih Templat Aktiviti Spesifik SP --</option>` +
+        smartList.map((item, idx) => `<option value="${idx}">${idx === 0 ? "Aktiviti PdPc Terbeza (Bahan Maujud & Terapi)" : "Aktiviti Stesen & Hands-On (Interaktif)"}</option>`).join("");
+      actSelect.dataset.items = JSON.stringify(smartList);
+    }
+
+    const rphSPEl = document.getElementById("rphSP");
+    const rphSPSelectEl = document.getElementById("rphSPSelect");
+    if (rphSPEl) rphSPEl.addEventListener("input", updateSmartActivityTemplates);
+    if (rphSPSelectEl) rphSPSelectEl.addEventListener("change", () => setTimeout(updateSmartActivityTemplates, 50));
     window.addEventListener("load", loadRPTFromGoogleSheets);
     // ==========================================
     // PENAPISAN MURID KELAS + PAI / PM
