@@ -5205,7 +5205,7 @@ Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut
       <th>Nama Guru</th><td colspan="3"><strong>${escapeHtml(x.teacher || "-")}</strong></td>
     </tr>
     <tr>
-      <th>Senarai Murid &amp; Tahap</th><td colspan="3">${(() => { try { const obj = typeof x.student === "string" ? JSON.parse(x.student) : (x.student || {}); const all = [...(appState.students || []), ...(rphReferenceData.students || [])]; const entries = Object.entries(obj); if (!entries.length) return "-"; return entries.map(([id, tahap], i) => { const st = all.find(s => String(s.id) === String(id)); const nama = st ? (st.nama || st.namaMurid || id) : id; return `${i + 1}. ${escapeHtml(nama)} (<strong>${escapeHtml(tahap)}</strong>)`; }).join("<br>"); } catch (e) { return nl2br(x.student); } })()}</td>
+      <th>Senarai Murid &amp; Tahap</th><td colspan="3">${(() => { try { const obj = typeof x.student === "string" ? JSON.parse(x.student) : (x.student || {}); const all = [...(appState.students || []), ...(rphReferenceData.students || [])]; const entries = Object.entries(obj); if (!entries.length) return "-"; return entries.map(([id, tahap], i) => { const cleanId = String(id).trim(); const st = all.find(s => [s.id, s.studentId, s.kod].some(k => String(k || "").trim() === cleanId)); const nama = st ? (st.nama || st.namaMurid || st.name || cleanId) : cleanId; return `${i + 1}. ${escapeHtml(nama)} (<strong>${escapeHtml(tahap)}</strong>)`; }).join("<br>"); } catch (e) { return nl2br(x.student); } })()}</td>
       </tr>
   </table>
   <div class="section-title">Perincian Pengajaran &amp; Pembelajaran (PdPc)</div>
