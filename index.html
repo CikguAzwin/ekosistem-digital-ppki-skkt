@@ -4617,6 +4617,26 @@ function buildOfficialTimetableSlots() {
           "PdP berjalan lancar. Murid menunjukkan minat yang tinggi melalui aktiviti hands-on dan bahan maujud. Tindak susul latihan pengukuhan akan diteruskan."
         ]
       },
+      "Bahasa Inggeris": {
+        tema: [],
+        sk: [],
+        sp: [],
+        objective: [
+          "By the end of the lesson, pupils will be able to:\n1. (High): Identify and respond to at least 3 out of 4 tasks independently.\n2. (Moderate): Complete at least 2 out of 4 tasks with minimal guidance.\n3. (Low): Imitate or respond to 1 task with full teacher/PPM guidance.",
+          "By the end of the lesson, pupils will be able to:\n- High Group: Complete the enrichment worksheet with 80% accuracy.\n- Moderate Group: Match pictures/words correctly with minimal prompting.\n- Low Group: Follow simple instructions and participate with physical/verbal cues."
+        ],
+        activities: [
+          "Set Induction (5 mins):\n- Teacher displays realia / picture cards related to the topic and asks simple warm-up questions.\n\nStep 1 — Presentation & Demonstration (15 mins):\n- Teacher models the target language/skill step-by-step using flashcards and audio.\n\nStep 2 — Differentiated Practice (30 mins):\n- High Group: Completes independent matching/writing tasks.\n- Moderate Group: Completes guided group activity with teacher prompts.\n- Low Group: Participates in hands-on sensory/motor matching with PPM assistance.\n\nClosure (10 mins):\n- Teacher recaps the lesson, praises pupils' efforts, and conducts quick oral review."
+        ],
+        bbm: [
+          "Picture cards, realia, differentiated worksheets • Speech Therapy & Fine Motor • CCE: Language • Value: Cooperation",
+          "LCD/Smart TV, interactive songs, tactile learning kit • Music & Sensory Therapy • CCE: ICT • Value: Confidence"
+        ],
+        reflection: [
+          "___ / ___ pupils achieved the learning objectives and were given enrichment activities. ___ / ___ pupils required guidance and were given remedial support.",
+          "Lesson went smoothly. Pupils showed high engagement through hands-on and differentiated activities. ___ / ___ pupils achieved the target skill."
+        ]
+      },
       "Pendidikan Islam": {
         tema: [
           "Akidah: Rukun Iman & Rukun Islam",
@@ -4824,15 +4844,19 @@ function updateSmartActivityTemplates() {
       const cleanSP = spText.replace(/^\d+(\.\d+)*\s*/, "").replace(/\.$/, "");
       const fokus = cleanSP.charAt(0).toLowerCase() + cleanSP.slice(1);
       const tajuk = temaText || cleanSP;
+      const subjNow = (document.getElementById("rphSubject")?.value || "").toLowerCase();
+      const isEnglish = subjNow.includes("inggeris") || subjNow.includes("english");
 
-      const smartList = [
-        `Set Induksi (5 minit):\n- Guru mempamerkan bahan maujud / kad bergambar berkaitan "${tajuk}" dan bersoal jawab secara ringkas untuk menarik perhatian murid.\n\nLangkah 1 — Penerangan & Tunjuk Cara (15 minit):\n- Guru menerangkan serta menunjukkan cara ${fokus} secara berperingkat menggunakan bahan maujud dan kad imbasan.\n\nLangkah 2 — Aktiviti PdPc Terbeza (30 minit):\n- Kumpulan Tinggi: Murid melaksanakan tugasan ${fokus} secara berdikari dan membentangkan hasil kerja.\n- Kumpulan Sederhana: Murid melaksanakan aktiviti berpandu secara berpasangan berkaitan ${fokus} dengan pemantauan guru.\n- Kumpulan Bimbingan: Murid melakukan latihan praktikal / sensori berkaitan ${fokus} secara individu dengan bimbingan penuh guru/PPM.\n\nPenutup (10 minit):\n- Guru merumuskan isi pelajaran hari ini, memberikan peneguhan positif, dan mengemas alatan bersama murid.`,
-
-        `Set Induksi (5 minit):\n- Murid menonton tayangan video pendek / mendengar audio berkaitan "${tajuk}" dan meneka aktiviti yang akan dipelajari.\n\nLangkah 1 — Simulasi & Latihan Berpandu (15 minit):\n- Guru membimbing murid secara kelas dan kumpulan kecil untuk ${fokus} melalui aktiviti 'hands-on'.\n\nLangkah 2 — Stesen Pembelajaran Terbeza (30 minit):\n- Kumpulan Tinggi: Murid melengkapkan lembaran kerja pengayaan dan latihan aplikasi ${fokus} tanpa bantuan.\n- Kumpulan Sederhana: Murid memadankan dan menyusun bahan berkaitan ${fokus} menggunakan kad petunjuk.\n- Kumpulan Bimbingan: Murid dibimbing secara fizikal dan lisan oleh guru/PPM untuk melakukan aktiviti asas ${fokus}.\n\nPenutup (10 minit):\n- Soal jawab ringkas bagi menilai kefahaman murid dan pemberian token/pujian.`
+      const smartList = isEnglish ? [
+        `Set Induction (5 mins):\n- Teacher displays realia / picture cards related to "${tajuk}" and asks simple warm-up questions to engage pupils.\n\nStep 1 — Presentation & Demonstration (15 mins):\n- Teacher models how to ${cleanSP} step-by-step using picture cards and flashcards.\n\nStep 2 — Differentiated PdPc Activities (30 mins):\n- High Group: Pupils complete the task to ${cleanSP} independently.\n- Moderate Group: Pupils complete the matching/practice task with minimal teacher prompts.\n- Low Group: Pupils participate in hands-on sensory/motor guidance with teacher and PPM assistance.\n\nClosure (10 mins):\n- Teacher recaps the lesson, praises pupils' efforts, and conducts a quick oral review.`,
+        `Set Induction (5 mins):\n- Pupils watch a short video / listen to audio related to "${tajuk}" and guess the lesson activity.\n\nStep 1 — Guided Group Exploration (15 mins):\n- Pupils imitate and practise "${cleanSP}" in small groups using interactive learning aids.\n\nStep 2 — Station / Hands-On Practice (30 mins):\n- High Group: Completes enrichment worksheets with minimal supervision.\n- Moderate Group: Matches words/pictures with guided prompting.\n- Low Group: Participates in tactile/motor reinforcement activities with full support.\n\nClosure (10 mins):\n- Singing/chanting recap related to the topic and positive reinforcement.`
+      ] : [
+        `Set Induksi (5 minit):\n- Guru mempamerkan bahan maujud / kad bergambar berkaitan "${tajuk}" dan bersoal jawab secara ringkas untuk menarik perhatian murid.\n\nLangkah 1 — Penerangan & Tunjuk Cara (15 minit):\n- Guru menerangkan serta menunjukkan cara ${cleanSP} secara berperingkat menggunakan bahan maujud dan kad imbasan.\n\nLangkah 2 — Aktiviti PdPc Terbeza (30 minit):\n- Kumpulan Tinggi: Murid melaksanakan tugasan ${cleanSP} secara berdikari.\n- Kumpulan Sederhana: Murid melengkapkan latihan dengan bimbingan minimum guru.\n- Kumpulan Rendah: Murid dibimbing secara langsung (hands-on / sensori) oleh guru dan PPM.\n\nPenutup (10 minit):\n- Guru merumuskan isi pelajaran, memberi pujian atas usaha murid, dan menjalankan soal jawab ringkas.`,
+        `Set Induksi (5 minit):\n- Murid menonton tayangan video pendek / mendengar audio berkaitan "${tajuk}" dan meneka aktiviti yang akan dipelajari.\n\nLangkah 1 — Penerokaan Kumpulan (15 minit):\n- Murid mencuba dan melatih kemahiran "${cleanSP}" secara berpasangan atau kumpulan kecil dengan bahan bantu belajar.\n\nLangkah 2 — Aktiviti Stesen & Praktikal (30 minit):\n- Kumpulan Tinggi: Menyelesaikan lembaran kerja pengayaan tanpa bantuan.\n- Kumpulan Sederhana: Memadankan gambar/perkataan dengan panduan guru.\n- Kumpulan Rendah: Menjalankan aktiviti motor halus / latih tubi berpandu bersama PPM.\n\nPenutup (10 minit):\n- Nyanyian / aktiviti pengukuhan ringkas berkaitan tajuk dan pemberian ganjaran positif.`
       ];
 
-      actSelect.innerHTML = `<option value="">-- Pilih Templat Aktiviti Spesifik SP --</option>` +
-        smartList.map((item, idx) => `<option value="${idx}">${idx === 0 ? "Aktiviti PdPc Terbeza (Bahan Maujud & Terapi)" : "Aktiviti Stesen & Hands-On (Interaktif)"}</option>`).join("");
+      actSelect.innerHTML = `<option value="">${isEnglish ? "-- Select SP Activity Template --" : "-- Pilih Templat Aktiviti Spesifik SP --"}</option>` +
+        smartList.map((item, idx) => `<option value="${idx}">${isEnglish ? (idx === 0 ? "Differentiated Activity (Realia & Therapy)" : "Station & Hands-On Activity") : (idx === 0 ? "Aktiviti PdPc Terbeza (Bahan Maujud & Terapi)" : "Aktiviti Stesen & Hands-On")}</option>`).join("");
       actSelect.dataset.items = JSON.stringify(smartList);
     }
 
