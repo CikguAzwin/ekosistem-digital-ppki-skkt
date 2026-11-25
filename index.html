@@ -4674,9 +4674,11 @@ function buildOfficialTimetableSlots() {
 
     function populateRPHTemplateDropdowns() {
       const subj = (document.getElementById("rphSubject")?.value || "").trim();
-      const specific = RPH_TEMPLATES[subj] || {};
+      const matchedKey = Object.keys(RPH_TEMPLATES).find(
+        k => k !== "default" && subj.toLowerCase().includes(k.toLowerCase())
+      );
+      const specific = (matchedKey ? RPH_TEMPLATES[matchedKey] : RPH_TEMPLATES[subj]) || {};
       const base = RPH_TEMPLATES.default;
-
       const mapFields = [
         ["rphTemaSelect", specific.tema || base.tema, "-- Pilih Templat Tema --"],
         ["rphSKSelect", specific.sk || base.sk, "-- Pilih SK --"],
