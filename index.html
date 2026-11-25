@@ -4798,14 +4798,17 @@ function populateRPHTemplateDropdowns() {
           const isBI = subj.includes("inggeris") || subj.includes("english");
           const fallback = isBI ? (RPH_TEMPLATES["Bahasa Inggeris"] || base) : base;
 
+          const subjTemplate = Object.entries(RPH_TEMPLATES).find(([k]) => k.toLowerCase() === subj)?.[1] || fallback;
+          const mergeList = (sheetArr, fallbackArr) => unique([...sheetArr, ...(fallbackArr || [])]);
+
           const mapFields = [
-            ["rphTemaSelect", unique(matchedRows.map(r => r.tema)), "-- Pilih Templat Tema --"],
-            ["rphSKSelect", unique(matchedRows.map(r => r.sk)), "-- Pilih SK --"],
-            ["rphSPSelect", unique(matchedRows.map(r => r.sp)), "-- Pilih SP --"],
-            ["rphObjectiveSelect", unique(matchedRows.map(r => r.objektif)).length ? unique(matchedRows.map(r => r.objektif)) : fallback.objective, "-- Pilih Templat Objektif --"],
-            ["rphActivitiesSelect", fallback.activities, "-- Pilih Templat Aktiviti --"],
-            ["rphBBMSelect", unique(matchedRows.map(r => r.bbm)).length ? unique(matchedRows.map(r => r.bbm)) : fallback.bbm, "-- Pilih Gabungan BBM/Terapi --"],
-            ["rphReflectionSelect", fallback.reflection, "-- Pilih Templat Refleksi --"]
+            ["rphTemaSelect", mergeList(matchedRows.map(r => r.tema), subjTemplate.tema), "-- Pilih Templat Tema --"],
+            ["rphSKSelect", mergeList(matchedRows.map(r => r.sk), subjTemplate.sk), "-- Pilih SK --"],
+            ["rphSPSelect", mergeList(matchedRows.map(r => r.sp), subjTemplate.sp), "-- Pilih SP --"],
+            ["rphObjectiveSelect", mergeList(matchedRows.map(r => r.objektif), subjTemplate.objective), "-- Pilih Templat Objektif --"],
+            ["rphActivitiesSelect", subjTemplate.activities, "-- Pilih Templat Aktiviti --"],
+            ["rphBBMSelect", mergeList(matchedRows.map(r => r.bbm), subjTemplate.bbm), "-- Pilih Gabungan BBM/Terapi --"],
+            ["rphReflectionSelect", subjTemplate.reflection, "-- Pilih Templat Refleksi --"]
           ];
 
           mapFields.forEach(([id, list, placeholder]) => {
