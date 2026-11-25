@@ -4671,14 +4671,19 @@ function buildOfficialTimetableSlots() {
         ]
       }
     };
-
-    function populateRPHTemplateDropdowns() {
-      const subj = (document.getElementById("rphSubject")?.value || "").trim();
-      const matchedKey = Object.keys(RPH_TEMPLATES).find(
-        k => k !== "default" && subj.toLowerCase().includes(k.toLowerCase())
-      );
-      const specific = (matchedKey ? RPH_TEMPLATES[matchedKey] : RPH_TEMPLATES[subj]) || {};
+function populateRPHTemplateDropdowns() {
+      const subj = (document.getElementById("rphSubject")?.value || "").trim().toLowerCase();
+      let specific = {};
+      if (subj.includes("inggeris") || subj.includes("english")) {
+        specific = RPH_TEMPLATES["Bahasa Inggeris"] || {};
+      } else {
+        const matchedKey = Object.keys(RPH_TEMPLATES).find(
+          k => k !== "default" && subj.includes(k.toLowerCase())
+        );
+        specific = matchedKey ? RPH_TEMPLATES[matchedKey] : {};
+      }
       const base = RPH_TEMPLATES.default;
+
       const mapFields = [
         ["rphTemaSelect", specific.tema || base.tema, "-- Pilih Templat Tema --"],
         ["rphSKSelect", specific.sk || base.sk, "-- Pilih SK --"],
@@ -4692,6 +4697,9 @@ function buildOfficialTimetableSlots() {
       mapFields.forEach(([id, list, placeholder]) => {
         const el = document.getElementById(id);
         if (!el) return;
+        const currentSubject = subj;
+        if (el.dataset.lastSubject === currentSubject && el.dataset.items) return;
+        el.dataset.lastSubject = currentSubject;
         el.innerHTML = `<option value="">${placeholder}</option>` + list.map((item, idx) => {
           const shortLabel = item.replace(/\n/g, " ").slice(0, 58) + (item.length > 58 ? "..." : "");
           return `<option value="${idx}">${escapeHtml(shortLabel)}</option>`;
@@ -4726,6 +4734,29 @@ function buildOfficialTimetableSlots() {
       selEl.value = "";
     }
 
+    // Segarkan dropdown templat secara automatik apabila subjek berubah ATAU semasa dropdown diklik
+    (function initRPHTemplateAutoSync() {
+      const bind = () => {
+        const subjEl = document.getElementById("rphSubject");
+        if (subjEl && !subjEl.dataset.rphSyncBound) {
+          subjEl.dataset.rphSyncBound = "1";
+          ["change", "input", "blur"].forEach(ev => subjEl.addEventListener(ev, populateRPHTemplateDropdowns));
+        }
+        ["rphTemaSelect", "rphSKSelect", "rphSPSelect", "rphObjectiveSelect", "rphActivitiesSelect", "rphBBMSelect", "rphReflectionSelect"].forEach(id => {
+          const sel = document.getElementById(id);
+          if (sel && !sel.dataset.rphFocusBound) {
+            sel.dataset.rphFocusBound = "1";
+            ["mousedown", "focus"].forEach(ev => sel.addEventListener(ev, populateRPHTemplateDropdowns));
+          }
+        });
+        populateRPHTemplateDropdowns();
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", bind);
+      } else {
+        bind();
+      }
+    })();
     // ==========================================
     // PENAPISAN MURID KELAS + PAI / PM
     // ==========================================
