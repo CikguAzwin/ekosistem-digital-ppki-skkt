@@ -4762,12 +4762,8 @@ function populateRPHTemplateDropdowns() {
 
     async function loadRPTFromGoogleSheets() {
       try {
-        const baseUrl = (typeof GAS_WEBAPP_URL !== "undefined" && GAS_WEBAPP_URL)
-          ? GAS_WEBAPP_URL
-          : (localStorage.getItem("ppki_gas_url") || "");
-        if (!baseUrl) return;
-        const sep = baseUrl.includes("?") ? "&" : "?";
-        const res = await fetch(baseUrl + sep + "action=getRPT");
+        const baseUrl = "https://script.google.com/macros/s/AKfycbxUqcVrQYzJTaKrb994VJeODhpdDfV5ZNmmmEaSppwzj7PdyWGrXPuLdRRZHzImh6Qh/exec";
+        const res = await fetch(baseUrl + "?action=getRPT");
         const json = await res.json();
         if (json && json.success && Array.isArray(json.rpt) && json.rpt.length > 0) {
           SHEET_RPT_ROWS = json.rpt;
@@ -4779,7 +4775,6 @@ function populateRPHTemplateDropdowns() {
         console.warn("RPT Google Sheets belum dimuatkan:", err);
       }
     }
-
     const _origPopulateRPHTemplateDropdowns = populateRPHTemplateDropdowns;
     populateRPHTemplateDropdowns = function() {
       const subj = (document.getElementById("rphSubject")?.value || "").trim().toLowerCase();
