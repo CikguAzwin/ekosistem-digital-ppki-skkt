@@ -5260,11 +5260,11 @@ const PPKI_SMART_BANK = {
     bbm: "Kad situasi bergambar, boneka tangan, carta ganjaran bintang • Terapi Tingkah Laku • EMK: Nilai Murni • Nilai: Baik Hati & Hormat-menghormati"
   },
   "Bahasa Inggeris": {
-    tema: "Listening, Speaking & Reading — Common Objects in the Classroom",
-    sk: "1.1 Listen to and respond appropriately to simple instructions.\n2.1 Recognise and read familiar words.",
-    sp: "1.1.1 Point to and name at least 4 classroom objects correctly.\n2.1.1 Match picture cards with correct word labels.",
-    bbm: "Realia classroom objects, picture flashcards, matching board, audio song • Speech Therapy • EMK: Language • Value: Cooperation & Confidence"
-  },
+          tema: "Listening, Speaking & Reading — Common Objects in the Classroom [Mendengar, Bertutur & Membaca — Benda Lazim di dalam Bilik Darjah]",
+          sk: "1.1 Listen to and respond appropriately to simple instructions. [Mendengar dan memberi respons sesuai terhadap arahan mudah.]\n2.1 Recognize and name common objects in the classroom. [Mengecam dan menamakan benda lazim di dalam bilik darjah.]",
+          sp: "1.1.1 Point to and name at least 4 classroom objects correctly. [Menunjuk dan menamakan sekurang-kurangnya 4 benda di dalam kelas dengan betul.]\n2.1.1 Match picture cards with the correct words neatly. [Memadankan kad gambar dengan perkataan yang betul dengan kemas.]",
+          bbm: "Realia classroom objects, picture flashcards, matching board, audio song • Speech & Occupational Therapy • CCE: Creativity • Moral Values: Cooperation [Bahan maujud bilik darjah, kad imbasan bergambar, papan padanan, lagu audio • Terapi Pertuturan & Cara Kerja • EMK: Kreativiti • Nilai: Kerjasama]"
+        },
   "DEFAULT": {
     tema: "Penguasaan Kemahiran Asas & Aplikasi Kehidupan Harian",
     sk: "1.1 Memahami konsep asas dan kemahiran mengikut tahap keupayaan murid.",
@@ -5290,86 +5290,127 @@ function generateRPHWithAI(section = "all") {
 }
 
 function generateRPHSmartOffline(section = "all") {
-  const subjectRaw = (document.getElementById("rphSubject")?.value || "").trim();
-  const kelas = (document.getElementById("rphClass")?.value || "PPKI").trim();
-  const bankKey = Object.keys(PPKI_SMART_BANK).find(
-    k => k !== "DEFAULT" && subjectRaw.toLowerCase().includes(k.toLowerCase())
-  ) || "DEFAULT";
-  const tpl = PPKI_SMART_BANK[bankKey];
-  const stats = getSelectedStudentStageStats();
+      const subjectRaw = (document.getElementById("rphSubject")?.value || "").trim();
+      const kelas = (document.getElementById("rphClass")?.value || "PPKI").trim();
+      const isEnglish = /english|bahasa inggeris/i.test(subjectRaw);
+      const bankKey = Object.keys(PPKI_SMART_BANK).find(
+        k => k !== "DEFAULT" && subjectRaw.toLowerCase().includes(k.toLowerCase())
+      ) || "DEFAULT";
+      const tpl = PPKI_SMART_BANK[bankKey];
+      const stats = getSelectedStudentStageStats();
 
-  const temaEl = document.getElementById("rphTema");
-  const skEl = document.getElementById("rphSK");
-  const spEl = document.getElementById("rphSP");
-  const objEl = document.getElementById("rphObjective");
-  const actEl = document.getElementById("rphActivities");
-  const bbmEl = document.getElementById("rphBBM");
-  const refEl = document.getElementById("rphReflection");
+      const temaEl = document.getElementById("rphTema");
+      const skEl = document.getElementById("rphSK");
+      const spEl = document.getElementById("rphSP");
+      const objEl = document.getElementById("rphObjective");
+      const actEl = document.getElementById("rphActivities");
+      const bbmEl = document.getElementById("rphBBM");
+      const refEl = document.getElementById("rphReflection");
 
-  if ((section === "all" || section === "tema") && temaEl) {
-    if (!temaEl.value.trim() || section === "tema") temaEl.value = tpl.tema;
-  }
-  const activeTema = (temaEl?.value || tpl.tema).trim();
+      if ((section === "all" || section === "tema") && temaEl) {
+        if (!temaEl.value.trim() || section === "tema") temaEl.value = tpl.tema;
+      }
+      const activeTema = (temaEl?.value || tpl.tema).trim();
+      const activeTemaEn = activeTema.replace(/\s*\[[^\]]*\]/g, "").trim();
 
-  if ((section === "all" || section === "sk") && skEl) {
-    skEl.value = tpl.sk;
-  }
-  if ((section === "all" || section === "sp") && spEl) {
-    spEl.value = tpl.sp;
-  }
+      if ((section === "all" || section === "sk") && skEl) {
+        skEl.value = tpl.sk;
+      }
+      if ((section === "all" || section === "sp") && spEl) {
+        spEl.value = tpl.sp;
+      }
 
-  if (section === "all" || section === "objective") {
-    const objLines = ["Pada akhir sesi PdPc, murid kelas " + kelas + " berupaya:"];
-    if (stats.Tinggi > 0) {
-      objLines.push(`1. (Kumpulan Tinggi - ${stats.Tinggi} murid): Menguasai dan melengkapkan sekurang-kurangnya 4/5 tugasan berkaitan "${activeTema}" secara berdikari dengan tepat.`);
+      if (section === "all" || section === "objective") {
+        if (isEnglish) {
+          const objLines = [`By the end of the lesson, pupils of ${kelas} will be able to: [Pada akhir sesi PdPc, murid kelas ${kelas} berupaya:]`];
+          if (stats.Tinggi > 0) {
+            objLines.push(`1. (High Group - ${stats.Tinggi} pupil(s)): Master and complete at least 4/5 tasks related to "${activeTemaEn}" independently. [Kumpulan Tinggi - ${stats.Tinggi} murid: Menguasai dan melengkapkan sekurang-kurangnya 4/5 tugasan berkaitan "${activeTemaEn}" secara berdikari.]`);
+          }
+          if (stats.Sederhana > 0) {
+            objLines.push(`2. (Intermediate Group - ${stats.Sederhana} pupil(s)): Complete at least 3/5 activities related to "${activeTemaEn}" with minimal guidance. [Kumpulan Sederhana - ${stats.Sederhana} murid: Melengkapkan sekurang-kurangnya 3/5 aktiviti berkaitan "${activeTemaEn}" dengan bimbingan minimum.]`);
+          }
+          if (stats.Bimbingan > 0) {
+            objLines.push(`3. (Guidance Group - ${stats.Bimbingan} pupil(s)): Identify and perform at least 2 basic tasks related to "${activeTemaEn}" with full teacher/PPM support. [Kumpulan Bimbingan - ${stats.Bimbingan} murid: Mengenal pasti dan melakukan sekurang-kurangnya 2 gerak kerja asas berkaitan "${activeTemaEn}" dengan bimbingan penuh guru/PPM.]`);
+          }
+          if (stats.Tinggi === 0 && stats.Sederhana === 0 && stats.Bimbingan === 0) {
+            objLines.push(`1. (High Group): Complete 4/5 tasks on "${activeTemaEn}" independently. [Kumpulan Tinggi: Melengkapkan 4/5 tugasan "${activeTemaEn}" secara berdikari.]`);
+            objLines.push(`2. (Intermediate Group): Complete 3/5 tasks on "${activeTemaEn}" with guidance. [Kumpulan Sederhana: Melengkapkan 3/5 tugasan "${activeTemaEn}" dengan panduan.]`);
+            objLines.push(`3. (Guidance Group): Show positive response and perform 2 basic steps with full support. [Kumpulan Bimbingan: Menunjukkan respons positif dan melakukan 2 langkah asas dengan bimbingan penuh.]`);
+          }
+          if (objEl) objEl.value = objLines.join("\n");
+        } else {
+          const objLines = ["Pada akhir sesi PdPc, murid kelas " + kelas + " berupaya:"];
+          if (stats.Tinggi > 0) {
+            objLines.push(`1. (Kumpulan Tinggi - ${stats.Tinggi} murid): Menguasai dan melengkapkan sekurang-kurangnya 4/5 tugasan berkaitan "${activeTema}" secara berdikari.`);
+          }
+          if (stats.Sederhana > 0) {
+            objLines.push(`2. (Kumpulan Sederhana - ${stats.Sederhana} murid): Melengkapkan sekurang-kurangnya 3/5 aktiviti berkaitan "${activeTema}" dengan bimbingan minimum.`);
+          }
+          if (stats.Bimbingan > 0) {
+            objLines.push(`3. (Kumpulan Bimbingan - ${stats.Bimbingan} murid): Mengenal pasti dan melakukan sekurang-kurangnya 2 gerak kerja asas berkaitan "${activeTema}" dengan bimbingan penuh guru/PPM.`);
+          }
+          if (stats.Tinggi === 0 && stats.Sederhana === 0 && stats.Bimbingan === 0) {
+            objLines.push(`1. (Kumpulan Tinggi): Melengkapkan 4/5 tugasan "${activeTema}" secara berdikari.`);
+            objLines.push(`2. (Kumpulan Sederhana): Melengkapkan 3/5 tugasan "${activeTema}" dengan panduan.`);
+            objLines.push(`3. (Kumpulan Bimbingan): Menunjukkan respons positif dan melakukan 2 langkah asas dengan bimbingan penuh.`);
+          }
+          if (objEl) objEl.value = objLines.join("\n");
+        }
+      }
+
+      if (section === "all" || section === "activities") {
+        const actHigh = document.getElementById("rphActivityHigh");
+        const actMid = document.getElementById("rphActivityMid");
+        const actLow = document.getElementById("rphActivityLow");
+
+        if (isEnglish) {
+          const actText = [
+            `Set Induction (5 minutes): Teacher shows realia / picture cards related to "${activeTemaEn}" and asks simple warm-up questions to attract pupils' attention. [Set Induksi (5 minit): Guru menunjukkan bahan maujud / kad bergambar berkaitan "${activeTemaEn}" dan bersoal jawab secara ringkas untuk menarik minat murid.]`,
+            `Step 1 — Presentation & Demonstration (15 minutes): Teacher introduces key vocabulary/concepts using multisensory methods (visual, audio and tactile) and models clear pronunciation. [Langkah 1 — Penerangan & Demonstrasi (15 minit): Guru menerangkan konsep utama menggunakan kaedah multisensori (visual, audio dan sentuhan) serta membuat tunjuk cara sebutan jelas.]`,
+            `Step 2 — Differentiated PdPc Activities (30 minutes): [Langkah 2 — Aktiviti PdPc Terbeza (30 minit):]`,
+            `• High Group: Pupils complete enrichment worksheets and matching/application tasks independently. [Kumpulan Tinggi: Menyelesaikan lembaran kerja pengayaan dan aktiviti padanan/aplikasi secara berdikari.]`,
+            `• Intermediate Group: Pupils complete guided activities in pairs with minimal teacher guidance. [Kumpulan Sederhana: Melengkapkan aktiviti berpandu secara berpasangan dengan bimbingan minimum guru.]`,
+            `• Guidance Group: Structured 1-to-1 hands-on drills with teacher/PPM using realia. [Kumpulan Bimbingan: Latihan amali berstruktur satu-dengan-satu (1-to-1) bersama guru/PPM menggunakan bahan maujud.]`,
+            `Closure & Assessment (10 minutes): Teacher recaps the lesson, gives positive reinforcement (praise/reward stickers) and records pupils' mastery levels. [Penutup & Pentaksiran (10 minit): Guru membuat rumusan isi pelajaran, memberikan peneguhan positif (pujian/stiker ganjaran) dan merekod tahap penguasaan murid.]`
+          ].join("\n");
+          if (actEl) actEl.value = actText;
+
+          if (actHigh) actHigh.value = `Complete enrichment tasks on "${activeTemaEn}" independently and present work. [Menyelesaikan tugasan pengayaan "${activeTemaEn}" secara berdikari dan membentangkan hasil kerja.]`;
+          if (actMid) actMid.value = `Complete guided activities with visual cue cards. [Melengkapkan aktiviti berpandu dengan bantuan kad petunjuk visual.]`;
+          if (actLow) actLow.value = `Short hands-on activity using realia with full teacher/PPM guidance. [Aktiviti amali ringkas menggunakan bahan maujud dengan bimbingan penuh guru/PPM.]`;
+        } else {
+          const actText = [
+            `Set Induksi (5 minit): Guru menunjukkan bahan maujud / kad bergambar berkaitan "${activeTema}" dan bersoal jawab secara ringkas untuk menarik minat murid.`,
+            `Langkah 1 — Penerangan & Demonstrasi (15 minit): Guru menerangkan konsep utama menggunakan kaedah multisensori (visual, audio dan sentuhan) serta membuat tunjuk cara.`,
+            `Langkah 2 — Aktiviti PdPc Terbeza (30 minit):`,
+            `• Kumpulan Tinggi: Menyelesaikan lembaran kerja pengayaan dan aktiviti padanan/aplikasi secara berdikari.`,
+            `• Kumpulan Sederhana: Melengkapkan aktiviti berpandu secara berpasangan dengan bimbingan minimum guru.`,
+            `• Kumpulan Bimbingan: Latihan amali berstruktur satu-dengan-satu (1-to-1) bersama guru/PPM menggunakan bahan maujud.`,
+            `Penutup & Pentaksiran (10 minit): Guru membuat rumusan isi pelajaran, memberikan peneguhan positif (pujian/stiker ganjaran) dan merekod tahap penguasaan murid.`
+          ].join("\n");
+          if (actEl) actEl.value = actText;
+
+          if (actHigh) actHigh.value = `Menyelesaikan tugasan pengayaan "${activeTema}" secara berdikari dan membentangkan hasil kerja.`;
+          if (actMid) actMid.value = `Melengkapkan aktiviti berpandu dengan bantuan kad petunjuk visual.`;
+          if (actLow) actLow.value = `Aktiviti amali ringkas menggunakan bahan maujud dengan bimbingan penuh guru/PPM.`;
+        }
+      }
+
+      if ((section === "all" || section === "bbm") && bbmEl) {
+        bbmEl.value = tpl.bbm;
+      }
+
+      if ((section === "all" || section === "reflection") && refEl) {
+        const total = stats.Total || "___";
+        if (isEnglish) {
+          refEl.value = `${total}/${total} pupils attended and participated actively in the lesson. Pupils achieved the learning objectives according to their respective mastery levels. [${total}/${total} orang murid hadir dan melibatkan diri secara aktif dalam aktiviti PdPc. Murid mencapai objektif pembelajaran mengikut tahap penguasaan masing-masing.]`;
+        } else {
+          refEl.value = `${total}/${total} orang murid hadir dan melibatkan diri secara aktif dalam aktiviti PdPc. Murid mencapai objektif pembelajaran mengikut tahap penguasaan masing-masing.`;
+        }
+      }
+
+      showToast(`Draf RPH (${section === "all" ? "Semua Bahagian" : section.toUpperCase()}) dijana tanpa API Key!`, "✨");
     }
-    if (stats.Sederhana > 0) {
-      objLines.push(`2. (Kumpulan Sederhana - ${stats.Sederhana} murid): Melengkapkan sekurang-kurangnya 3/5 aktiviti berkaitan "${activeTema}" dengan panduan guru/PPM.`);
-    }
-    if (stats.Bimbingan > 0) {
-      objLines.push(`3. (Kumpulan Bimbingan - ${stats.Bimbingan} murid): Mengenal pasti dan melakukan sekurang-kurangnya 2 gerak kerja asas berkaitan "${activeTema}" dengan bimbingan penuh (hand-over-hand / lisan).`);
-    }
-    if (stats.Tinggi === 0 && stats.Sederhana === 0 && stats.Bimbingan === 0) {
-      objLines.push(`1. (Kumpulan Tinggi): Melengkapkan 4/5 tugasan "${activeTema}" secara berdikari.`);
-      objLines.push(`2. (Kumpulan Sederhana): Melengkapkan 3/5 tugasan "${activeTema}" dengan panduan.`);
-      objLines.push(`3. (Kumpulan Bimbingan): Menunjukkan respons positif dan melakukan 2 langkah asas dengan bimbingan penuh.`);
-    }
-    if (objEl) objEl.value = objLines.join("\n");
-  }
-
-  if (section === "all" || section === "activities") {
-    const actText = [
-      `Set Induksi (5 minit): Guru menunjukkan bahan maujud / kad bergambar berkaitan "${activeTema}" dan bersoal jawab secara ringkas untuk menarik minat murid.`,
-      `Langkah 1 — Penerangan & Demonstrasi (15 minit): Guru menerangkan konsep utama menggunakan kaedah multisensori (visual, audio dan sentuhan) serta membuat tunjuk cara di hadapan kelas.`,
-      `Langkah 2 — Aktiviti PdPc Terbeza (30 minit):`,
-      `• Kumpulan Tinggi: Menyelesaikan lembaran kerja pengayaan dan aktiviti padanan/aplikasi secara berdikari.`,
-      `• Kumpulan Sederhana: Melengkapkan aktiviti berpandu secara berpasangan dengan bimbingan minimum guru.`,
-      `• Kumpulan Bimbingan: Latihan amali berstruktur satu-dengan-satu (1-to-1) bersama guru/PPM menggunakan bahan maujud.`,
-      `Penutup & Pentaksiran (10 minit): Guru membuat rumusan isi pelajaran, memberikan peneguhan positif (pujian/stiker ganjaran) dan merekod tahap penguasaan murid.`
-    ].join("\n");
-    if (actEl) actEl.value = actText;
-
-    // Isi juga ruangan terperinci mengikut tahap jika ada
-    const actHigh = document.getElementById("rphActivityHigh");
-    const actMid = document.getElementById("rphActivityMid");
-    const actLow = document.getElementById("rphActivityLow");
-    if (actHigh) actHigh.value = `Menyelesaikan tugasan pengayaan "${activeTema}" secara berdikari dan membentangkan hasil kerja.`;
-    if (actMid) actMid.value = `Melengkapkan aktiviti berpandu dengan bantuan kad petunjuk visual.`;
-    if (actLow) actLow.value = `Aktiviti amali ringkas menggunakan bahan maujud dengan bimbingan penuh guru/PPM.`;
-  }
-
-  if ((section === "all" || section === "bbm") && bbmEl) {
-    bbmEl.value = tpl.bbm;
-  }
-
-  if ((section === "all" || section === "reflection") && refEl) {
-    const total = stats.Total || "___";
-    refEl.value = `${total}/${total} orang murid hadir dan melibatkan diri secara aktif dalam aktiviti PdPc. Murid mencapai objektif pembelajaran mengikut tahap penguasaan masing-masing dengan bimbingan guru dan PPM. PdPc berjalan lancar.`;
-  }
-
-  showToast(`Draf RPH (${section === "all" ? "Semua Bahagian" : section.toUpperCase()}) dijana tanpa API Key!`, "✨");
-}
-
 function copyRPHPromptToExternalAI(target = "gemini") {
   const kelas = document.getElementById("rphClass")?.value || "PPKI";
   const subject = document.getElementById("rphSubject")?.value || "Pendidikan Khas";
