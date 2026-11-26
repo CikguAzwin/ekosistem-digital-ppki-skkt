@@ -5784,7 +5784,12 @@ Sila hasilkan dalam Bahasa Melayu yang kemas dan teratur bagi bahagian berikut:
     alert("Salin prompt ini secara manual:\n\n" + promptText);
   });
 }
-
+// Auto-segerak setiap 15 saat supaya paparan semua guru/PPM sentiasa terkini
+setInterval(() => {
+  if (document.visibilityState === "visible" && navigator.onLine) {
+    syncFromCloud(false);
+  }
+}, 15000);
 </script>
 </body>
 </html>
