@@ -2225,14 +2225,37 @@ function buildOfficialTimetableSlots() {
         if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Respons pangkalan data tidak sah");
         if (data && Object.keys(data).length > 0) {
           let needCloudPush = false;
-          const isPlaceholder = Array.isArray(data.students) && data.students.some(s => (s.nama || "").startsWith("MURID LELAKI PPKI"));
-          if (Array.isArray(data.students) && data.students.length > 0 && !isPlaceholder) {
-            appState.students = data.students;
-            if (data.attendance) appState.attendance = data.attendance;
+        let pendingStudents = false;
+        try { pendingStudents = localStorage.getItem("ppki_pending_students_v1") === "1"; } catch (e) {}
+        const localStudentsSnapshot = Array.isArray(appState.students) ? JSON.parse(JSON.stringify(appState.students)) : [];
+        const isPlaceholder = Array.isArray(data.students) && data.students.some(s => (s.nama || "").startsWith("MURID LELAKI PPKI"));
+        if (pendingStudents && localStudentsSnapshot.length > 0) {
+          appState.students = localStudentsSnapshot;
+          if (data.attendance) appState.attendance = data.attendance;
+          const cloudMatchesLocal = Array.isArray(data.students) && JSON.stringify(data.students) === JSON.stringify(localStudentsSnapshot);
+          if (cloudMatchesLocal) {
+            try { localStorage.removeItem("ppki_pending_students_v1"); } catch (e) {}
           } else {
-            appState.students = buildOfficialStudents();
             needCloudPush = true;
           }
+        } else if (Array.isArray(data.students) && data.students.length > 0 && !isPlaceholder) {
+          const localMap = new Map(localStudentsSnapshot.map(s => [String(s.id || s.nama || "").trim(), s]));
+          appState.students = data.students.map(st => {
+            const prev = localMap.get(String(st.id || st.nama || "").trim()) || {};
+            return {
+              ...prev,
+              ...st,
+              noDaftar: st.noDaftar || prev.noDaftar || "",
+              mykid: st.mykid || prev.mykid || "",
+              akaunBank: st.akaunBank || prev.akaunBank || "",
+              noTel: st.noTel || prev.noTel || ""
+            };
+          });
+          if (data.attendance) appState.attendance = data.attendance;
+        } else {
+          appState.students = buildOfficialStudents();
+          needCloudPush = true;
+        }  
 
           // Lindungi perubahan Guru/PPM yang belum disahkan tersimpan di Google Sheets.
           // Data awan lama tidak boleh menimpa perubahan tempatan yang masih menunggu pengesahan.
@@ -3291,9 +3314,10 @@ function buildOfficialTimetableSlots() {
         });
       }
       closeStudentModal();
-      renderAll();
-      pushToCloud(true);
-    }
+  try { localStorage.setItem("ppki_pending_students_v1", "1"); } catch (e) {}
+  renderAll();
+  pushToCloud(true);
+}
 
     function deleteStudent(id) {
       openConfirmModal(
