@@ -940,7 +940,18 @@
     </div>
   </div>
 </div>
-
+<!-- AUTO-ISI DARI JADUAL WAKTU GURU -->
+          <div id="rphTimetableQuickBox" class="rounded-xl border border-indigo-200 bg-indigo-50/70 p-3.5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-extrabold text-indigo-950 flex items-center gap-1.5">
+                <span>🗓️</span> Isi Pantas Mengikut Jadual Waktu Guru
+              </div>
+              <span id="rphTimetableDayBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Pilih Tarikh &amp; Nama Guru</span>
+            </div>
+            <div id="rphTimetableSlotButtons" class="flex flex-wrap gap-2">
+              <p class="text-[11px] text-slate-500">Pilih <strong>Tarikh PdP</strong> dan <strong>Nama Guru Subjek</strong> untuk memaparkan slot jadual waktu secara automatik.</p>
+            </div>
+          </div>
 <!-- MAKLUMAT ASAS PDP -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
@@ -5380,12 +5391,133 @@ Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut
       }
     }
     function printRPHList(){const rows=appState.teaching.rph||[],w=window.open("","_blank");if(!w){showToast("Benarkan pop-up untuk cetakan.","⚠️");return;}w.document.write(`<html><head><title>Rekod RPH PPKI</title><style>body{font:12px Arial;padding:24px}h2{text-align:center}table{width:100%;border-collapse:collapse}td,th{border:1px solid #777;padding:7px;text-align:left}</style></head><body><h2>REKOD RPH PPKI SK KESANG TUA</h2><table><tr><th>Minggu</th><th>Tarikh</th><th>Kelas</th><th>Subjek</th><th>Objektif</th><th>Guru</th></tr>${rows.map(x=>`<tr><td>${escapeHtml(x.week)}</td><td>${escapeHtml(formatDateDMY(x.date))}</td><td>${escapeHtml(x.className)}</td><td>${escapeHtml(x.subject)}</td><td>${escapeHtml(x.objective)}</td><td>${escapeHtml(x.teacher||"-")}</td></tr>`).join("")}</table></body></html>`);w.document.close();w.print();}
+// === PENGHUBUNG AUTOMATIK JADUAL WAKTU GURU -> BORANG RPH ===
+  function getMalayDayFromDateStr(dateStr) {
+    if (!dateStr) return "";
+    const parts = String(dateStr).split("-");
+    if (parts.length !== 3) return "";
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const days = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
+    return days[d.getDay()] || "";
+  }
 
+  function renderRPHTimetableSuggestions() {
+    const dateEl = document.getElementById("rphDate");
+    const teacherEl = document.getElementById("rphTeacher");
+    const badgeEl = document.getElementById("rphTimetableDayBadge");
+    const boxEl = document.getElementById("rphTimetableSlotButtons");
+    if (!boxEl) return;
+
+    const dateVal = dateEl ? dateEl.value : "";
+    const teacherVal = teacherEl ? teacherEl.value : "";
+    const dayName = getMalayDayFromDateStr(dateVal);
+
+    if (badgeEl) {
+      badgeEl.textContent = dayName
+        ? (teacherVal ? `Hari: ${dayName} • ${shortTeacherName(teacherVal)}` : `Hari: ${dayName}`)
+        : "Pilih Tarikh & Nama Guru";
+    }
+
+    if (!dateVal || !teacherVal) {
+      boxEl.innerHTML = `<p class="text-[11px] text-slate-500">Pilih <strong>Tarikh PdP</strong> dan <strong>Nama Guru Subjek</strong> untuk memaparkan slot jadual waktu secara automatik.</p>`;
+      return;
+    }
+
+    const ttData = appState.timetable || {};
+    const slots = appState.timetableSlots || (typeof buildOfficialTimetableSlots === "function" ? buildOfficialTimetableSlots() : []);
+    const normTeacher = typeof normalizeName === "function" ? normalizeName(teacherVal) : teacherVal.trim().toUpperCase();
+    const foundSlots = [];
+
+    slots.forEach(sl => {
+      if (sl.isBreak) return;
+      if (dayName === "Jumaat" && sl.index > 9) return;
+      const timeLabel = typeof getTimetableSlotLabel === "function" ? getTimetableSlotLabel(dayName, sl.index) : (sl.label || `Waktu ${sl.index}`);
+      Object.keys(ttData).forEach(clsName => {
+        const cell = ttData[clsName] && ttData[clsName][dayName] && ttData[clsName][dayName][sl.index];
+        if (!cell || !cell.teacher || !cell.subject) return;
+        const cellTeacherNorm = typeof normalizeName === "function" ? normalizeName(cell.teacher) : cell.teacher.trim().toUpperCase();
+        if (cellTeacherNorm === normTeacher && !String(cell.subject).toUpperCase().includes("REHAT")) {
+          foundSlots.push({
+            slotIndex: sl.index,
+            timeLabel: timeLabel,
+            clsName: clsName,
+            subject: cell.subject
+          });
+        }
+      });
+    });
+
+    if (foundSlots.length === 0) {
+      boxEl.innerHTML = `<p class="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">Tiada slot jadual waktu direkodkan untuk <strong>${shortTeacherName(teacherVal)}</strong> pada hari <strong>${dayName}</strong>.</p>`;
+      return;
+    }
+
+    // Gabungkan waktu berturutan jika kelas & subjek sama
+    const merged = [];
+    foundSlots.forEach(item => {
+      const prev = merged[merged.length - 1];
+      if (prev && prev.clsName === item.clsName && prev.subject === item.subject && item.slotIndex === prev.lastIndex + 1) {
+        const startPart = String(prev.timeLabel).split("-")[0].trim();
+        const endPart = (String(item.timeLabel).split("-")[1] || item.timeLabel).trim();
+        prev.timeLabel = `${startPart} - ${endPart}`;
+        prev.lastIndex = item.slotIndex;
+      } else {
+        merged.push({ ...item, lastIndex: item.slotIndex });
+      }
+    });
+
+    boxEl.innerHTML = merged.map((m, idx) => `
+      <button type="button" onclick="applyTimetableSlotToRPH('${m.timeLabel.replace(/'/g, "\\'")}', '${m.clsName.replace(/'/g, "\\'")}', '${m.subject.replace(/'/g, "\\'")}')"
+        class="text-left px-3 py-2 rounded-xl bg-white hover:bg-indigo-600 text-slate-800 hover:text-white border border-indigo-200 shadow-xs transition group">
+        <div class="text-[10px] font-mono font-bold text-indigo-600 group-hover:text-indigo-100">⏰ ${m.timeLabel}</div>
+        <div class="text-xs font-extrabold">${m.subject}</div>
+        <div class="text-[11px] opacity-80">🏫 Kelas: ${m.clsName}</div>
+      </button>
+    `).join("");
+  }
+
+  function applyTimetableSlotToRPH(timeLabel, clsName, subjectName) {
+    const durEl = document.getElementById("rphDuration");
+    const clsEl = document.getElementById("rphClass");
+    const subjEl = document.getElementById("rphSubject");
+
+    if (durEl) durEl.value = timeLabel;
+    if (clsEl) {
+      clsEl.value = clsName;
+      if (typeof onRPHClassChange === "function") onRPHClassChange();
+    }
+    if (subjEl) {
+      // Padankan nama subjek dari jadual waktu dengan pilihan dropdown RPH
+      const normSubj = subjectName.trim().toLowerCase();
+      let matchedVal = "";
+      Array.from(subjEl.options).forEach(opt => {
+        if (!opt.value) return;
+        const optNorm = opt.value.trim().toLowerCase();
+        if (optNorm === normSubj || optNorm.includes(normSubj) || normSubj.includes(optNorm)) {
+          matchedVal = opt.value;
+        }
+      });
+      if (matchedVal) {
+        subjEl.value = matchedVal;
+        if (typeof onRPHSubjectChange === "function") onRPHSubjectChange();
+      }
+    }
+    if (typeof showToast === "function") {
+      showToast(`Slot ${subjectName} (${clsName}) berjaya diisi ke borang RPH!`, "✅");
+    }
+  }
+
+  document.addEventListener("change", function(e) {
+    if (e.target && (e.target.id === "rphDate" || e.target.id === "rphTeacher")) {
+      renderRPHTimetableSuggestions();
+    }
+  });
     const _origRenderTeaching = typeof renderTeaching === "function" ? renderTeaching : null;
     if (_origRenderTeaching) {
       renderTeaching = function() {
         syncRPHTeacherDropdown();
         _origRenderTeaching();
+        renderRPHTimetableSuggestions();
         document.querySelectorAll("#rphTableBody tr").forEach(tr => {
           const editBtn = tr.querySelector("button[onclick^='editRPH(']");
           if (editBtn && !tr.querySelector("button[onclick^='previewRPH(']")) {
