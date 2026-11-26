@@ -4859,13 +4859,20 @@ function updateSmartActivityTemplates() {
     // PENAPISAN MURID KELAS + PAI / PM
     // ==========================================
     function isStudentMuslim(st) {
-      const agama = String(st.agama || st.religion || "").toLowerCase().trim();
-      if (agama) return agama.includes("islam");
-      const kaum = String(st.kaum || st.bangsa || st.race || "").toLowerCase().trim();
-      if (kaum) return kaum.includes("melayu") || kaum.includes("islam");
-      const nama = String(st.nama || st.namaMurid || "").toUpperCase();
-      return /\b(BIN|BINTI|MUHAMMAD|MOHD|AHMAD|NUR|SITI|WAN|NIK|SYED|SHARIFAH|PUTERA|PUTERI|AIMAN|DANISH|ADAM|AISYAH|FATIMAH|ZAHRA)\b/.test(nama);
+    const agama = String(st.agama || st.religion || "").toLowerCase().trim();
+    if (agama) {
+      if (agama.includes("bukan") || agama.includes("non") || agama.includes("hindu") || agama.includes("buddha") || agama.includes("kristian") || agama.includes("sikh") || agama.includes("lain")) return false;
+      if (agama.includes("islam")) return true;
     }
+    const kaum = String(st.kaum || st.bangsa || st.race || "").toLowerCase().trim();
+    if (kaum) {
+      if (kaum.includes("india") || kaum.includes("cina") || kaum.includes("siam") || kaum.includes("bukan")) return false;
+      if (kaum.includes("melayu") || kaum.includes("islam")) return true;
+    }
+    const nama = String(st.nama || st.namaMurid || "").toUpperCase();
+    if (/\b(A\/L|A\/P|S\/O|D\/O)\b/.test(nama)) return false;
+    return /\b(BIN|BINTI|MUHAMMAD|MOHD|AHMAD|NUR|SITI|WAN|NIK|SYED|SHARIFAH|PUTERA|PUTERI|AIMAN|DANISH|ADAM|AISYAH|FATIMAH|ZAHRA)\b/.test(nama);
+  }
 
     function getRPHStudentsForClass(cls) {
       const local = (appState.students || []).filter(x => String(x.kelas || "").trim() === cls);
