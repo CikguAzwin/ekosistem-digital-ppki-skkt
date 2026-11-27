@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Ekosistem Digital PPKI SK Kesang Tua </title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -186,10 +189,10 @@
           <button onclick="refreshAllData()" class="btn-ppki-modern bg-white/10 hover:bg-white/20 border border-white/20 text-white">
             <span>🔄</span> Refresh
           </button>
-          <button onclick="exportCSV()" class="btn-ppki-modern bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md">
+          <button onclick="isPinUnlocked() ? exportCSV() : openPinModal('direktori')" class="btn-ppki-modern bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md">
             <span>📥</span> Eksport CSV
           </button>
-          <button onclick="window.print()" class="btn-ppki-modern bg-white/10 hover:bg-white/20 border border-white/20 text-white">
+          <button onclick="switchTab('cetak')" class="btn-ppki-modern bg-white/10 hover:bg-white/20 border border-white/20 text-white">
             <span>🖨️</span> Cetak
           </button>
         </div>
