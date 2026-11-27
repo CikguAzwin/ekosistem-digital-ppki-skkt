@@ -253,9 +253,12 @@
     <div class="flex flex-col lg:flex-row items-start gap-4 lg:gap-5">
     <!-- NAVIGASI TAB -->
     <nav aria-label="Navigasi utama" class="no-print w-full lg:w-64 lg:shrink-0 flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 lg:sticky lg:top-4">
+      <button onclick="switchTab('utama')" id="tab-utama" class="w-full lg:justify-start text-left whitespace-nowrap shrink-0 tab-active px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition">
+          <span>🏠</span> Papan Pemuka Utama
+        </button>
       <button onclick="switchTab('pengajaran')" id="tab-pengajaran" class="w-full lg:justify-start text-left whitespace-nowrap shrink-0 tab-inactive px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition flex items-center gap-1.5"><span>📚</span> Sistem Pengajaran</button>
-      <button onclick="switchTab('direktori')" id="tab-direktori" class="w-full lg:justify-start text-left whitespace-nowrap shrink-0 tab-active px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition flex items-center gap-1.5">
-        <span>📇</span> Senarai MBPK (40)
+      <button onclick="switchTab('direktori')" id="tab-direktori" class="w-full lg:justify-start text-left whitespace-nowrap shrink-0 tab-inactive px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition flex items-center gap-1.5">
+        <span>🔒</span> Senarai MBPK (40)
       </button>
       <button onclick="switchTab('cetak')" id="tab-cetak" class="w-full lg:justify-start text-left whitespace-nowrap shrink-0 tab-inactive px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition flex items-center gap-1.5">
         <span>🖨️</span> Cetak Data Murid
@@ -284,8 +287,79 @@
     </nav>
 
     <div class="flex-1 min-w-0 w-full space-y-6">
+      <!-- PAPARAN 0: PAPAN PEMUKA UTAMA (DASHBOARD EKSEKUTIF) -->
+      <section id="view-utama" class="space-y-5">
+        <!-- Kad Sambutan & Pintasan Pantas -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm card-shadow p-5 sm:p-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider">
+                🏫 Portal Rasmi PPKI SK Kesang Tua
+              </span>
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-1.5">Papan Pemuka Pengurusan &amp; Operasi</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Paparan ringkasan harian sekolah. Rekod peribadi murid (MyKid &amp; OKU) dilindungi kata laluan.</p>
+            </div>
+            <div id="pinStatusBanner" class="flex items-center gap-2">
+              <button onclick="openPinModal('direktori')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm">
+                <span>🔒</span> Buka Akses Data Murid
+              </button>
+            </div>
+          </div>
+
+          <!-- Butang Pintasan Pantas -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+            <button onclick="switchTab('kehadiran')" class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/70 text-left transition group">
+              <div class="text-lg">✅</div>
+              <p class="font-extrabold text-xs text-emerald-950 mt-1">Kehadiran Harian</p>
+              <p class="text-[11px] text-emerald-700 mt-0.5">Semak &amp; tanda kehadiran pagi</p>
+            </button>
+            <button onclick="switchTab('pengajaran')" class="p-3.5 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/70 text-left transition group">
+              <div class="text-lg">📚</div>
+              <p class="font-extrabold text-xs text-indigo-950 mt-1">Sistem Pengajaran</p>
+              <p class="text-[11px] text-indigo-700 mt-0.5">RPT KSSRPK &amp; penjana RPH</p>
+            </button>
+            <button onclick="switchTab('takwim')" class="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100/70 text-left transition group">
+              <div class="text-lg">📅</div>
+              <p class="font-extrabold text-xs text-amber-950 mt-1">Takwim PPKI</p>
+              <p class="text-[11px] text-amber-700 mt-0.5">Program &amp; aktiviti tahunan</p>
+            </button>
+            <button onclick="switchTab('direktori')" class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition group">
+              <div class="text-lg">🔐</div>
+              <p class="font-extrabold text-xs text-slate-900 mt-1">Data Induk MBPK</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">Perlukan PIN Guru (4 Digit)</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ringkasan Kehadiran Kelas & Takwim Terdekat -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- Status Kehadiran Mengikut Kelas -->
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm card-shadow p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900">Ringkasan Kehadiran Hari Ini Mengikut Kelas</h3>
+                <p class="text-[11px] text-slate-500">Data langsung daripada rekod kehadiran harian semasa</p>
+              </div>
+              <button onclick="switchTab('kehadiran')" class="text-xs font-bold text-indigo-700 hover:underline">Lihat Penuh →</button>
+            </div>
+            <div id="dashClassSummary" class="space-y-2.5"></div>
+          </div>
+
+          <!-- Aktiviti Takwim PPKI Terdekat -->
+          <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm card-shadow p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900">Takwim &amp; Aktiviti Terkini</h3>
+                <p class="text-[11px] text-slate-500">Agenda utama PPKI SK Kesang Tua</p>
+              </div>
+              <button onclick="switchTab('takwim')" class="text-xs font-bold text-indigo-700 hover:underline">Semua →</button>
+            </div>
+            <div id="dashTakwimSummary" class="space-y-2.5"></div>
+          </div>
+        </div>
+      </section>
     <!-- PAPARAN 1: SENARAI MBPK -->
-    <section id="view-direktori" class="bg-white rounded-2xl border border-slate-200 shadow-sm card-shadow overflow-hidden">
+    <section id="view-direktori" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm card-shadow overflow-hidden">
       <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <h2 class="text-lg font-extrabold text-slate-900">Senarai Murid Berkeperluan Pendidikan Khas (MBPK) — SK Kesang Tua</h2>
@@ -1635,7 +1709,29 @@
       </div>
     </div>
   </div>
-
+<!-- MODAL KUNCI PIN DATA MURID -->
+  <div id="pinLockModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-800 flex items-center justify-center text-xl font-bold">🔐</div>
+        <div>
+          <h3 class="text-base font-extrabold text-slate-900">Akses Dilindungi PIN</h3>
+          <p class="text-xs text-slate-500">Masukkan Kod PIN Guru untuk membuka maklumat sulit murid.</p>
+        </div>
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Kod PIN (4 Digit)</label>
+        <input type="password" id="pinCodeInput" maxlength="6" inputmode="numeric" placeholder="••••"
+          onkeydown="if(event.key==='Enter') verifyPinAccess()"
+          class="w-full px-4 py-2.5 text-center tracking-[0.5em] text-lg font-extrabold rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+        <p id="pinErrorMsg" class="hidden text-xs font-bold text-rose-600 mt-1.5">Kod PIN tidak sah. Sila cuba lagi.</p>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closePinModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50">Batal</button>
+        <button type="button" onclick="verifyPinAccess()" class="px-5 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-800 text-white text-xs font-extrabold">Buka Kunci</button>
+      </div>
+    </div>
+  </div>
   <script>
     // 1. URL WEB APP PANGKALAN DATA UTAMA PPKI (JSON API)
     // URL ini dikenal pasti daripada tetapan portal lama dan repositori GitHub V13.
@@ -2454,12 +2550,118 @@ function buildOfficialTimetableSlots() {
       }
     }
 
+    const PORTAL_PIN = "1002";
+    const PROTECTED_TABS = ["direktori", "cetak", "kelas"];
+    let pendingProtectedTab = null;
+
+    function isPinUnlocked() {
+      return sessionStorage.getItem("ppki_skkt_pin_unlocked") === "true";
+    }
+
+    function openPinModal(targetTab) {
+      pendingProtectedTab = targetTab || "direktori";
+      const modal = document.getElementById("pinLockModal");
+      const input = document.getElementById("pinCodeInput");
+      const err = document.getElementById("pinErrorMsg");
+      if (err) err.classList.add("hidden");
+      if (input) input.value = "";
+      if (modal) modal.classList.remove("hidden");
+      setTimeout(() => { if (input) input.focus(); }, 60);
+    }
+
+    function closePinModal() {
+      const modal = document.getElementById("pinLockModal");
+      if (modal) modal.classList.add("hidden");
+      pendingProtectedTab = null;
+    }
+
+    function verifyPinAccess() {
+      const input = document.getElementById("pinCodeInput");
+      const err = document.getElementById("pinErrorMsg");
+      if (input && input.value.trim() === PORTAL_PIN) {
+        sessionStorage.setItem("ppki_skkt_pin_unlocked", "true");
+        const target = pendingProtectedTab || "direktori";
+        closePinModal();
+        updateKPIs();
+        switchTab(target);
+      } else if (err) {
+        err.classList.remove("hidden");
+        if (input) { input.value = ""; input.focus(); }
+      }
+    }
+
+    function lockPinAccess() {
+      sessionStorage.removeItem("ppki_skkt_pin_unlocked");
+      updateKPIs();
+      switchTab("utama");
+    }
+
+    function renderDashboardHome() {
+      const classBox = document.getElementById("dashClassSummary");
+      if (classBox) {
+        const dateStr = (document.getElementById("attendanceDate") && document.getElementById("attendanceDate").value) || getMalaysiaDateStr();
+        const classes = [...new Set(appState.students.map(s => s.kelas).filter(Boolean))];
+        if (classes.length === 0) {
+          classBox.innerHTML = `<p class="text-xs text-slate-400">Tiada data kelas direkodkan.</p>`;
+        } else {
+          classBox.innerHTML = classes.map(cls => {
+            const list = appState.students.filter(s => s.kelas === cls);
+            let hadir = 0, th = 0;
+            list.forEach(s => {
+              const eff = getEffectiveAttendance(s, dateStr);
+              if (eff.status === "Hadir") hadir++;
+              else if (eff.status.startsWith("Tidak Hadir")) th++;
+            });
+            const pct = list.length > 0 ? Math.round((hadir / list.length) * 100) : 0;
+            return `
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-800 mb-1.5">
+                  <span>${cls} (${list.length} Murid)</span>
+                  <span class="text-emerald-700">${hadir} Hadir • ${th} TH (${pct}%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width:${pct}%"></div>
+                </div>
+              </div>`;
+          }).join("");
+        }
+      }
+
+      const takwimBox = document.getElementById("dashTakwimSummary");
+      if (takwimBox) {
+        const items = (appState.takwim || []).slice(0, 4);
+        if (items.length === 0) {
+          takwimBox.innerHTML = `<p class="text-xs text-slate-400">Tiada aktiviti takwim buat masa ini.</p>`;
+        } else {
+          takwimBox.innerHTML = items.map(item => `
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <p class="text-xs font-extrabold text-slate-900">${item.program || item.title || "Aktiviti PPKI"}</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">${item.tarikh || item.date || "-"} ${item.tempat ? "• " + item.tempat : ""}</p>
+            </div>`).join("");
+        }
+      }
+
+      const banner = document.getElementById("pinStatusBanner");
+      if (banner) {
+        banner.innerHTML = isPinUnlocked()
+          ? `<button onclick="lockPinAccess()" class="px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-900 font-bold text-xs transition flex items-center gap-1.5"><span>🔓</span> Data Murid Dibuka (Klik untuk Kunci)</button>`
+          : `<button onclick="openPinModal('direktori')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm"><span>🔒</span> Buka Akses Data Murid</button>`;
+      }
+    }
+
     function switchTab(tabName) {
-      ["direktori", "cetak", "kehadiran", "inklusif", "takwim", "jadual", "pencapaian", "staf", "kelas", "pengajaran"].forEach(t => {
-        document.getElementById("view-" + t).classList.toggle("hidden", t !== tabName);
+      if (PROTECTED_TABS.includes(tabName) && !isPinUnlocked()) {
+        openPinModal(tabName);
+        return;
+      }
+      ["utama", "direktori", "cetak", "kehadiran", "inklusif", "takwim", "jadual", "pencapaian", "staf", "kelas", "pengajaran"].forEach(t => {
+        const viewEl = document.getElementById("view-" + t);
+        if (viewEl) viewEl.classList.toggle("hidden", t !== tabName);
         const btn = document.getElementById("tab-" + t);
-        const navLayout = "w-full lg:justify-start text-left whitespace-nowrap shrink-0 px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition flex items-center gap-1.5";
-        btn.className = (t === tabName ? "tab-active " : "tab-inactive ") + navLayout;
+        if (btn) {
+          const navLayout = "w-full lg:justify-start text-left whitespace-nowrap shrink-0 px-3 py-2 rounded-xl font-bold text-xs sm:text-[13px] transition";
+          btn.className = (t === tabName ? "tab-active " : "tab-inactive ") + navLayout;
+        }
       });
       document.body.classList.toggle("printing-cetak", tabName === "cetak");
       document.body.classList.toggle("printing-jadual", tabName === "jadual");
@@ -2467,6 +2669,8 @@ function buildOfficialTimetableSlots() {
         renderPrintView();
       } else if (tabName === "jadual") {
         renderTimetable();
+      } else if (tabName === "utama") {
+        renderDashboardHome();
       }
     }
 
@@ -2477,7 +2681,7 @@ function buildOfficialTimetableSlots() {
       document.getElementById("kpiTotalStudents").textContent = `${total} Orang`;
       document.getElementById("kpiGenderSplit").textContent = `Lelaki: ${lelaki} • Perempuan: ${perempuan}`;
       const tabDir = document.getElementById("tab-direktori");
-      if (tabDir) tabDir.innerHTML = `<span>📇</span> Senarai MBPK (${total})`;
+      if (tabDir) tabDir.innerHTML = `<span>${isPinUnlocked() ? "🔓" : "🔒"}</span> Senarai MBPK (${total})`;
 
       // KPI Guru & PPM
       const staffList = appState.staff || [];
@@ -2521,7 +2725,7 @@ function buildOfficialTimetableSlots() {
       if (barHadir) barHadir.style.width = `${pct}%`;
       if (barTh) barTh.style.width = `${thPct}%`;
 
-
+renderDashboardHome();
     }
 
     function renderDirectory() {
