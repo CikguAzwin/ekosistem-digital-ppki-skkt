@@ -2117,6 +2117,8 @@ function buildOfficialTimetableSlots() {
       takwim: buildOfficialTakwim(),
       achievements: buildOfficialAchievements(),
       staffAchievements: [],
+      dutyReports: [],
+dutyRoster2027: [],
       timetableSlots: buildOfficialTimetableSlots(),
       timetableFridaySlots: buildOfficialFridaySlots(),
       timetable: buildOfficialTimetable(),
@@ -2765,7 +2767,7 @@ function buildOfficialTimetableSlots() {
         openPinModal(tabName);
         return;
       }
-      ["utama", "direktori", "cetak", "kehadiran", "inklusif", "takwim", "jadual", "pencapaian", "pencapaian-staf", "staf", "kelas", "pengajaran"].forEach(t => {
+      ["utama", "direktori", "cetak", "kehadiran", "inklusif", "takwim", "jadual", "pencapaian", "pencapaian-staf", "staf", "laporan-bertugas", "kelas", "pengajaran"].forEach(t => {
         const viewEl = document.getElementById("view-" + t);
         if (viewEl) viewEl.classList.toggle("hidden", t !== tabName);
         const btn = document.getElementById("tab-" + t);
@@ -3604,7 +3606,355 @@ renderDashboardHome();
         }
       );
     }
+// BUKU LAPORAN HARIAN & JADUAL BERTUGAS GURU 2027
+    const DUTY_TEACHERS_2027 = [
+      "EN. ROHAIZI BIN ISMAIL",
+      "PN. NOR AZWIN BINTI AZLAN",
+      "PN. NOR ZAITIE AYU BINTI ZAIMI",
+      "USTAZAH MAHMUDAH BINTI A. RAHIM",
+      "CIK NUR INAS FATHINI"
+    ];
 
+    function buildDefaultDutyRoster2027() {
+      // Penjadualan rasmi Sesi Persekolahan 2027 (Isnin - Jumaat, bermula 11 Jan 2027)
+      const schedulePlan = [
+        { type: "week", minggu: "1", tarikh: "11 JAN – 15 JAN 2027" },
+        { type: "week", minggu: "2", tarikh: "18 JAN – 22 JAN 2027" },
+        { type: "week", minggu: "3", tarikh: "25 JAN – 29 JAN 2027" },
+        { type: "week", minggu: "4", tarikh: "01 FEB – 05 FEB 2027" },
+        { type: "holiday", label: "CUTI SEMPENA TAHUN BARU CINA (06 FEB – 14 FEB 2027)" },
+        { type: "week", minggu: "5", tarikh: "15 FEB – 19 FEB 2027" },
+        { type: "week", minggu: "6", tarikh: "22 FEB – 26 FEB 2027" },
+        { type: "week", minggu: "7", tarikh: "01 MAC – 05 MAC 2027" },
+        { type: "week", minggu: "8", tarikh: "08 MAC – 12 MAC 2027" },
+        { type: "holiday", label: "CUTI PENGGAL 1, SESI 2027 (13 MAC – 21 MAC 2027)" },
+        { type: "week", minggu: "9", tarikh: "22 MAC – 26 MAC 2027" },
+        { type: "week", minggu: "10", tarikh: "29 MAC – 02 APR 2027" },
+        { type: "week", minggu: "11", tarikh: "05 APR – 09 APR 2027" },
+        { type: "week", minggu: "12", tarikh: "12 APR – 16 APR 2027" },
+        { type: "week", minggu: "13", tarikh: "19 APR – 23 APR 2027" },
+        { type: "week", minggu: "14", tarikh: "26 APR – 30 APR 2027" },
+        { type: "week", minggu: "15", tarikh: "03 MEI – 07 MEI 2027" },
+        { type: "week", minggu: "16", tarikh: "10 MEI – 14 MEI 2027" },
+        { type: "week", minggu: "17", tarikh: "17 MEI – 21 MEI 2027" },
+        { type: "holiday", label: "CUTI PERTENGAHAN TAHUN 2027 (22 MEI – 06 JUN 2027)" },
+        { type: "week", minggu: "18", tarikh: "07 JUN – 11 JUN 2027" },
+        { type: "week", minggu: "19", tarikh: "14 JUN – 18 JUN 2027" },
+        { type: "week", minggu: "20", tarikh: "21 JUN – 25 JUN 2027" },
+        { type: "week", minggu: "21", tarikh: "28 JUN – 02 JUL 2027" },
+        { type: "week", minggu: "22", tarikh: "05 JUL – 09 JUL 2027" },
+        { type: "week", minggu: "23", tarikh: "12 JUL – 16 JUL 2027" },
+        { type: "week", minggu: "24", tarikh: "19 JUL – 23 JUL 2027" },
+        { type: "week", minggu: "25", tarikh: "26 JUL – 30 JUL 2027" },
+        { type: "week", minggu: "26", tarikh: "02 OGOS – 06 OGOS 2027" },
+        { type: "week", minggu: "27", tarikh: "09 OGOS – 13 OGOS 2027" },
+        { type: "week", minggu: "28", tarikh: "16 OGOS – 20 OGOS 2027" },
+        { type: "holiday", label: "CUTI PENGGAL 2, SESI 2027 (21 OGOS – 29 OGOS 2027)" },
+        { type: "week", minggu: "29", tarikh: "30 OGOS – 03 SEPT 2027" },
+        { type: "week", minggu: "30", tarikh: "06 SEPT – 10 SEPT 2027" },
+        { type: "week", minggu: "31", tarikh: "13 SEPT – 17 SEPT 2027" },
+        { type: "week", minggu: "32", tarikh: "20 SEPT – 24 SEPT 2027" },
+        { type: "week", minggu: "33", tarikh: "27 SEPT – 01 OKT 2027" },
+        { type: "week", minggu: "34", tarikh: "04 OKT – 08 OKT 2027" },
+        { type: "week", minggu: "35", tarikh: "11 OKT – 15 OKT 2027" },
+        { type: "week", minggu: "36", tarikh: "18 OKT – 22 OKT 2027" },
+        { type: "week", minggu: "37", tarikh: "25 OKT – 29 OKT 2027" },
+        { type: "week", minggu: "38", tarikh: "01 NOV – 05 NOV 2027" },
+        { type: "week", minggu: "39", tarikh: "08 NOV – 12 NOV 2027" },
+        { type: "week", minggu: "40", tarikh: "15 NOV – 19 NOV 2027" },
+        { type: "week", minggu: "41", tarikh: "22 NOV – 26 NOV 2027" },
+        { type: "week", minggu: "42", tarikh: "29 NOV – 03 DIS 2027" }
+      ];
+      let teacherIdx = 0;
+      return schedulePlan.map((item, i) => {
+        if (item.type === "holiday") {
+          return { id: "DR27-" + i, type: "holiday", minggu: "", guru: item.label, tarikh: "" };
+        }
+        const guru = DUTY_TEACHERS_2027[teacherIdx % DUTY_TEACHERS_2027.length];
+        teacherIdx++;
+        return { id: "DR27-" + i, type: "week", minggu: item.minggu, guru: guru, tarikh: item.tarikh };
+      });
+    }
+
+    function switchDutySubTab(panel) {
+      ["borang", "jadual2027", "arkib"].forEach(p => {
+        const el = document.getElementById("duty-panel-" + p);
+        const btn = document.getElementById("subtab-duty-" + p);
+        if (el) el.classList.toggle("hidden", p !== panel);
+        if (btn) {
+          btn.className = p === panel
+            ? "px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold shadow-sm transition"
+            : "px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold transition";
+        }
+      });
+      if (panel === "jadual2027") renderDutyRoster2027();
+      if (panel === "arkib") renderDutyArchive();
+    }
+
+    function getMalayDayName(dateStr) {
+      if (!dateStr) return "-";
+      const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+      const d = new Date(dateStr + "T00:00:00");
+      return isNaN(d.getTime()) ? "-" : days[d.getDay()];
+    }
+
+    function formatMalayDateLabel(dateStr) {
+      if (!dateStr) return "-";
+      const months = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
+      const parts = dateStr.split("-");
+      if (parts.length !== 3) return dateStr;
+      return `${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+    }
+
+    function syncDutyReportFromAttendance() {
+      const dateInput = document.getElementById("dutyReportDate");
+      if (!dateInput) return;
+      if (!dateInput.value) dateInput.value = getMalaysiaDateStr();
+      const dateStr = dateInput.value;
+
+      const weekVal = (document.getElementById("dutyReportWeek").value || "").trim().toUpperCase() || "MINGGU 1";
+      const teacherVal = document.getElementById("dutyReportTeacher").value;
+
+      document.getElementById("repDisplayTarikh").textContent = formatMalayDateLabel(dateStr);
+      document.getElementById("repDisplayHari").textContent = getMalayDayName(dateStr);
+      document.getElementById("repDisplayMinggu").textContent = weekVal;
+      document.getElementById("repDisplayGuru").textContent = teacherVal;
+
+      const classNames = ["1 INOVATIF", "1 KREATIF", "2 EFEKTIF", "4 DINAMIK"];
+      const students = Array.isArray(appState.students) ? appState.students : [];
+
+      let summaryHtml = "";
+      let absentTableHtml = `<table class="w-full border-collapse text-xs">`;
+
+      classNames.forEach((clsName, cIdx) => {
+        const clsStudents = students.filter(s => (s.kelas || "").toUpperCase().includes(clsName));
+        let hadirCount = 0;
+        const absentStudents = [];
+
+        clsStudents.forEach(s => {
+          const eff = getEffectiveAttendance(s, dateStr);
+          if (eff && eff.status === "Hadir") {
+            hadirCount++;
+          } else if (eff && eff.status && eff.status.startsWith("Tidak Hadir")) {
+            absentStudents.push(`${s.nama} (${eff.status.replace("Tidak Hadir - ", "")})`);
+          }
+        });
+
+        summaryHtml += `<div>${cIdx + 1}) KELAS ${clsName} : <span class="underline decoration-dotted px-2">${hadirCount} / ${clsStudents.length}</span> ORANG</div>`;
+
+        let rowsHtml = "";
+        const maxLines = Math.max(7, absentStudents.length);
+        for (let i = 0; i < maxLines; i++) {
+          rowsHtml += `<div class="border-b border-dotted border-slate-400 py-0.5 min-h-[20px]">${i + 1}. ${absentStudents[i] || ""}</div>`;
+        }
+
+        absentTableHtml += `
+          <tr class="${cIdx < classNames.length - 1 ? "border-b border-slate-800" : ""}">
+            <td class="w-36 px-3 py-2 font-bold align-top border-r border-slate-300">KELAS ${clsName} :</td>
+            <td class="px-3 py-2 space-y-0.5">${rowsHtml}</td>
+          </tr>
+        `;
+      });
+
+      absentTableHtml += `</table>`;
+      document.getElementById("repDisplayAttendanceSummary").innerHTML = summaryHtml;
+      document.getElementById("repDisplayAbsentList").innerHTML = absentTableHtml;
+
+      // Muatkan catatan sedia ada jika tarikh ini pernah disimpan
+      const existing = (appState.dutyReports || []).find(r => r.tarikh === dateStr);
+      if (existing) {
+        if (existing.minggu) document.getElementById("dutyReportWeek").value = existing.minggu;
+        if (existing.guruBertugas) document.getElementById("dutyReportTeacher").value = existing.guruBertugas;
+        document.getElementById("dutyAktiviti").value = existing.aktiviti || "";
+        document.getElementById("dutyLawatan").value = existing.lawatan || "";
+        document.getElementById("dutyDisiplin").value = existing.disiplin || "";
+        document.getElementById("dutyCatatan").value = existing.catatan || "";
+        document.getElementById("repDisplayMinggu").textContent = existing.minggu || weekVal;
+        document.getElementById("repDisplayGuru").textContent = existing.guruBertugas || teacherVal;
+      }
+    }
+
+    function saveDutyReport() {
+      const dateStr = document.getElementById("dutyReportDate").value || getMalaysiaDateStr();
+      const minggu = (document.getElementById("dutyReportWeek").value || "").trim().toUpperCase() || "MINGGU 1";
+      const guruBertugas = document.getElementById("dutyReportTeacher").value;
+      const hari = getMalayDayName(dateStr);
+
+      document.getElementById("repDisplayMinggu").textContent = minggu;
+      document.getElementById("repDisplayGuru").textContent = guruBertugas;
+
+      const ringkasanKehadiran = (document.getElementById("repDisplayAttendanceSummary").innerText || "").replace(/\n+/g, " | ");
+      const muridTidakHadir = (document.getElementById("repDisplayAbsentList").innerText || "").replace(/\n+/g, "; ");
+
+      const record = {
+        id: "DR-" + dateStr,
+        tarikh: dateStr,
+        hari: hari,
+        minggu: minggu,
+        guruBertugas: guruBertugas,
+        ringkasanKehadiran: ringkasanKehadiran,
+        muridTidakHadir: muridTidakHadir,
+        aktiviti: document.getElementById("dutyAktiviti").value.trim(),
+        lawatan: document.getElementById("dutyLawatan").value.trim(),
+        disiplin: document.getElementById("dutyDisiplin").value.trim(),
+        catatan: document.getElementById("dutyCatatan").value.trim()
+      };
+
+      if (!Array.isArray(appState.dutyReports)) appState.dutyReports = [];
+      const idx = appState.dutyReports.findIndex(r => r.tarikh === dateStr);
+      if (idx >= 0) {
+        appState.dutyReports[idx] = record;
+      } else {
+        appState.dutyReports.unshift(record);
+      }
+
+      pushToCloud(true);
+      renderDutyArchive();
+      showToast("Laporan Harian PPKI berjaya disimpan & disegerakkan!", "✅");
+    }
+
+    function renderDutyRoster2027() {
+      const tbody = document.getElementById("dutyRoster2027Body");
+      if (!tbody) return;
+      if (!Array.isArray(appState.dutyRoster2027) || appState.dutyRoster2027.length === 0) {
+        appState.dutyRoster2027 = buildDefaultDutyRoster2027();
+      }
+      tbody.innerHTML = "";
+      appState.dutyRoster2027.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+        if (row.type === "holiday") {
+          tr.className = "bg-sky-100/80 font-extrabold text-center text-slate-900";
+          tr.innerHTML = `<td colspan="3" contenteditable="true" onblur="updateDutyRosterCell(${idx}, 'guru', this.innerText)" class="border border-slate-800 py-2 px-3">${row.guru}</td>`;
+        } else {
+          tr.className = idx % 2 === 0 ? "bg-white" : "bg-slate-50/60";
+          tr.innerHTML = `
+            <td contenteditable="true" onblur="updateDutyRosterCell(${idx}, 'minggu', this.innerText)" class="border border-slate-800 py-1.5 px-3 text-center font-bold">${row.minggu}</td>
+            <td contenteditable="true" onblur="updateDutyRosterCell(${idx}, 'guru', this.innerText)" class="border border-slate-800 py-1.5 px-4 font-bold uppercase">${row.guru}</td>
+            <td contenteditable="true" onblur="updateDutyRosterCell(${idx}, 'tarikh', this.innerText)" class="border border-slate-800 py-1.5 px-4 text-center font-semibold">${row.tarikh}</td>
+          `;
+        }
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateDutyRosterCell(idx, field, val) {
+      if (!appState.dutyRoster2027 || !appState.dutyRoster2027[idx]) return;
+      appState.dutyRoster2027[idx][field] = val.trim();
+      pushToCloud(true);
+    }
+
+    function resetDutyRoster2027() {
+      openConfirmModal(
+        "Jana Semula Jadual 2027",
+        "Tetapkan semula jadual giliran 5 guru bagi tahun 2027 kepada susunan asal?",
+        () => {
+          appState.dutyRoster2027 = buildDefaultDutyRoster2027();
+          renderDutyRoster2027();
+          pushToCloud(true);
+        }
+      );
+    }
+
+    function renderDutyArchive() {
+      const tbody = document.getElementById("dutyArchiveTableBody");
+      if (!tbody) return;
+      const list = Array.isArray(appState.dutyReports) ? appState.dutyReports : [];
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-8 px-4 text-center text-slate-400">Belum ada laporan harian disimpan.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(item => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-bold text-slate-900">${formatMalayDateLabel(item.tarikh)} <span class="text-slate-400 font-normal">(${item.hari})</span></td>
+          <td class="py-3 px-4 font-semibold text-indigo-700">${item.minggu}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${item.guruBertugas}</td>
+          <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${item.aktiviti || "-"}</td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="loadDutyReportDate('${item.tarikh}')" class="px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold">Buka &amp; Cetak</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function loadDutyReportDate(dateStr) {
+      document.getElementById("dutyReportDate").value = dateStr;
+      switchDutySubTab("borang");
+      syncDutyReportFromAttendance();
+    }
+
+    function printOfficialDutyReport() {
+      const dateStr = document.getElementById("dutyReportDate").value || getMalaysiaDateStr();
+      const minggu = (document.getElementById("dutyReportWeek").value || "").trim().toUpperCase() || "MINGGU 1";
+      const guru = document.getElementById("dutyReportTeacher").value;
+      const attHtml = document.getElementById("repDisplayAttendanceSummary").innerHTML;
+      const absHtml = document.getElementById("repDisplayAbsentList").innerHTML;
+      const aktiviti = document.getElementById("dutyAktiviti").value || "";
+      const lawatan = document.getElementById("dutyLawatan").value || "";
+      const disiplin = document.getElementById("dutyDisiplin").value || "";
+      const catatan = document.getElementById("dutyCatatan").value || "";
+
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <html><head><title>Laporan Harian Program PPKI - ${dateStr}</title>
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 11pt; color: #000; margin: 18mm; }
+          h2 { text-align: center; font-size: 13pt; margin-bottom: 12px; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; }
+          td { border: 1px solid #000; padding: 7px 10px; vertical-align: top; }
+          .lbl { width: 32%; font-weight: bold; }
+          .inner td { border: none; border-bottom: 1px solid #000; padding: 6px 8px; }
+          .inner tr:last-child td { border-bottom: none; }
+          .line { border-bottom: 1px dotted #000; min-height: 20px; margin-bottom: 4px; }
+          .sec-title { font-weight: bold; margin-top: 8px; margin-bottom: 4px; }
+          .sign { margin-top: 24px; font-weight: bold; line-height: 2; }
+        </style></head><body>
+        <h2>LAPORAN HARIAN PROGRAM PPKI</h2>
+        <table>
+          <tr><td class="lbl">TARIKH</td><td>${formatMalayDateLabel(dateStr)}</td></tr>
+          <tr><td class="lbl">HARI</td><td>${getMalayDayName(dateStr)}</td></tr>
+          <tr><td class="lbl">MINGGU</td><td>${minggu}</td></tr>
+          <tr><td class="lbl">JUMLAH KEDATANGAN MURID</td><td>${attHtml}</td></tr>
+          <tr><td class="lbl">NAMA MURID TIDAK HADIR</td><td style="padding:0;">${absHtml}</td></tr>
+          <tr>
+            <td class="lbl">LAPORAN HARIAN</td>
+            <td>
+              <div class="sec-title">1) AKTIVITI YANG DIJALANKAN :</div>
+              <div class="line">${aktiviti}</div><div class="line"></div>
+              <div class="sec-title">2) LAWATAN DARIPADA INDIVIDU / KUMPULAN :</div>
+              <div class="line">${lawatan}</div><div class="line"></div>
+              <div class="sec-title">3) DISIPLIN MURID :</div>
+              <div class="line">${disiplin}</div>
+              <div class="sec-title">4) CATATAN :</div>
+              <div class="line">${catatan}</div><div class="line"></div>
+            </td>
+          </tr>
+        </table>
+        <div class="sign">
+          <div>NAMA GURU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${guru}</div>
+          <div>TANDATANGAN : ........................................................................</div>
+        </div>
+        <script>window.onload = function(){ window.print(); };<\/script>
+        </body></html>
+      `);
+      win.document.close();
+    }
+
+    function printDutyRoster2027() {
+      const content = document.getElementById("printableRoster2027Area").innerHTML;
+      const win = window.open("", "_blank");
+      win.document.write(`
+        <html><head><title>Jadual Bertugas Guru Tahun 2027 - PPKI SKKT</title>
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 10pt; color: #000; margin: 14mm; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          th, td { border: 1px solid #000; padding: 5px 8px; }
+          th { background: #e2e8f0; }
+        </style></head><body>${content}
+        <script>window.onload = function(){ window.print(); };<\/script>
+        </body></html>
+      `);
+      win.document.close();
+    }
     // DIREKTORI GURU & PPM DENGAN MODAL INTERAKTIF
     function renderStaff() {
       const grid = document.getElementById("staffGrid");
@@ -5980,6 +6330,9 @@ Pulangkan jawapan dalam format JSON SAHAJA (tanpa markdown) dengan kunci berikut
       renderTimetable();
       renderAchievements();
       renderStaffAchievements();
+      syncDutyReportFromAttendance();
+renderDutyRoster2027();
+renderDutyArchive();
       renderStaff();
       renderClasses();
       renderTeaching();
