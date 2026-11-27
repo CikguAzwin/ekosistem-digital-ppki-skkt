@@ -4053,11 +4053,25 @@ renderDashboardHome();
           <td class="py-3 px-4 font-semibold text-indigo-700">${item.minggu}</td>
           <td class="py-3 px-4 font-semibold text-slate-800">${item.guruBertugas}</td>
           <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${item.aktiviti || "-"}</td>
-          <td class="py-3 px-4 text-right">
+          <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
             <button onclick="loadDutyReportDate('${item.tarikh}')" class="px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold">Buka &amp; Cetak</button>
+            <button onclick="deleteDutyReport('${item.tarikh}')" class="px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold">Padam</button>
           </td>
         </tr>
       `).join("");
+    }
+
+    function deleteDutyReport(tarikh) {
+      openConfirmModal(
+        "Padam Laporan Harian",
+        `Adakah anda pasti ingin memadam rekod Laporan Harian bertarikh ${formatMalayDateLabel(tarikh)}?`,
+        () => {
+          appState.dutyReports = (appState.dutyReports || []).filter(r => r.tarikh !== tarikh);
+          renderDutyArchive();
+          pushToCloud(true);
+          showToast("Rekod laporan harian berjaya dipadam.", "🗑️");
+        }
+      );
     }
 
     function loadDutyReportDate(dateStr) {
