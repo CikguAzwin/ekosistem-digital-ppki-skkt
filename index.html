@@ -3800,55 +3800,58 @@ renderDashboardHome();
     ];
 
     function buildDefaultDutyRoster2027() {
-      // Penjadualan rasmi Sesi Persekolahan 2027 (Isnin - Jumaat, bermula 11 Jan 2027)
+      // Penjadualan rasmi Sesi Persekolahan 2027 Kumpulan B - Negeri Melaka (Bermula 04 Jan 2027)
       const schedulePlan = [
-        { type: "week", minggu: "1", tarikh: "11 JAN – 15 JAN 2027" },
-        { type: "week", minggu: "2", tarikh: "18 JAN – 22 JAN 2027" },
-        { type: "week", minggu: "3", tarikh: "25 JAN – 29 JAN 2027" },
-        { type: "week", minggu: "4", tarikh: "01 FEB – 05 FEB 2027" },
-        { type: "holiday", label: "CUTI SEMPENA TAHUN BARU CINA (06 FEB – 14 FEB 2027)" },
-        { type: "week", minggu: "5", tarikh: "15 FEB – 19 FEB 2027" },
-        { type: "week", minggu: "6", tarikh: "22 FEB – 26 FEB 2027" },
-        { type: "week", minggu: "7", tarikh: "01 MAC – 05 MAC 2027" },
-        { type: "week", minggu: "8", tarikh: "08 MAC – 12 MAC 2027" },
-        { type: "holiday", label: "CUTI PENGGAL 1, SESI 2027 (13 MAC – 21 MAC 2027)" },
-        { type: "week", minggu: "9", tarikh: "22 MAC – 26 MAC 2027" },
-        { type: "week", minggu: "10", tarikh: "29 MAC – 02 APR 2027" },
-        { type: "week", minggu: "11", tarikh: "05 APR – 09 APR 2027" },
-        { type: "week", minggu: "12", tarikh: "12 APR – 16 APR 2027" },
-        { type: "week", minggu: "13", tarikh: "19 APR – 23 APR 2027" },
-        { type: "week", minggu: "14", tarikh: "26 APR – 30 APR 2027" },
-        { type: "week", minggu: "15", tarikh: "03 MEI – 07 MEI 2027" },
-        { type: "week", minggu: "16", tarikh: "10 MEI – 14 MEI 2027" },
-        { type: "week", minggu: "17", tarikh: "17 MEI – 21 MEI 2027" },
+        { type: "week", minggu: "1", tarikh: "04 JAN – 08 JAN 2027" },
+        { type: "week", minggu: "2", tarikh: "11 JAN – 15 JAN 2027" },
+        { type: "week", minggu: "3", tarikh: "18 JAN – 22 JAN 2027" },
+        { type: "week", minggu: "4", tarikh: "25 JAN – 29 JAN 2027" },
+        { type: "week", minggu: "5", tarikh: "01 FEB – 04 FEB 2027 (Cuti TBC: 05 Feb)" },
+        { type: "holiday", label: "CUTI TAHUN BAHARU CINA & TAMBAHAN KPM (05 FEB – 12 FEB 2027)" },
+        { type: "week", minggu: "6", tarikh: "15 FEB – 19 FEB 2027" },
+        { type: "week", minggu: "7", tarikh: "22 FEB – 26 FEB 2027" },
+        { type: "week", minggu: "8", tarikh: "01 MAC – 05 MAC 2027" },
+        { type: "holiday", label: "CUTI PENGGAL 1 & HARI RAYA PUASA (06 MAC – 14 MAC 2027)" },
+        { type: "week", minggu: "9", tarikh: "15 MAC – 19 MAC 2027" },
+        { type: "week", minggu: "10", tarikh: "22 MAC – 26 MAC 2027" },
+        { type: "week", minggu: "11", tarikh: "29 MAC – 02 APR 2027" },
+        { type: "week", minggu: "12", tarikh: "05 APR – 09 APR 2027" },
+        { type: "week", minggu: "13", tarikh: "12 APR – 16 APR 2027" },
+        { type: "week", minggu: "14", tarikh: "19 APR – 23 APR 2027" },
+        { type: "week", minggu: "15", tarikh: "26 APR – 30 APR 2027" },
+        { type: "week", minggu: "16", tarikh: "03 MEI – 07 MEI 2027" },
+        { type: "week", minggu: "17", tarikh: "10 MEI – 14 MEI 2027" },
+        { type: "week", minggu: "18", tarikh: "17 MEI (Cuti Raya Korban & Wesak: 18–21 Mei)" },
         { type: "holiday", label: "CUTI PERTENGAHAN TAHUN 2027 (22 MEI – 06 JUN 2027)" },
-        { type: "week", minggu: "18", tarikh: "07 JUN – 11 JUN 2027" },
-        { type: "week", minggu: "19", tarikh: "14 JUN – 18 JUN 2027" },
-        { type: "week", minggu: "20", tarikh: "21 JUN – 25 JUN 2027" },
-        { type: "week", minggu: "21", tarikh: "28 JUN – 02 JUL 2027" },
-        { type: "week", minggu: "22", tarikh: "05 JUL – 09 JUL 2027" },
-        { type: "week", minggu: "23", tarikh: "12 JUL – 16 JUL 2027" },
-        { type: "week", minggu: "24", tarikh: "19 JUL – 23 JUL 2027" },
-        { type: "week", minggu: "25", tarikh: "26 JUL – 30 JUL 2027" },
-        { type: "week", minggu: "26", tarikh: "02 OGOS – 06 OGOS 2027" },
-        { type: "week", minggu: "27", tarikh: "09 OGOS – 13 OGOS 2027" },
-        { type: "week", minggu: "28", tarikh: "16 OGOS – 20 OGOS 2027" },
-        { type: "holiday", label: "CUTI PENGGAL 2, SESI 2027 (21 OGOS – 29 OGOS 2027)" },
-        { type: "week", minggu: "29", tarikh: "30 OGOS – 03 SEPT 2027" },
-        { type: "week", minggu: "30", tarikh: "06 SEPT – 10 SEPT 2027" },
-        { type: "week", minggu: "31", tarikh: "13 SEPT – 17 SEPT 2027" },
-        { type: "week", minggu: "32", tarikh: "20 SEPT – 24 SEPT 2027" },
-        { type: "week", minggu: "33", tarikh: "27 SEPT – 01 OKT 2027" },
-        { type: "week", minggu: "34", tarikh: "04 OKT – 08 OKT 2027" },
-        { type: "week", minggu: "35", tarikh: "11 OKT – 15 OKT 2027" },
-        { type: "week", minggu: "36", tarikh: "18 OKT – 22 OKT 2027" },
-        { type: "week", minggu: "37", tarikh: "25 OKT – 29 OKT 2027" },
-        { type: "week", minggu: "38", tarikh: "01 NOV – 05 NOV 2027" },
-        { type: "week", minggu: "39", tarikh: "08 NOV – 12 NOV 2027" },
-        { type: "week", minggu: "40", tarikh: "15 NOV – 19 NOV 2027" },
-        { type: "week", minggu: "41", tarikh: "22 NOV – 26 NOV 2027" },
-        { type: "week", minggu: "42", tarikh: "29 NOV – 03 DIS 2027" }
+        { type: "week", minggu: "19", tarikh: "07 JUN – 11 JUN 2027" },
+        { type: "week", minggu: "20", tarikh: "14 JUN – 18 JUN 2027" },
+        { type: "week", minggu: "21", tarikh: "21 JUN – 25 JUN 2027" },
+        { type: "week", minggu: "22", tarikh: "28 JUN – 02 JUL 2027" },
+        { type: "week", minggu: "23", tarikh: "05 JUL – 09 JUL 2027" },
+        { type: "week", minggu: "24", tarikh: "12 JUL – 16 JUL 2027" },
+        { type: "week", minggu: "25", tarikh: "19 JUL – 23 JUL 2027" },
+        { type: "week", minggu: "26", tarikh: "26 JUL – 30 JUL 2027" },
+        { type: "week", minggu: "27", tarikh: "02 OGS – 06 OGS 2027" },
+        { type: "week", minggu: "28", tarikh: "09 OGS – 13 OGS 2027" },
+        { type: "week", minggu: "29", tarikh: "16 OGS – 20 OGS 2027" },
+        { type: "week", minggu: "30", tarikh: "23 OGS – 27 OGS 2027" },
+        { type: "holiday", label: "CUTI PENGGAL 2, TAHUN 2027 (28 OGS – 05 SEP 2027)" },
+        { type: "week", minggu: "31", tarikh: "06 SEP – 10 SEP 2027" },
+        { type: "week", minggu: "32", tarikh: "13 SEP – 17 SEP 2027" },
+        { type: "week", minggu: "33", tarikh: "20 SEP – 24 SEP 2027" },
+        { type: "week", minggu: "34", tarikh: "27 SEP – 01 OKT 2027" },
+        { type: "week", minggu: "35", tarikh: "04 OKT – 08 OKT 2027" },
+        { type: "week", minggu: "36", tarikh: "11 OKT – 15 OKT 2027" },
+        { type: "week", minggu: "37", tarikh: "18 OKT – 22 OKT 2027" },
+        { type: "week", minggu: "38", tarikh: "25 OKT – 26 OKT 2027 (Cuti Deepavali: 27–29 Okt)" },
+        { type: "week", minggu: "39", tarikh: "01 NOV – 05 NOV 2027" },
+        { type: "week", minggu: "40", tarikh: "08 NOV – 12 NOV 2027" },
+        { type: "week", minggu: "41", tarikh: "15 NOV – 19 NOV 2027" },
+        { type: "week", minggu: "42", tarikh: "22 NOV – 26 NOV 2027" },
+        { type: "week", minggu: "43", tarikh: "29 NOV – 03 DIS 2027" },
+        { type: "holiday", label: "CUTI AKHIR PERSEKOLAHAN TAHUN 2027 (04 DIS – 31 DIS 2027)" }
       ];
+
       let teacherIdx = 0;
       return schedulePlan.map((item, i) => {
         if (item.type === "holiday") {
@@ -3859,7 +3862,6 @@ renderDashboardHome();
         return { id: "DR27-" + i, type: "week", minggu: item.minggu, guru: guru, tarikh: item.tarikh };
       });
     }
-
     function switchDutySubTab(panel) {
       ["borang", "jadual2027", "arkib"].forEach(p => {
         const el = document.getElementById("duty-panel-" + p);
